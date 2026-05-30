@@ -315,17 +315,11 @@ from block_detected.detection_contract import *  # noqa: F401,F403
 | A13 | Malformed or unexpected frame objects are a realistic denial-of-service risk for the stub API. | Security Domain | Planner should still keep error handling minimal and fail closed. |
 | A14 | The research validity window of 2026-06-30 is appropriate for Phase 1 stdlib/API findings. | Metadata | Planner should re-check environment and docs earlier if package or Python-version decisions change. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Should Phase 1 correct `MULTIPLE_CANDIDATES` validation now?**
-   - What we know: current validation requires geometry for `MULTIPLE_CANDIDATES`. [VERIFIED: `detection_contract.py` lines 304-312; VERIFIED: local smoke probe]
-   - What's unclear: whether the user intended `multiple_candidates` to carry best-candidate geometry or to be a rejection with no geometry. [VERIFIED: `.planning/ROADMAP.md` says ambiguous/rejected frames should not fabricate geometry]
-   - Recommendation: change `MULTIPLE_CANDIDATES` to the no-candidate rejection group now if Phase 1 tests ambiguous frames, because Phase 7 `REJ-04` will need unambiguous semantics. [VERIFIED: `.planning/REQUIREMENTS.md`; ASSUMED: no downstream consumer depends on geometry-bearing `MULTIPLE_CANDIDATES` yet]
+1. **Should Phase 1 correct `MULTIPLE_CANDIDATES` validation now?** — **RESOLVED: Yes (Plan 01-03).** Move `MULTIPLE_CANDIDATES` to the no-candidate rejection group (nullable geometry, `pickup_pose=None`). Aligns with ROADMAP reject semantics; no downstream consumer requires geometry-bearing `multiple_candidates` yet.
 
-2. **Should package metadata be added in Phase 1?**
-   - What we know: the repo has no `pyproject.toml`, package directory, or tests. [VERIFIED: `rg --files`; VERIFIED: `find . -maxdepth 3 ...`]
-   - What's unclear: whether GSD execution should introduce packaging now or keep imports root-level for the first API stub. [VERIFIED: `.planning/notes/task-01-contract.md` says package wiring remains pending]
-   - Recommendation: add minimal package metadata only if implementing `src/block_detected/`; otherwise create a flat `block_detected/` package to keep imports simple. [ASSUMED]
+2. **Should package metadata be added in Phase 1?** — **RESOLVED: Yes (Plan 01-02).** Add minimal `pyproject.toml` with `src/` layout and editable install so `from block_detected import detect_block` works from repo root without manual `PYTHONPATH`. Root `detection_contract.py` shim re-exports via `from block_detected.detection_contract import *`.
 
 ## Environment Availability
 

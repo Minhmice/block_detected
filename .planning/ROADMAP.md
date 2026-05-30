@@ -29,11 +29,12 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
   1. Calling `detect_block(frame)` returns a `DetectionResult` that passes contract validation helpers
   2. Successful stub/synthetic detection populates `block_id`, `confidence`, `center_px`, `corners_px` (TL, TR, BR, BL), and `angle_deg`
   3. Rejected or ambiguous frames return the correct `status` with `debug.rejection_reason` and no fabricated corner geometry
-**Plans**: 2 plans
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Wave 0: unittest scaffold (contract regression + failing detect_block tests)
-- [ ] 01-02-PLAN.md — Wave 1: flat `block_detected/` package, MULTIPLE_CANDIDATES fix, `detect_block` stub
+- [ ] 01-01-PLAN.md — Wave 0: unittest scaffold (contract regression + detect_block tests)
+- [ ] 01-02-PLAN.md — Wave 1: `pyproject.toml` + `src/block_detected/` package + `detect_block` stub
+- [ ] 01-03-PLAN.md — Wave 2: `MULTIPLE_CANDIDATES` no-geometry contract fix + full validation
 
 **Progress (2026-05-31):**
 - [x] Output contract module + validation + sample JSON (`detection_contract.py`, smoke test `python -B`)
