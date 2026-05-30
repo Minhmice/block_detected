@@ -12,7 +12,7 @@ For every valid frame, the system must reliably output **which block (1–4)** w
 
 ### Validated
 
-- ✓ **Output contract datatypes** — `detection_contract.py` defines `DetectionResult`, `CornersPx`, `PickupPose`, status enums, and validation helpers (existing)
+- ✓ **Output contract + public API (Phase 1)** — `src/block_detected/`: contract types, `make_no_detection_result()`, `make_multiple_candidates_result()`, `validate_detection_result()`, `detect_block(frame)` stub, root shim. Stdlib-only; 10 unittest tests green. *(Phase 1, 2026-05-31)*
 
 ### Active
 
@@ -58,7 +58,8 @@ For every valid frame, the system must reliably output **which block (1–4)** w
 | Contour + warp + CNN over YOLO bbox | Robot needs 4 corners + θ, not axis-aligned box only | — Pending |
 | Mode B (TFLite INT8 CNN) as v1 classifier | Robust to lighting/view vs template matching | — Pending |
 | Warp size 128×128 (or 160×160) | Matches tiny CNN input; tradeoff TBD in Phase 4 | — Pending |
-| Extend existing Python contract | `detection_contract.py` already validated | — Pending |
+| Stdlib-only contract (no Pydantic) | Pi-friendly, zero extra deps at boundary | ✓ Good (Task 1) |
+| Extend existing Python contract | Integration boundary for all pipeline stages | ✓ Good (Task 1) |
 
 ## Evolution
 
@@ -78,4 +79,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-31 after initialization*
+*Last updated: 2026-05-31 after Task 1 (output contract)*

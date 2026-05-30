@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: "Task 1 contract complete; next: `detect_block` skeleton or `/gsd-plan-phase 1` remainder"
+last_updated: "2026-05-30T21:01:07.315Z"
+last_activity: 2026-05-30 -- Phase 01 execution started
+progress:
+  total_phases: 8
+  completed_phases: 0
+  total_plans: 6
+  completed_plans: 0
+  percent: 0
+---
+
 # Project State
 
 ## Project Reference
@@ -5,20 +21,21 @@
 See: .planning/PROJECT.md (updated 2026-05-31)
 
 **Core value:** Reliable block ID plus four ordered corners and angle for robot pickup
-**Current focus:** Phase 1 — Contract & Pipeline Skeleton
+**Current focus:** Phase 01 — contract-pipeline-skeleton
 
 ## Current Position
 
-Phase: 1 of 8 (Contract & Pipeline Skeleton)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-05-31 — Roadmap created with 8 phases, 25 v1 requirements mapped
+Phase: 01 (contract-pipeline-skeleton) — EXECUTING
+Plan: 1 of 3
+Status: Executing Phase 01
+Last activity: 2026-05-30 -- Phase 01 execution started
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] ~12% (contract foundation; see `.planning/notes/task-01-contract.md`)
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0
 - Average duration: —
 - Total execution time: 0 hours
@@ -30,6 +47,7 @@ Progress: [░░░░░░░░░░] 0%
 | — | — | — | — |
 
 **Recent Trend:**
+
 - Last 5 plans: —
 - Trend: —
 
@@ -46,9 +64,13 @@ Recent decisions affecting current work:
 - Extend existing `detection_contract.py` as integration boundary
 - Warp size 128×128 (or 160×160) — finalize in Phase 4/5
 
+### Completed (session)
+
+- **Task 1:** `detection_contract.py` — contract types, validation, JSON samples, smoke test (`python -B`).
+
 ### Pending Todos
 
-None yet.
+- Implement `detect_block(frame)` stub → `DetectionResult` (CONT-01).
 
 ### Blockers/Concerns
 
@@ -57,5 +79,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-31
-Stopped at: Roadmap initialization complete; ready for `/gsd-plan-phase 1`
+Stopped at: Task 1 contract complete; next: `detect_block` skeleton or `/gsd-plan-phase 1` remainder
 Resume file: None

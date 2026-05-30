@@ -7,9 +7,9 @@
 
 ### Contract & Integration
 
-- [ ] **CONT-01**: Public `detect_block(frame)` returns validated `DetectionResult` matching `detection_contract.py`
-- [ ] **CONT-02**: Successful detection populates `block_id`, `confidence`, `center_px`, `corners_px` (TL, TR, BR, BL), `angle_deg`
-- [ ] **CONT-03**: Rejected/ambiguous frames return appropriate `status` with `debug.rejection_reason` (no fake geometry)
+- [x] **CONT-01**: Public `detect_block(frame)` returns validated `DetectionResult` matching `detection_contract.py` — Phase 1 *(2026-05-31)*
+- [x] **CONT-02**: Successful detection populates `block_id`, `confidence`, `center_px`, `corners_px` (TL, TR, BR, BL), `angle_deg` — validated via contract samples + `validate_detection_result()` *(Task 1, 2026-05-31)*
+- [x] **CONT-03**: Rejected/ambiguous frames return appropriate `status` with `debug.rejection_reason` (no fake geometry) — `SAMPLE_LOW_CONFIDENCE`, `SAMPLE_NO_DETECTION`, mismatch guard *(Task 1, 2026-05-31)*
 
 ### Camera & Capture
 
@@ -80,9 +80,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CONT-01 | Phase 1 | Pending |
-| CONT-02 | Phase 1 | Pending |
-| CONT-03 | Phase 1 | Pending |
+| CONT-01 | Phase 1 | Complete |
+| CONT-02 | Phase 1 | Complete |
+| CONT-03 | Phase 1 | Complete |
 | CAM-01 | Phase 2 | Pending |
 | CAM-02 | Phase 2 | Pending |
 | CAM-03 | Phase 2 | Pending |
@@ -113,4 +113,4 @@
 
 ---
 *Requirements defined: 2026-05-31*
-*Last updated: 2026-05-31 after roadmap traceability confirmed*
+*Last updated: 2026-05-31 after Task 1 (CONT-02, CONT-03 complete)*

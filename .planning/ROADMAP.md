@@ -10,7 +10,7 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
 - Integer phases (1–8): Planned milestone work
 - Decimal phases (e.g., 2.1): Urgent insertions via `/gsd-insert-phase`
 
-- [ ] **Phase 1: Contract & Pipeline Skeleton** - Public `detect_block` API wired to existing `DetectionResult` contract *(Task 1: `detection_contract.py` done — see `.planning/notes/task-01-contract.md`)*
+- [x] **Phase 1: Contract & Pipeline Skeleton** - Public `detect_block` API wired to existing `DetectionResult` contract
 - [ ] **Phase 2: Camera & Capture** - Stable 640×480 acquisition with debug frame saving
 - [ ] **Phase 3: Preprocess & Contour Detection** - Grayscale/threshold/morphology chain and square-face candidate finding
 - [ ] **Phase 4: Corner Ordering, Warp & Geometry** - TL/TR/BR/BL ordering, perspective warp, center and angle
@@ -32,13 +32,11 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Wave 0: unittest scaffold (contract regression + detect_block tests)
-- [ ] 01-02-PLAN.md — Wave 1: `pyproject.toml` + `src/block_detected/` package + `detect_block` stub
-- [ ] 01-03-PLAN.md — Wave 2: `MULTIPLE_CANDIDATES` no-geometry contract fix + full validation
+- [x] 01-01-PLAN.md — Wave 0: unittest scaffold
+- [x] 01-02-PLAN.md — Wave 1: package + `detect_block` stub
+- [x] 01-03-PLAN.md — Wave 2: `MULTIPLE_CANDIDATES` fix + full validation
 
-**Progress (2026-05-31):**
-- [x] Output contract module + validation + sample JSON (`detection_contract.py`, smoke test `python -B`)
-- [ ] `detect_block(frame)` entry point (stub acceptable)
+**Progress (2026-05-31):** Phase 1 complete — `detect_block`, package layout, 10 unittest tests green.
 
 ### Phase 2: Camera & Capture
 **Goal**: Pipeline receives stable 640×480 frames from Pi Camera or USB with reproducible capture settings
