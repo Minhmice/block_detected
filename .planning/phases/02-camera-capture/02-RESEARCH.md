@@ -335,22 +335,13 @@ def list_v4l2_controls(device: str = "/dev/video0") -> str:
 | A5 | Common USB camera control names will be discoverable through V4L2 on the target device. | Don't Hand-Roll | Some webcams may not expose manual exposure/WB; CAM-02 must then report unsupported controls honestly. |
 | A6 | Debug retention should be configurable but is not yet specified by project requirements. | Common Pitfalls | Long field runs may produce too much data if retention is omitted. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Which exact target hardware will run CAM-02?** [ASSUMED]
-   - What we know: The project supports Pi Camera CSI and USB camera paths. [VERIFIED: .planning/ROADMAP.md]
-   - What's unclear: Camera model, Raspberry Pi model, OS image, and USB camera V4L2 control support are not recorded. [VERIFIED: local project scan]
-   - Recommendation: Planner should include a target-hardware smoke task that records `rpicam-hello --list-cameras` or `v4l2-ctl --list-ctrls-menus` output. [ASSUMED]
+1. **Which exact target hardware will run CAM-02?** — **RESOLVED:** Document target in Plan 02-02 manual smoke (`scripts/capture_smoke.py` or README snippet): record `rpicam-hello --list-cameras` (CSI) and `v4l2-ctl --list-ctrls-menus` (USB) on deployment Pi. Dev host uses `image_sequence` only.
 
-2. **What does "raw frame" mean for CAM-03?** [VERIFIED: .planning/REQUIREMENTS.md]
-   - What we know: CAM-03 requires raw frames and optional overlays in a debug directory. [VERIFIED: .planning/REQUIREMENTS.md]
-   - What's unclear: The requirement does not specify raw sensor Bayer data versus unmodified captured BGR frames. [VERIFIED: .planning/REQUIREMENTS.md]
-   - Recommendation: Treat "raw frame" as the unmodified normalized 640x480 pipeline input image, not sensor RAW, unless the user changes the requirement. [ASSUMED]
+2. **What does "raw frame" mean for CAM-03?** — **RESOLVED:** "Raw" = unmodified normalized **640×480 BGR** pipeline input (`CaptureFrame.image_bgr`), not sensor Bayer RAW. Saved as `{frame_id}_raw.png` via `cv2.imwrite`.
 
-3. **Should frame ids persist across process restarts?** [VERIFIED: .planning/REQUIREMENTS.md]
-   - What we know: CAM-03 requires monotonic frame identifiers. [VERIFIED: .planning/REQUIREMENTS.md]
-   - What's unclear: The requirement does not define process-local versus persistent monotonicity. [VERIFIED: .planning/REQUIREMENTS.md]
-   - Recommendation: Use `run_id/frame_000001` directories for collision resistance and process-local monotonicity. [ASSUMED]
+3. **Should frame ids persist across process restarts?** — **RESOLVED:** Process-local monotonic `frame_000001`… within a run; optional `run_id` subdirectory (`debug_frames/{run_id}/`) for collision resistance across restarts (Plan 02-03).
 
 ## Environment Availability
 
