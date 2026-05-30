@@ -33,7 +33,15 @@ from .camera import (
     load_camera_settings,
 )
 from .debug import DebugFrameWriter, DebugSettings
+from .detector import DetectorSettings, SquareCandidate, find_square_candidates
 from .pipeline import detect_block
+from .preprocess import PreprocessResult, PreprocessSettings, preprocess_bgr
+from .vision import (
+    FrameCandidates,
+    VisionSettings,
+    draw_candidate_overlay,
+    find_square_candidates_from_frame,
+)
 
 __version__ = "0.1.0"
 
@@ -57,17 +65,27 @@ __all__ = [
     "CaptureFrame",
     "DebugFrameWriter",
     "DebugSettings",
+    "DetectorSettings",
+    "FrameCandidates",
     "FrameSource",
     "ImageSequenceFrameSource",
     "PiCamera2FrameSource",
     "UsbVideoCaptureFrameSource",
     "__version__",
+    "SquareCandidate",
     "create_frame_source",
     "detect_block",
+    "draw_candidate_overlay",
+    "find_square_candidates",
+    "find_square_candidates_from_frame",
     "load_camera_settings",
+    "preprocess_bgr",
+    "PreprocessResult",
+    "PreprocessSettings",
     "make_multiple_candidates_result",
     "make_no_detection_result",
     "result_to_dict",
     "result_to_json",
     "validate_detection_result",
+    "VisionSettings",
 ]
