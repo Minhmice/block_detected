@@ -8,6 +8,17 @@ version = "0.1.0"
 description = "Non-ArUco cube block detection for robot pick-and-place"
 readme = "README.md"
 requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9",
+    "opencv-python>=4.11,<4.14",
+    "numpy>=2,<3",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
