@@ -36,7 +36,8 @@ Per-phase validation contract for feedback sampling during execution.
 | 03-01-02 | 01 | 0 | GEO-01 | T-03-02 | adaptive and canny modes both return a single-channel `uint8` mask with BGR source unchanged | unit | `python -m pytest tests/test_preprocess.py -q` | no, W0 | pending |
 | 03-02-01 | 02 | 1 | GEO-02 | T-03-03 | contour detector returns only convex 4-vertex candidates within configured area and aspect bounds | unit | `python -m pytest tests/test_detector.py::test_square_candidate_filters_area_aspect_and_convexity -q` | no, W0 | pending |
 | 03-02-02 | 02 | 1 | GEO-02 | T-03-04 | empty masks and noise-only masks return `[]` candidates instead of fabricated geometry | unit | `python -m pytest tests/test_detector.py::test_empty_mask_returns_no_candidates -q` | no, W0 | pending |
-| 03-03-01 | 03 | 2 | GEO-01, GEO-02 | T-03-05 | frame-level helper preserves `CaptureFrame.frame_id` and finds at least one candidate on a visible square fixture | integration | `python -m pytest tests/test_preprocess.py tests/test_detector.py -q` | no, W0 | pending |
+| 03-03-01 | 03 | 2 | GEO-01, GEO-02 | T-03-05 | frame-level helper preserves `CaptureFrame.frame_id` and finds at least one candidate on a visible square fixture | integration | `python -m pytest tests/test_vision.py::test_frame_helper_preserves_frame_id_and_finds_candidate -q` | no, W0 | pending |
+| 03-03-02 | 03 | 2 | GEO-02 | T-03-05 | debug overlay draws candidates on a BGR copy without mutating source frame | unit | `python -m pytest tests/test_vision.py::test_overlay_does_not_mutate_source -q` | no, W0 | pending |
 
 ## Wave 0 Requirements
 

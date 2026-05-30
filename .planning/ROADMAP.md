@@ -61,7 +61,12 @@ Plans:
   1. Preprocess chain converts BGR input through grayscale, blur, adaptive threshold or Canny, and morphology open/close
   2. Contour pass identifies 4-vertex convex quads within configured area min/max and ~1:1 aspect ratio bounds
   3. On reference images with a visible block face, at least one valid square candidate is found
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Wave 0: `preprocess.py`, GEO-01 masks, `vision.example.json`, `test_preprocess.py`
+- [ ] 03-02-PLAN.md — Wave 1: `detector.py`, GEO-02 square candidates, `test_detector.py`
+- [ ] 03-03-PLAN.md — Wave 2: `vision.py` frame helper + overlay, `square_face.png` fixture, integration tests
 
 ### Phase 4: Corner Ordering, Warp & Geometry
 **Goal**: Each candidate yields consistently ordered corners, a canonical face warp, and pixel pose geometry
