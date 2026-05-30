@@ -1,58 +1,62 @@
-# Phase 04: Corner Ordering, Warp & Geometry - Research
+# Phase 4: Corner Ordering, Warp & Geometry - Research
 
-**Researched:** 2026-05-31 [VERIFIED: local environment context]  
-**Domain:** OpenCV quadrilateral corner ordering, perspective warp, and pixel geometry for square block faces [VERIFIED: .planning/ROADMAP.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]  
-**Confidence:** HIGH for OpenCV warp APIs and local Phase 3 interface; MEDIUM for crop-size/model-readiness details because Phase 5 classifier input metadata does not exist yet [VERIFIED: src/block_detected/detector.py; VERIFIED: .planning/ROADMAP.md]
+**Researched:** 2026-05-31 [VERIFIED: user environment context]
+**Domain:** OpenCV quadrilateral geometry, deterministic corner ordering, perspective warping, and pixel pose fields [VERIFIED: .planning/ROADMAP.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+**Confidence:** MEDIUM - OpenCV/NumPy APIs are high confidence; the classifier crop-orientation contract is medium confidence because Phase 5 is not specified yet [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; VERIFIED: .planning/ROADMAP.md]
 
 ## User Constraints
 
-No Phase 4 `CONTEXT.md` exists, so there are no additional locked decisions, discretion notes, or deferred ideas from `/gsd-discuss-phase`. [VERIFIED: `gsd-tools.cjs init phase-op 04` returned `has_context=false`]
+No Phase 4 `CONTEXT.md` exists, so there are no additional locked decisions, discretion notes, or deferred ideas from `/gsd-discuss-phase`. [VERIFIED: `gsd-tools.cjs init phase-op 4` returned `has_context=false`]
 
 ### Locked Decisions
 
-- Phase 4 goal is that each candidate yields consistently ordered corners, a canonical face warp, and pixel pose geometry. [VERIFIED: .planning/ROADMAP.md]
+- Phase 4 goal is: each candidate yields consistently ordered corners, a canonical face warp, and pixel pose geometry. [VERIFIED: .planning/ROADMAP.md]
 - Phase 4 depends on Phase 3. [VERIFIED: .planning/ROADMAP.md]
 - Phase 4 must address GEO-03, GEO-04, and GEO-05. [VERIFIED: .planning/ROADMAP.md; VERIFIED: .planning/REQUIREMENTS.md]
-- Corners must be output in top-left, top-right, bottom-right, bottom-left order. [VERIFIED: .planning/REQUIREMENTS.md]
-- `warpPerspective` must produce a canonical 128x128 or 160x160 face crop suitable for classification. [VERIFIED: .planning/REQUIREMENTS.md]
-- `center_px` must equal the mean of ordered corners, and `angle_deg` must match the top-edge orientation from `TR - TL`. [VERIFIED: .planning/REQUIREMENTS.md]
+- Phase 4 consumes unordered square candidates from Phase 3 and produces ordered geometry plus warped face crops. [VERIFIED: user prompt; VERIFIED: .planning/phases/03-preprocess-contour-detection/03-RESEARCH.md]
+- Corners must be output in top-left, top-right, bottom-right, bottom-left order regardless of block rotation in the frame. [VERIFIED: .planning/ROADMAP.md]
+- The warp must be canonical 128x128 or 160x160 and suitable for classification. [VERIFIED: .planning/REQUIREMENTS.md]
+- `center_px` equals the mean of ordered corners, and `angle_deg` is derived from the top-edge vector `TR - TL`. [VERIFIED: .planning/ROADMAP.md]
 - v1 forbids ArUco and AprilTag markers on blocks. [VERIFIED: .planning/REQUIREMENTS.md; VERIFIED: CLAUDE.md]
-- Phase 5 classification and Phase 6 robot calibration are out of scope except for interface readiness. [VERIFIED: user prompt; VERIFIED: .planning/ROADMAP.md]
 
 ### Claude's Discretion
 
-- No Phase 4 discretion section exists; module names, dataclass names, validation tolerance defaults, and test fixture design are planner choices constrained by the implemented Phase 3 handoff and existing contract types. [VERIFIED: `gsd-tools.cjs init phase-op 04`; VERIFIED: src/block_detected/detector.py; VERIFIED: src/block_detected/detection_contract.py]
+- No Phase 4 discretion section exists; module naming, dataclass naming, geometry validation thresholds, and deterministic tie-breaks are planner choices constrained by existing project code and OpenCV APIs. [VERIFIED: `gsd-tools.cjs init phase-op 4`; VERIFIED: src/block_detected/detector.py; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+- Use 128x128 as the default canonical warp because CLAUDE.md says later classification should operate on a 128x128 warp. [VERIFIED: CLAUDE.md]
 
 ### Deferred Ideas (OUT OF SCOPE)
 
-- CNN/TFLite classification, confidence thresholds, and training pipeline are Phase 5. [VERIFIED: .planning/ROADMAP.md; VERIFIED: .planning/REQUIREMENTS.md]
-- Pixel-to-mm homography and robot pickup pose are Phase 6. [VERIFIED: .planning/ROADMAP.md; VERIFIED: .planning/REQUIREMENTS.md]
-- Full reject-policy mapping to `invalid_geometry`, `multiple_candidates`, and end-to-end `detect_block` integration is Phase 7, though Phase 4 should expose geometry validation signals for that later mapping. [VERIFIED: .planning/ROADMAP.md; VERIFIED: .planning/REQUIREMENTS.md]
+- CNN/TFLite classification is Phase 5. [VERIFIED: .planning/ROADMAP.md]
+- Calibration and pixel-to-robot pickup pose are Phase 6. [VERIFIED: .planning/ROADMAP.md]
+- Full reject integration and mapping geometry failures to `DetectionStatus.INVALID_GEOMETRY` are Phase 7, although Phase 4 should expose enough validation metadata for that later mapping. [VERIFIED: .planning/ROADMAP.md; VERIFIED: .planning/REQUIREMENTS.md]
+- Multi-block scene graphs and temporal filtering are v2 runtime requirements, not Phase 4 work. [VERIFIED: .planning/REQUIREMENTS.md]
 
 <phase_requirements>
+
 ## Phase Requirements
 
 | ID | Description | Research Support |
 |----|-------------|------------------|
-| GEO-03 | Order corners consistently as top-left, top-right, bottom-right, bottom-left. [VERIFIED: .planning/REQUIREMENTS.md] | Implement a local `order_corners_xy()` that accepts Phase 3 `SquareCandidate.approx_xy`, validates four finite unique points, uses the robust x-sort/y-sort/distance pattern, and tests every input permutation. [VERIFIED: src/block_detected/detector.py; CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] |
-| GEO-04 | Warp face to canonical 128x128 or 160x160 for classification. [VERIFIED: .planning/REQUIREMENTS.md] | Use OpenCV `cv2.getPerspectiveTransform` from four ordered source points to fixed destination points, then `cv2.warpPerspective` with `dsize=(crop_size_px, crop_size_px)`. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
-| GEO-05 | Compute `center_px` as mean of corners and `angle_deg` from top edge using `atan2(TR - TL)`. [VERIFIED: .planning/REQUIREMENTS.md] | Use `np.mean(ordered, axis=0, dtype=np.float64)` for center and `math.degrees(math.atan2(tr_y - tl_y, tr_x - tl_x))` for image-space angle. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://docs.python.org/3/library/math.html] |
+| GEO-03 | Order corners consistently: top-left, top-right, bottom-right, bottom-left. [VERIFIED: .planning/REQUIREMENTS.md] | Use a pure-NumPy deterministic ordering helper that validates a `(4, 2)` finite point array, sorts vertices around the centroid, then rotates the cyclic order to the image-space top edge. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html; CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] |
+| GEO-04 | `warpPerspective` face to canonical 128x128 or 160x160 for classification. [VERIFIED: .planning/REQUIREMENTS.md] | Use `cv2.getPerspectiveTransform` with four ordered source points and fixed destination points, then `cv2.warpPerspective(frame_bgr, M, (128, 128), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; VERIFIED: CLAUDE.md] |
+| GEO-05 | Compute `center_px` as mean of corners and `angle_deg` from top edge. [VERIFIED: .planning/REQUIREMENTS.md] | Use `np.mean(ordered, axis=0, dtype=np.float64)` for center and `np.degrees(np.arctan2(tr_y - tl_y, tr_x - tl_x))` for angle. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] |
+
 </phase_requirements>
 
 ## Summary
 
-Phase 4 should add a pure geometry stage between Phase 3 contour candidates and later classifier/pose stages. [VERIFIED: .planning/ROADMAP.md] The local Phase 3 implementation already emits `SquareCandidate.approx_xy` as an unordered `(4, 2)` `float64` array plus area, aspect, bbox, and score, so Phase 4 should consume that object directly and must not assume the OpenCV contour vertex order is meaningful. [VERIFIED: src/block_detected/detector.py]
+Phase 4 should add a small deterministic `src/block_detected/geometry.py` layer that consumes Phase 3 `SquareCandidate.approx_xy` points and the original 640x480 BGR frame, then returns `FaceGeometry` containing ordered corners, `CornersPx`, `center_px`, `angle_deg`, `face_area_px`, `bbox_xywh`, a 128x128 BGR face crop, and the 3x3 perspective matrix. [VERIFIED: src/block_detected/detector.py; VERIFIED: src/block_detected/detection_contract.py; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
 
-The stable architecture is `SquareCandidate -> ordered corners -> perspective matrix -> fixed-size BGR warp -> center/angle metadata`. [VERIFIED: .planning/research/ARCHITECTURE.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] Use OpenCV for the perspective matrix and resampling, NumPy for finite checks and means, and Python `math.atan2` for the contract-defined angle. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://docs.python.org/3/library/math.html]
+The core implementation should use NumPy for point ordering and scalar geometry, and OpenCV for homography and image warping. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] Do not use `cv2.minAreaRect(...)[2]` as `angle_deg`, because OpenCV documents that `minAreaRect` angles are constrained to `[-90, 0)` and the measured edge changes as the rectangle rotates. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] Do not use the old sum/difference corner-ordering method as the only ordering rule, because duplicate sums or differences can produce incorrect point assignment. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
 
-**Primary recommendation:** Create `src/block_detected/geometry.py` with `GeometrySettings`, `FaceGeometry`, `order_corners_xy()`, `compute_center_angle()`, `warp_face_bgr()`, and `geometry_from_candidate()`, defaulting `crop_size_px=128` and exporting the new types from `src/block_detected/__init__.py`. [VERIFIED: CLAUDE.md; VERIFIED: src/block_detected/__init__.py; VERIFIED: .planning/ROADMAP.md]
+**Primary recommendation:** Use fixed 128x128 BGR warps, center by float64 mean, angle from the ordered top edge, and a robust in-repo corner-ordering helper with rotation/permutation tests before any integration into `detect_block`. [VERIFIED: CLAUDE.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
 
 ## Project Constraints (from CLAUDE.md)
 
-- The project is a Raspberry Pi / edge vision pipeline for four cube blocks without ArUco markers. [VERIFIED: CLAUDE.md]
-- The core value is reliable block ID plus correctly ordered corners and angle for robot pickup, not just a bounding box. [VERIFIED: CLAUDE.md]
+- The project is a Raspberry Pi / edge vision pipeline that detects four cube blocks without ArUco markers. [VERIFIED: CLAUDE.md]
+- The core value is reliable block ID plus correctly ordered corners and angle for robot pickup, not only a bounding box. [VERIFIED: CLAUDE.md]
 - The technical stack is Python 3, OpenCV, TensorFlow Lite INT8, and Pi-compatible runtime. [VERIFIED: CLAUDE.md]
-- Resolution is locked to 640x480 where possible. [VERIFIED: CLAUDE.md]
+- Resolution is 640x480 locked where possible. [VERIFIED: CLAUDE.md]
 - Latency must suit a robot pick cycle, and later classification should operate on a 128x128 warp rather than a full-frame heavy model. [VERIFIED: CLAUDE.md]
 - Output must conform to the existing `DetectionResult` contract in `detection_contract.py`. [VERIFIED: CLAUDE.md; VERIFIED: src/block_detected/detection_contract.py]
 - GSD workflow enforcement says file-changing work should happen through GSD entry points unless explicitly bypassed. [VERIFIED: CLAUDE.md]
@@ -64,29 +68,31 @@ The stable architecture is `SquareCandidate -> ordered corners -> perspective ma
 
 | Library | Version | Purpose | Why Standard |
 |---------|---------|---------|--------------|
-| Python | Target Pi: 3.11.x; local host: 3.14.4. [VERIFIED: .planning/research/STACK.md; VERIFIED: local `python3 --version`] | Runtime for geometry helpers and tests. [VERIFIED: CLAUDE.md] | Existing package requires Python `>=3.11`. [VERIFIED: pyproject.toml] |
-| OpenCV Python (`opencv-python`) | Project dev range `>=4.11,<4.14`; PyPI current `4.13.0.92`, published 2026-02-05. [VERIFIED: pyproject.toml; VERIFIED: local PyPI JSON query] | Perspective matrix, perspective warp, polygon area, bbox, and optional debug drawing. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] | OpenCV provides `getPerspectiveTransform` and `warpPerspective`, the exact operations required by GEO-04. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
-| NumPy | Project dev range `>=2,<3`; PyPI current `2.4.6`, published 2026-05-18. [VERIFIED: pyproject.toml; VERIFIED: local PyPI JSON query] | Point-array validation, ordering math, finite checks, means, distances, and test assertions. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.isfinite.html] | Phase 3 candidates already use NumPy arrays for `approx_xy`. [VERIFIED: src/block_detected/detector.py] |
-| Python `math` stdlib | Python 3.11+ target. [VERIFIED: pyproject.toml; VERIFIED: .planning/research/STACK.md] | `atan2` and degree conversion for `angle_deg`. [CITED: https://docs.python.org/3/library/math.html] | GEO-05 defines angle from `TR - TL`, and `atan2` preserves quadrant information. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.python.org/3/library/math.html] |
-| pytest | Project dev range `>=9`; PyPI current `9.0.3`, published 2026-04-07. [VERIFIED: pyproject.toml; VERIFIED: local PyPI JSON query] | Permutation, warp-orientation, and center/angle tests. [VERIFIED: .planning/config.json `nyquist_validation=true`] | Existing Phase 2 and Phase 3 tests use pytest. [VERIFIED: tests/test_camera_source.py; VERIFIED: tests/test_preprocess.py; VERIFIED: tests/test_detector.py] |
+| Python | Project requires `>=3.11`; local host is 3.14.4; target Pi stack is 3.11.x. [VERIFIED: pyproject.toml; VERIFIED: local `python3 --version`; VERIFIED: .planning/research/STACK.md] | Runtime for geometry dataclasses, tests, and integration. [VERIFIED: CLAUDE.md] | Existing package and prior phases are Python modules. [VERIFIED: src/block_detected/detection_contract.py; VERIFIED: src/block_detected/camera.py] |
+| OpenCV Python (`opencv-python`) | Latest PyPI: 4.13.0.92, first upload 2026-02-05; project dev extra allows `>=4.11,<4.14`. [VERIFIED: `python3 -m pip index versions opencv-python`; VERIFIED: PyPI JSON probe; VERIFIED: pyproject.toml] | `getPerspectiveTransform`, `warpPerspective`, `contourArea`, and optional debug drawing. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] | OpenCV provides the homography and warp APIs required by GEO-04. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
+| NumPy | Latest PyPI: 2.4.6, first upload 2026-05-18; project dev extra allows `>=2,<3`. [VERIFIED: `python3 -m pip index versions numpy`; VERIFIED: PyPI JSON probe; VERIFIED: pyproject.toml] | Point arrays, centroid/mean, angle math, synthetic fixtures, and array assertions. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] | Phase 3 `SquareCandidate.approx_xy` is already a NumPy array in the current worktree. [VERIFIED: src/block_detected/detector.py] |
+| pytest | Latest PyPI: 9.0.3, first upload 2026-04-07; project dev extra requires `>=9`. [VERIFIED: `python3 -m pip index versions pytest`; VERIFIED: PyPI JSON probe; VERIFIED: pyproject.toml] | Parametrized permutation/rotation tests and crop-shape tests. [CITED: https://docs.pytest.org/en/stable/how-to/parametrize.html] | Existing Phase 2/3 tests use pytest-style assertions and fixtures. [VERIFIED: tests/test_camera_source.py; VERIFIED: tests/test_detector.py] |
+| Existing contract dataclasses | In-repo `PointPx`, `CornersPx`, `BoundingBoxPx`. [VERIFIED: src/block_detected/detection_contract.py] | Convert geometry output into contract-ready pixel objects. [VERIFIED: src/block_detected/detection_contract.py] | The public `DetectionResult` contract already validates geometry fields. [VERIFIED: src/block_detected/detection_contract.py] |
 
 ### Supporting
 
 | Library / API | Version | Purpose | When to Use |
 |---------------|---------|---------|-------------|
-| `SquareCandidate` | Local Phase 3 dataclass. [VERIFIED: src/block_detected/detector.py] | Input boundary for geometry. [VERIFIED: .planning/phases/03-preprocess-contour-detection/03-03-SUMMARY.md] | Use `candidate.approx_xy` for source corners and retain `candidate.area_px`, `bbox_xywh`, and `score` for downstream diagnostics. [VERIFIED: src/block_detected/detector.py] |
-| `CaptureFrame` / `FrameCandidates` | Local Phase 2/3 dataclasses. [VERIFIED: src/block_detected/camera.py; VERIFIED: src/block_detected/vision.py] | Frame-level integration boundary. [VERIFIED: .planning/phases/03-preprocess-contour-detection/03-03-SUMMARY.md] | Use for helper integration only; keep core geometry functions pure on arrays/candidates. [ASSUMED] |
-| `DetectionResult` corner types | Local contract dataclasses. [VERIFIED: src/block_detected/detection_contract.py] | Later contract mapping for `CornersPx`, `PointPx`, `BoundingBoxPx`, and valid status semantics. [VERIFIED: src/block_detected/detection_contract.py] | Provide conversion helpers or examples, but do not force Phase 4 to classify or return `OK` detections. [VERIFIED: .planning/ROADMAP.md] |
+| `cv2.getPerspectiveTransform` | OpenCV 4.x API. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | Calculate a 3x3 perspective matrix from four source/destination point pairs. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | Use for every accepted square candidate after ordering corners. [VERIFIED: GEO-04 in .planning/REQUIREMENTS.md] |
+| `cv2.warpPerspective` | OpenCV 4.x API. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | Produce the canonical face crop from the 3x3 matrix and output `dsize`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | Use with `(128, 128)` default `dsize` for classifier input. [VERIFIED: CLAUDE.md] |
+| `np.mean` | NumPy 2.4 API docs. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html] | Compute `center_px` from the four ordered points. [VERIFIED: GEO-05 in .planning/REQUIREMENTS.md] | Use `dtype=np.float64` to avoid avoidable float32 accumulation drift. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html] |
+| `np.arctan2` + `np.degrees` | NumPy 2.4 API docs. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] | Compute `angle_deg` from the top-edge vector while preserving quadrant. [VERIFIED: GEO-05 in .planning/REQUIREMENTS.md] | Use on `TR - TL`; return a signed image-space angle in degrees. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] |
+| `cv2.contourArea` | OpenCV 4.x API. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] | Recompute or validate `face_area_px` from ordered points if Phase 3 area is absent. [VERIFIED: src/block_detected/detector.py] | Prefer carrying Phase 3 `SquareCandidate.area_px`, with recomputation only as a consistency check. [VERIFIED: src/block_detected/detector.py; ASSUMED] |
+| `cv2.boxPoints` | OpenCV 4.x API. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] | Inspect rotated-rectangle vertices only when deriving debug overlays from `minAreaRect`. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] | Do not use it as the primary Phase 4 input because Phase 3 already exposes `SquareCandidate.approx_xy`. [VERIFIED: src/block_detected/detector.py] |
 
 ### Alternatives Considered
 
 | Instead of | Could Use | Tradeoff |
 |------------|-----------|----------|
-| Local `order_corners_xy()` with NumPy. [ASSUMED] | `imutils.perspective.order_points`. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] | `imutils` adds a runtime dependency for a small function; stack research already recommends inline NumPy for this one operation. [VERIFIED: .planning/research/STACK.md] |
-| Robust x-sort/y-sort/distance ordering. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] | Sum/difference ordering. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] | Sum/difference ordering can choose wrong points when sums or differences tie; tests must cover tie-prone rotated boxes. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] |
-| `cv2.getPerspectiveTransform` for four point pairs. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | `cv2.findHomography`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | `getPerspectiveTransform` is the direct API for exactly four corresponding quadrangle vertices; `findHomography` is unnecessary unless later matching code has more points or outliers. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; ASSUMED] |
-| `cv2.warpPerspective`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | Crop axis-aligned bbox and resize. [ASSUMED] | Bbox resize does not remove perspective skew and does not preserve the ordered-corner contract for rotated faces. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html] |
-| Explicit `atan2(TR.y - TL.y, TR.x - TL.x)`. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.python.org/3/library/math.html] | `cv2.minAreaRect(...).angle`. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] | Requirement defines angle from the ordered top edge, so `minAreaRect` angle would introduce a second convention the contract does not ask for. [VERIFIED: .planning/REQUIREMENTS.md] |
+| In-repo NumPy ordering helper. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] | `imutils.perspective.order_points`; latest PyPI is 0.5.4. [VERIFIED: `python3 -m pip index versions imutils`] | `imutils` is an extra dependency for one small function; use an in-repo helper with project-specific tie-break tests. [ASSUMED] |
+| `cv2.getPerspectiveTransform`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | `cv2.findHomography`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | `findHomography` is useful for many point correspondences or robust estimation; Phase 4 has exactly four ordered corners, so `getPerspectiveTransform` is the direct API. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; VERIFIED: GEO-04 in .planning/REQUIREMENTS.md] |
+| Top-edge `atan2(TR - TL)`. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] | `cv2.minAreaRect(...)[2]`. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] | `minAreaRect` angle switches edges and is constrained to `[-90, 0)`, so it does not match GEO-05's explicit top-edge definition. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html; VERIFIED: GEO-05 in .planning/REQUIREMENTS.md] |
+| Fixed 128x128 warp. [VERIFIED: CLAUDE.md] | Dynamic `maxWidth`/`maxHeight` from side lengths. [CITED: https://pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/] | Dynamic sizes are useful for document scanning; Phase 5 needs a stable classifier tensor shape, so Phase 4 should output fixed-size crops. [VERIFIED: CLAUDE.md; VERIFIED: .planning/ROADMAP.md] |
 
 **Installation:**
 
@@ -96,7 +102,7 @@ python3 -m venv .venv
 python -m pip install -e ".[dev]"
 ```
 
-**Version verification:** `python3 -m pip index versions opencv-python`, `python3 -m pip index versions numpy`, and `python3 -m pip index versions pytest` returned `opencv-python 4.13.0.92`, `numpy 2.4.6`, and `pytest 9.0.3` on 2026-05-31. [VERIFIED: local pip index queries] PyPI JSON queries returned publish timestamps for the same current releases. [VERIFIED: local PyPI JSON query]
+**Version verification:** PyPI and local probes on 2026-05-31 returned `opencv-python 4.13.0.92` uploaded 2026-02-05, `numpy 2.4.6` uploaded 2026-05-18, and `pytest 9.0.3` uploaded 2026-04-07. [VERIFIED: `python3 -m pip index versions ...`; VERIFIED: PyPI JSON probe] The local Python 3.14.4 environment currently cannot import `cv2`, `numpy`, or `pytest`. [VERIFIED: local import probes]
 
 ## Architecture Patterns
 
@@ -104,328 +110,376 @@ python -m pip install -e ".[dev]"
 
 ```text
 src/block_detected/
-  geometry.py          # GeometrySettings, FaceGeometry, ordering, warp, center/angle helpers. [ASSUMED]
-  vision.py            # Optional frame-level helper can call geometry_from_candidate later. [VERIFIED: src/block_detected/vision.py]
-  detection_contract.py# Existing contract types for later result mapping. [VERIFIED: src/block_detected/detection_contract.py]
+  geometry.py        # GeometrySettings, FaceGeometry, order_corners_tl_tr_br_bl(), warp_candidate_face().
+  detector.py        # Phase 3 SquareCandidate source object already present in current worktree.
+  vision.py          # Later integration can compose candidates -> geometry -> classifier.
 tests/
-  test_geometry.py     # Permutations, rotated squares, perspective warp orientation, center/angle. [ASSUMED]
-  fixtures/vision/     # Existing synthetic square fixture; add color-coded warp fixture if useful. [VERIFIED: tests/fixtures/vision/square_face.png]
+  test_geometry.py   # permutation, rotation, center, angle, warp-shape, and crop-orientation tests.
 ```
 
-### Pattern 1: Geometry Stage Owns Only Geometry
+This structure matches the existing package layout and keeps Phase 4 geometry separate from Phase 5 classification and Phase 7 final reject mapping. [VERIFIED: src/block_detected/detector.py; VERIFIED: src/block_detected/vision.py; VERIFIED: .planning/ROADMAP.md]
 
-**What:** Convert one Phase 3 `SquareCandidate` plus source `frame_bgr` into a `FaceGeometry` record containing ordered corners, a fixed-size warp, center, angle, bbox, area, and candidate score. [VERIFIED: src/block_detected/detector.py; VERIFIED: .planning/ROADMAP.md]
+### Pattern 1: Geometry Output Object Between Candidate and DetectionResult
 
-**When to use:** Use this for every accepted `SquareCandidate` before Phase 5 classification and Phase 6 calibration. [VERIFIED: .planning/ROADMAP.md]
+**What:** Create a `FaceGeometry` dataclass that carries ordered corner arrays, contract-ready `CornersPx`, center, angle, bbox, area, warp image, and perspective matrix. [VERIFIED: src/block_detected/detection_contract.py; ASSUMED]
+
+**When to use:** Use for each Phase 3 `SquareCandidate` before classification so Phase 5 receives a canonical crop and Phase 7 can later build `DetectionResult` statuses. [VERIFIED: src/block_detected/detector.py; VERIFIED: .planning/ROADMAP.md]
 
 **Example:**
 
 ```python
-# Source basis: Phase 3 exposes SquareCandidate.approx_xy; Phase 4 owns ordering/warp/center/angle. [VERIFIED: src/block_detected/detector.py; VERIFIED: .planning/ROADMAP.md]
+# Source basis: Phase 3 SquareCandidate plus existing detection contract dataclasses.
+# [VERIFIED: src/block_detected/detector.py; VERIFIED: src/block_detected/detection_contract.py]
+from dataclasses import dataclass
+import numpy as np
+
+from .detection_contract import BoundingBoxPx, CornersPx, PointPx
+
+
+@dataclass(frozen=True)
+class GeometrySettings:
+    warp_size_px: int = 128
+    min_side_px: float = 10.0
+
+
 @dataclass(frozen=True)
 class FaceGeometry:
-    ordered_corners_xy: np.ndarray  # shape (4, 2), TL, TR, BR, BL
-    warp_bgr: np.ndarray            # shape (crop_size_px, crop_size_px, 3)
-    center_xy: tuple[float, float]
+    ordered_xy: np.ndarray
+    corners_px: CornersPx
+    center_px: PointPx
     angle_deg: float
-    bbox_xywh: tuple[int, int, int, int]
-    area_px: float
-    source_candidate_score: float
+    bbox_px: BoundingBoxPx
+    face_area_px: float
+    warp_bgr: np.ndarray
+    perspective_matrix: np.ndarray
 ```
 
-### Pattern 2: Robust Corner Ordering With Validation
+### Pattern 2: Sort Around Centroid, Then Rotate to Top Edge
 
-**What:** Use a local function that validates shape `(4, 2)`, converts to `float64`, checks `np.isfinite`, rejects duplicate points, lexicographically sorts by x/y, sorts the two leftmost by y, and assigns the right-side pair by squared distance from TL. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.isfinite.html; CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
+**What:** Convert unordered vertices to a cyclic polygon by sorting by `atan2(y - cy, x - cx)`, then rotate the cyclic order so the first edge is the topmost image-space edge with a deterministic leftmost tie-break. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html; ASSUMED]
 
-**When to use:** Use before every perspective transform and before every center/angle calculation. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+**When to use:** Use for every Phase 3 `SquareCandidate.approx_xy`, because OpenCV contour approximation does not guarantee TL/TR/BR/BL order for this project contract. [VERIFIED: src/block_detected/detector.py; VERIFIED: .planning/REQUIREMENTS.md]
 
 **Example:**
 
 ```python
-# Source basis: robust TL/TR/BR/BL ordering avoids sum/diff ties documented by PyImageSearch. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
-def order_corners_xy(points: np.ndarray) -> np.ndarray:
-    pts = np.asarray(points, dtype=np.float64)
+# Source basis: NumPy mean and arctan2 APIs; PyImageSearch documents duplicate
+# failures in the older sum/difference ordering shortcut.
+# [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html]
+# [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html]
+# [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
+import numpy as np
+
+
+def order_corners_tl_tr_br_bl(points_xy: np.ndarray) -> np.ndarray:
+    pts = np.asarray(points_xy, dtype=np.float64)
     if pts.shape != (4, 2):
-        raise ValueError(f"points must have shape (4, 2); got {pts.shape!r}")
+        raise ValueError(f"points_xy must have shape (4, 2); got {pts.shape!r}")
     if not np.isfinite(pts).all():
-        raise ValueError("points must be finite")
-    if np.unique(pts, axis=0).shape[0] != 4:
-        raise ValueError("points must contain four distinct corners")
+        raise ValueError("points_xy must contain only finite values")
+    if np.unique(np.round(pts, decimals=6), axis=0).shape[0] != 4:
+        raise ValueError("points_xy must contain four distinct points")
 
-    x_order = np.lexsort((pts[:, 1], pts[:, 0]))
-    x_sorted = pts[x_order]
-    left = x_sorted[:2]
-    right = x_sorted[2:]
+    center = np.mean(pts, axis=0, dtype=np.float64)
+    angles = np.arctan2(pts[:, 1] - center[1], pts[:, 0] - center[0])
+    cyclic = pts[np.argsort(angles)]
 
-    left = left[np.argsort(left[:, 1])]
-    tl, bl = left
-    distances = np.sum((right - tl) ** 2, axis=1)
-    tr, br = right[np.argsort(distances)]
-    return np.array([tl, tr, br, bl], dtype=np.float64)
+    starts = cyclic
+    ends = np.roll(cyclic, -1, axis=0)
+    midpoints = (starts + ends) / 2.0
+    top_edge_index = int(np.lexsort((midpoints[:, 0], midpoints[:, 1]))[0])
+    ordered = np.roll(cyclic, -top_edge_index, axis=0)
+    return ordered.astype(np.float32)
 ```
 
-### Pattern 3: Fixed Destination Grid for Warp
+### Pattern 3: Fixed Destination Quad for Classifier Crops
 
-**What:** Map ordered source points to `[[0,0], [N-1,0], [N-1,N-1], [0,N-1]]`, compute a `3x3` perspective matrix, and call `cv2.warpPerspective(frame_bgr, matrix, (N, N), flags=cv2.INTER_LINEAR)`. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+**What:** Map ordered points to `[[0,0], [127,0], [127,127], [0,127]]` by default and call `cv2.warpPerspective` with output `dsize=(128, 128)`. [VERIFIED: CLAUDE.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
 
-**When to use:** Use for every Phase 5 classifier crop; default `N=128` because CLAUDE.md explicitly names 128x128 as the low-latency classifier warp. [VERIFIED: CLAUDE.md]
+**When to use:** Use for Phase 4 output so Phase 5 sees a stable BGR crop shape independent of object distance and perspective. [VERIFIED: .planning/ROADMAP.md; VERIFIED: CLAUDE.md]
 
 **Example:**
 
 ```python
-# Source basis: OpenCV getPerspectiveTransform takes four corresponding points; warpPerspective output size is (width, height). [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
-def warp_face_bgr(frame_bgr: np.ndarray, ordered: np.ndarray, crop_size_px: int = 128) -> np.ndarray:
-    src = np.asarray(ordered, dtype=np.float32)
-    max_xy = float(crop_size_px - 1)
+# Source basis: OpenCV getPerspectiveTransform calculates a 3x3 transform
+# from four corresponding source/destination points; warpPerspective applies it.
+# [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+import cv2
+import numpy as np
+
+
+def warp_ordered_face(frame_bgr: np.ndarray, ordered_xy: np.ndarray, size_px: int = 128):
     dst = np.array(
-        [[0.0, 0.0], [max_xy, 0.0], [max_xy, max_xy], [0.0, max_xy]],
+        [
+            [0.0, 0.0],
+            [size_px - 1.0, 0.0],
+            [size_px - 1.0, size_px - 1.0],
+            [0.0, size_px - 1.0],
+        ],
         dtype=np.float32,
     )
-    matrix = cv2.getPerspectiveTransform(src, dst)
-    return cv2.warpPerspective(frame_bgr, matrix, (crop_size_px, crop_size_px), flags=cv2.INTER_LINEAR)
+    matrix = cv2.getPerspectiveTransform(ordered_xy.astype(np.float32), dst)
+    crop = cv2.warpPerspective(
+        frame_bgr,
+        matrix,
+        (size_px, size_px),
+        flags=cv2.INTER_LINEAR,
+        borderMode=cv2.BORDER_REPLICATE,
+    )
+    return crop, matrix
 ```
 
-### Pattern 4: Center and Angle From Ordered Corners Only
+### Pattern 4: Compute Contract Geometry From Ordered Points
 
-**What:** Compute the center as the arithmetic mean of the four ordered corners and compute angle from the top edge vector `TR - TL`. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://docs.python.org/3/library/math.html]
+**What:** Compute center with `np.mean`, angle with `atan2(TR - TL)`, bbox from min/max ordered coordinates, and `CornersPx` in the public contract's field order. [VERIFIED: src/block_detected/detection_contract.py; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html]
 
-**When to use:** Use after ordering and before contract conversion; do not use bbox center, image moments, or `minAreaRect.angle` for GEO-05. [VERIFIED: .planning/REQUIREMENTS.md]
+**When to use:** Use after ordering and before classification so downstream phases can reuse identical geometry. [VERIFIED: .planning/ROADMAP.md]
 
 **Example:**
 
 ```python
-# Source basis: GEO-05 defines center as mean and angle as atan2(TR - TL). [VERIFIED: .planning/REQUIREMENTS.md]
-def compute_center_angle(ordered: np.ndarray) -> tuple[tuple[float, float], float]:
-    center = np.mean(ordered, axis=0, dtype=np.float64)
-    tl, tr = ordered[0], ordered[1]
-    dx = float(tr[0] - tl[0])
-    dy = float(tr[1] - tl[1])
-    angle_deg = math.degrees(math.atan2(dy, dx))
-    return (float(center[0]), float(center[1])), angle_deg
+# Source basis: GEO-05 requires mean center and top-edge angle.
+# [VERIFIED: .planning/REQUIREMENTS.md]
+from .detection_contract import BoundingBoxPx, CornersPx, PointPx
+
+
+def geometry_scalars(ordered_xy: np.ndarray):
+    tl, tr, br, bl = ordered_xy.astype(np.float64)
+    center_x, center_y = np.mean(ordered_xy, axis=0, dtype=np.float64)
+    angle_deg = float(np.degrees(np.arctan2(tr[1] - tl[1], tr[0] - tl[0])))
+    min_x, min_y = np.min(ordered_xy, axis=0)
+    max_x, max_y = np.max(ordered_xy, axis=0)
+    return {
+        "center_px": PointPx(float(center_x), float(center_y)),
+        "corners_px": CornersPx(
+            top_left=PointPx(float(tl[0]), float(tl[1])),
+            top_right=PointPx(float(tr[0]), float(tr[1])),
+            bottom_right=PointPx(float(br[0]), float(br[1])),
+            bottom_left=PointPx(float(bl[0]), float(bl[1])),
+        ),
+        "angle_deg": angle_deg,
+        "bbox_px": BoundingBoxPx(
+            x=float(min_x),
+            y=float(min_y),
+            width=float(max_x - min_x),
+            height=float(max_y - min_y),
+        ),
+    }
 ```
 
 ### Anti-Patterns to Avoid
 
-- **Using `candidate.approx_xy` directly as TL/TR/BR/BL:** Phase 3 emits unordered quad vertices, and Phase 4 owns ordering. [VERIFIED: .planning/phases/03-preprocess-contour-detection/03-03-SUMMARY.md; VERIFIED: src/block_detected/detector.py]
-- **Using sum/diff-only corner ordering:** Equal sums or differences can select the wrong point and break clockwise ordering. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
-- **Using bbox crop plus `cv2.resize`:** GEO-04 requires perspective warp from four corners, not an axis-aligned crop. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html]
-- **Using `minAreaRect.angle` for contract angle:** GEO-05 defines the angle from `TR - TL`, so another OpenCV angle convention is unnecessary. [VERIFIED: .planning/REQUIREMENTS.md]
-- **Returning `DetectionResult(status=OK)` from Phase 4:** Block identity and confidence are Phase 5, and full reject/integration is Phase 7. [VERIFIED: .planning/ROADMAP.md; VERIFIED: src/block_detected/detection_contract.py]
+- **Using `minAreaRect.angle` as project angle:** It does not satisfy GEO-05 because OpenCV's documented angle range and edge switching are different from `atan2(TR - TL)`. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html; VERIFIED: .planning/REQUIREMENTS.md]
+- **Ordering only by min/max `x + y` and `x - y`:** Duplicate sums/differences can assign the wrong points. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
+- **Making crop size dynamic in Phase 4:** Dynamic crops make Phase 5 model input inconsistent. [VERIFIED: CLAUDE.md; VERIFIED: .planning/ROADMAP.md]
+- **Returning a `DetectionResult` from geometry:** Classification and final rejection status are later phases. [VERIFIED: .planning/ROADMAP.md]
 
 ## Don't Hand-Roll
 
 | Problem | Don't Build | Use Instead | Why |
 |---------|-------------|-------------|-----|
-| Perspective matrix solving | Custom 3x3 homography solver. [ASSUMED] | `cv2.getPerspectiveTransform`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | OpenCV already calculates the transform from four corresponding point pairs. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
-| Image resampling | Manual pixel interpolation loops. [ASSUMED] | `cv2.warpPerspective`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | OpenCV handles inverse mapping, interpolation flags, border modes, and output size. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
-| Classifier crop normalization | Axis-aligned bbox crop plus resize. [ASSUMED] | Ordered-corner perspective warp. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html] | Bbox crop keeps rotation/skew; the classifier should see a fixed square plane. [VERIFIED: .planning/research/ARCHITECTURE.md] |
-| Center calculation | Bbox center or contour moment center. [ASSUMED] | `np.mean(ordered, axis=0, dtype=np.float64)`. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html] | GEO-05 explicitly defines center as the mean of ordered corners. [VERIFIED: .planning/REQUIREMENTS.md] |
-| Angle calculation | `minAreaRect.angle` or bbox slope heuristics. [ASSUMED] | `math.atan2(TR.y - TL.y, TR.x - TL.x)` followed by `math.degrees`. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.python.org/3/library/math.html] | GEO-05 explicitly defines top-edge orientation from `TR - TL`. [VERIFIED: .planning/REQUIREMENTS.md] |
-| Semantic upright rotation | Guessing which physical block face edge is "top" from a symmetric square contour alone. [ASSUMED] | Emit image-space TL/TR/BR/BL plus angle; let Phase 5 train with rotations or define a classifier-side orientation strategy if needed. [VERIFIED: .planning/ROADMAP.md; ASSUMED] | A square contour has rotational ambiguity without an asymmetric visual cue, and Phase 4 has no marker/classifier signal by scope. [VERIFIED: .planning/REQUIREMENTS.md; ASSUMED] |
+| Perspective matrix solving | Custom homography linear solver. [ASSUMED] | `cv2.getPerspectiveTransform`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | OpenCV already calculates the 3x3 transform from four point pairs and handles the solver path. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
+| Pixel resampling for the face crop | Manual bilinear interpolation loops. [ASSUMED] | `cv2.warpPerspective`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | OpenCV implements image warping, interpolation flags, and border modes for this exact operation. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
+| Angle quadrant handling | `atan(dy / dx)` or slope conditionals. [ASSUMED] | `np.arctan2(dy, dx)`. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] | `arctan2` chooses the correct quadrant and returns signed radians. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] |
+| Center calculation | Manual average with integer truncation. [ASSUMED] | `np.mean(..., dtype=np.float64)`. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html] | The requirement says mean of corners, and NumPy provides controlled accumulator dtype. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html] |
+| Contract geometry serialization | New ad hoc dictionaries for corners. [ASSUMED] | Existing `PointPx`, `CornersPx`, and `BoundingBoxPx`. [VERIFIED: src/block_detected/detection_contract.py] | The public contract already validates field types and ordering. [VERIFIED: src/block_detected/detection_contract.py] |
+| Dependency for one ordering helper | Adding `imutils` only for `order_points`. [VERIFIED: `python3 -m pip index versions imutils`] | Small in-repo NumPy helper with tests. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html; ASSUMED] | The project needs exact tie-breaking and no extra runtime package for one function. [ASSUMED] |
 
-**Key insight:** Phase 4 should be small but exact: it should normalize geometric coordinates and pixels, not decide block identity, robot coordinates, or reject policy. [VERIFIED: .planning/ROADMAP.md]
+**Key insight:** The only custom algorithm Phase 4 should own is deterministic ordering semantics; homography, warp interpolation, center, and angle primitives should come from OpenCV/NumPy and be covered by tests. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html; ASSUMED]
 
 ## Common Pitfalls
 
-### Pitfall 1: Treating OpenCV Contour Order as Stable
+### Pitfall 1: Sum/Difference Ordering Fails on Symmetric or Near-Symmetric Points
 
-**What goes wrong:** Warped crops are mirrored, rotated, or inconsistent across frames. [ASSUMED]
+**What goes wrong:** Two vertices can share the same `x + y` or `x - y` value, causing `argmin`/`argmax` to select duplicate or wrong roles. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
 
-**Why it happens:** Phase 3 `SquareCandidate.approx_xy` is intentionally unordered and `approxPolyDP` only approximates polygon vertices. [VERIFIED: src/block_detected/detector.py; CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html]
+**Why it happens:** The shortcut assumes unique extrema for sums and differences, which is not guaranteed for rotated squares. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
 
-**How to avoid:** Always call `order_corners_xy()` before center, angle, or warp. [VERIFIED: .planning/REQUIREMENTS.md]
+**How to avoid:** Sort cyclically around the centroid, choose a top-edge tie-break, and test all permutations of each synthetic quadrilateral. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html; CITED: https://docs.pytest.org/en/stable/how-to/parametrize.html; ASSUMED]
 
-**Warning signs:** A color-coded synthetic quad produces a warp with corners in the wrong output quadrants. [ASSUMED]
+**Warning signs:** A diamond-like 45-degree square produces mirrored or 90-degree-shifted crops. [ASSUMED]
 
-### Pitfall 2: Sum/Diff Corner Ordering Fails on Tie Cases
+### Pitfall 2: `minAreaRect` Angle Does Not Match Project Angle
 
-**What goes wrong:** One rotated or perspective-skewed candidate gets assigned duplicate/wrong semantic corners. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
+**What goes wrong:** `angle_deg` jumps by roughly 90 degrees or changes sign unexpectedly as the block rotates. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html; ASSUMED]
 
-**Why it happens:** The min/max sum or difference of x/y coordinates can tie, making the selected index ambiguous. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/]
+**Why it happens:** OpenCV documents `minAreaRect` angle in `[-90, 0)` and says the measured edge changes as the object rotates. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html]
 
-**How to avoid:** Use the x-sort/y-sort/distance method and test all 24 permutations of at least one skewed quadrilateral. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/; ASSUMED]
+**How to avoid:** Always compute `angle_deg` from the ordered top edge using `atan2(TR.y - TL.y, TR.x - TL.x)`. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html]
 
-**Warning signs:** Tests pass for axis-aligned rectangles but fail for diamond-like or skewed quads. [ASSUMED]
+**Warning signs:** Angle tests pass for unrotated squares but fail around 45, 90, or 135 degrees. [ASSUMED]
 
-### Pitfall 3: Passing the Wrong Point Type or Shape to OpenCV
+### Pitfall 3: Destination Point Order Mirrors the Classifier Crop
 
-**What goes wrong:** `getPerspectiveTransform` raises an OpenCV assertion or returns a matrix that creates an invalid crop. [ASSUMED]
+**What goes wrong:** `warpPerspective` returns a crop with the face flipped or rotated even though the output shape is correct. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; ASSUMED]
 
-**Why it happens:** OpenCV's perspective tutorial uses `np.float32` source and destination point arrays, and the API computes a transform from four corresponding vertices. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+**Why it happens:** `getPerspectiveTransform` maps corresponding source and destination quadrangle vertices by index, so a mismatched source/destination order changes the homography. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
 
-**How to avoid:** Keep ordering and center math in `float64`, then cast ordered/destination points to `np.float32` immediately before `cv2.getPerspectiveTransform`. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html]
+**How to avoid:** Keep source and destination arrays in the same TL, TR, BR, BL order and use asymmetric synthetic fixtures to verify orientation. [CITED: https://docs.opencv.org/4.x/de/dd4/samples_2cpp_2warpPerspective_demo_8cpp-example.html; ASSUMED]
 
-**Warning signs:** Geometry tests behave differently across OpenCV versions or fail only in the warp call. [ASSUMED]
+**Warning signs:** A synthetic crop with colored quadrants places top-left content in another corner. [ASSUMED]
 
-### Pitfall 4: Swapping OpenCV `dsize` Width and Height
+### Pitfall 4: Dynamic Crop Sizes Break Phase 5
 
-**What goes wrong:** Non-square future crops or debug outputs come out transposed. [ASSUMED]
+**What goes wrong:** The classifier receives variable tensor shapes or implicit resizing that changes training/inference semantics. [VERIFIED: CLAUDE.md; ASSUMED]
 
-**Why it happens:** OpenCV documents transform output size as `(width, height)`, while NumPy image shapes are `(height, width, channels)`. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html]
+**Why it happens:** Document-scanner examples often compute `maxWidth` and `maxHeight` from side lengths, which is useful for documents but not for a fixed-size CNN input. [CITED: https://pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/; VERIFIED: CLAUDE.md]
 
-**How to avoid:** For Phase 4 square crops, call `cv2.warpPerspective(..., (crop_size_px, crop_size_px))` and assert output shape `(crop_size_px, crop_size_px, 3)`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; ASSUMED]
+**How to avoid:** Use `GeometrySettings.warp_size_px=128` and include the setting in metadata/tests. [VERIFIED: CLAUDE.md; ASSUMED]
 
-**Warning signs:** Shape assertions pass for square crops but helper signatures become confusing when a future non-square crop is tested. [ASSUMED]
+**Warning signs:** Tests assert only "crop exists" and not `crop.shape == (128, 128, 3)`. [ASSUMED]
 
-### Pitfall 5: Angle Sign Convention Surprises Pose Mapping
+### Pitfall 5: Degenerate Quads Produce Bad or Unstable Warps
 
-**What goes wrong:** Later robot yaw appears inverted even though Phase 4 tests pass. [ASSUMED]
+**What goes wrong:** Duplicate points, near-zero side lengths, or nearly collinear vertices produce singular or visually meaningless transforms. [ASSUMED]
 
-**Why it happens:** Image coordinates use y increasing downward, so `atan2(TR.y - TL.y, TR.x - TL.x)` produces positive angles for clockwise downward top-edge rotation in image space. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.python.org/3/library/math.html; ASSUMED]
+**Why it happens:** `getPerspectiveTransform` expects four corresponding quadrangle vertices; degenerate source geometry does not define a useful quadrangle. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; ASSUMED]
 
-**How to avoid:** Document `angle_deg` as image-space top-edge angle in Phase 4 and let Phase 6 own robot/world convention conversion. [VERIFIED: .planning/ROADMAP.md]
+**How to avoid:** Validate shape `(4, 2)`, finite values, four distinct points, minimum side length, non-trivial polygon area, and in-frame coordinates before warping. [VERIFIED: src/block_detected/detector.py; ASSUMED]
 
-**Warning signs:** A synthetic top edge from `(100,100)` to `(200,150)` should produce about `+26.565` degrees in Phase 4 tests. [ASSUMED]
+**Warning signs:** Warp contains mostly border pixels, `perspective_matrix` has non-finite values, or side-length checks approach zero. [ASSUMED]
 
-### Pitfall 6: Crop Size Drift Breaks Classifier Interface
+### Pitfall 6: Square Symmetry Cannot Reveal Semantic Upright Orientation
 
-**What goes wrong:** Phase 5 trains or loads a model expecting one input size while Phase 4 emits another. [ASSUMED]
+**What goes wrong:** Geometry produces a deterministic crop, but the physical face's semantic "upright" orientation may still be off by a multiple of 90 degrees. [ASSUMED]
 
-**Why it happens:** Requirements allow 128x128 or 160x160, but CLAUDE.md and stack research name 128x128 as the low-latency default. [VERIFIED: .planning/REQUIREMENTS.md; VERIFIED: CLAUDE.md; VERIFIED: .planning/research/STACK.md]
+**Why it happens:** A square quadrilateral has four rotationally equivalent geometric corner assignments unless the face texture, class model, or another cue defines semantic top. [ASSUMED]
 
-**How to avoid:** Put `crop_size_px=128` in `GeometrySettings` and `config/vision.example.json`; only change to 160 if Phase 5 model input metadata requires it. [VERIFIED: config/vision.example.json; ASSUMED]
+**How to avoid:** Phase 4 should document image-space ordering semantics; Phase 5 should either train with rotation augmentation or explicitly consume `angle_deg`/orientation metadata. [VERIFIED: .planning/ROADMAP.md; ASSUMED]
 
-**Warning signs:** Tests hardcode 128 in multiple places instead of reading one settings object. [ASSUMED]
+**Warning signs:** Classification accuracy varies by 90-degree block rotations even when geometry tests pass. [ASSUMED]
 
-### Pitfall 7: Invalid Quads Are Silently Warped
+### Pitfall 7: Width/Height Argument Order Is Easy to Hide for Square Crops
 
-**What goes wrong:** A near-collinear or duplicate-point quad returns a mostly black, stretched, or unstable crop. [ASSUMED]
+**What goes wrong:** Future non-square debug crops get transposed because OpenCV `dsize` is `(width, height)`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
 
-**Why it happens:** Perspective transformation requires four point correspondences, and the OpenCV tutorial notes that three of the four points should not be collinear. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html]
+**Why it happens:** NumPy image shapes are `(height, width, channels)`, while OpenCV warp `dsize` is a `Size(width, height)`. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; ASSUMED]
 
-**How to avoid:** Validate finite unique points, minimum side length, and positive polygon area before warp; expose invalid geometry errors for Phase 7 to map to `DetectionStatus.INVALID_GEOMETRY`. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.isfinite.html; CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html; VERIFIED: .planning/ROADMAP.md]
+**How to avoid:** Name variables `warp_width_px` and `warp_height_px` if non-square support is added; for Phase 4 keep a single `warp_size_px`. [ASSUMED]
 
-**Warning signs:** `cv2.contourArea(ordered.astype(np.float32))` is zero or side lengths are near zero. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html; ASSUMED]
+**Warning signs:** Tests pass only because 128x128 is square. [ASSUMED]
 
 ## Code Examples
 
-Verified patterns from current docs and local source:
+Verified patterns from official sources and current project files:
 
-### Geometry Settings and Dataclass
-
-```python
-# Source basis: Phase 4 should default to 128x128 because CLAUDE.md names that classifier warp. [VERIFIED: CLAUDE.md]
-from dataclasses import dataclass
-
-@dataclass(frozen=True)
-class GeometrySettings:
-    crop_size_px: int = 128
-    min_side_px: float = 8.0
-
-    def __post_init__(self) -> None:
-        if self.crop_size_px <= 0:
-            raise ValueError("crop_size_px must be positive")
-        if self.min_side_px <= 0:
-            raise ValueError("min_side_px must be positive")
-```
-
-### Candidate to Geometry
+### End-to-End Candidate Geometry
 
 ```python
-# Source basis: SquareCandidate contains unordered approx_xy, area, bbox, score. [VERIFIED: src/block_detected/detector.py]
-def geometry_from_candidate(frame_bgr: np.ndarray, candidate: SquareCandidate, settings: GeometrySettings) -> FaceGeometry:
-    ordered = order_corners_xy(candidate.approx_xy)
-    validate_ordered_quad(ordered, settings)
-    warp = warp_face_bgr(frame_bgr, ordered, crop_size_px=settings.crop_size_px)
-    center_xy, angle_deg = compute_center_angle(ordered)
+# Source basis: Phase 3 SquareCandidate, OpenCV perspective APIs, and existing
+# contract dataclasses.
+# [VERIFIED: src/block_detected/detector.py]
+# [VERIFIED: src/block_detected/detection_contract.py]
+# [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+def geometry_from_candidate(frame_bgr, candidate, settings=GeometrySettings()):
+    ordered = order_corners_tl_tr_br_bl(candidate.approx_xy)
+    crop_bgr, matrix = warp_ordered_face(frame_bgr, ordered, settings.warp_size_px)
+    scalars = geometry_scalars(ordered)
     return FaceGeometry(
-        ordered_corners_xy=ordered,
-        warp_bgr=warp,
-        center_xy=center_xy,
-        angle_deg=angle_deg,
-        bbox_xywh=candidate.bbox_xywh,
-        area_px=float(candidate.area_px),
-        source_candidate_score=float(candidate.score),
+        ordered_xy=ordered,
+        corners_px=scalars["corners_px"],
+        center_px=scalars["center_px"],
+        angle_deg=scalars["angle_deg"],
+        bbox_px=scalars["bbox_px"],
+        face_area_px=float(candidate.area_px),
+        warp_bgr=crop_bgr,
+        perspective_matrix=matrix,
     )
 ```
 
-### Contract Corner Conversion
+### Geometry Test Matrix
 
 ```python
-# Source basis: CornersPx.as_ordered_tuple returns TL, TR, BR, BL. [VERIFIED: src/block_detected/detection_contract.py]
-def corners_to_contract(ordered: np.ndarray) -> CornersPx:
-    tl, tr, br, bl = ordered
-    return CornersPx(
-        top_left=PointPx(float(tl[0]), float(tl[1])),
-        top_right=PointPx(float(tr[0]), float(tr[1])),
-        bottom_right=PointPx(float(br[0]), float(br[1])),
-        bottom_left=PointPx(float(bl[0]), float(bl[1])),
-    )
+# Source basis: pytest parametrize supports multiple argument sets.
+# [CITED: https://docs.pytest.org/en/stable/how-to/parametrize.html]
+import itertools
+import numpy as np
+import pytest
+
+
+@pytest.mark.parametrize("angle_deg", [0, 15, 30, 45, 60, 89, 120, 179])
+def test_ordering_is_stable_for_all_input_permutations(angle_deg):
+    expected = rotated_square_points(center=(320.0, 240.0), side=120.0, angle_deg=angle_deg)
+    for permuted in itertools.permutations(expected):
+        ordered = order_corners_tl_tr_br_bl(np.array(permuted, dtype=np.float64))
+        assert ordered.shape == (4, 2)
+        assert np.all(np.isfinite(ordered))
 ```
 
-### Warp Orientation Test Fixture
+### Warp Orientation Fixture
 
 ```python
-# Source basis: Perspective transform requires ordered corresponding source and destination vertices. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html]
-def test_warp_maps_color_coded_corners_to_output_quadrants() -> None:
-    frame, unordered_points = make_color_coded_quad_fixture()
-    ordered = order_corners_xy(unordered_points)
-    warp = warp_face_bgr(frame, ordered, crop_size_px=128)
-    assert warp.shape == (128, 128, 3)
-    assert top_left_patch_is_expected_color(warp)
-    assert top_right_patch_is_expected_color(warp)
+# Source basis: OpenCV warpPerspective applies a perspective transform to an image.
+# [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+def test_warp_preserves_synthetic_quadrant_orientation():
+    frame, source_corners = asymmetric_face_fixture()
+    ordered = order_corners_tl_tr_br_bl(source_corners)
+    crop, _ = warp_ordered_face(frame, ordered, size_px=128)
+
+    assert crop.shape == (128, 128, 3)
+    assert top_left_marker_score(crop) > top_right_marker_score(crop)
 ```
 
 ## State of the Art
 
 | Old Approach | Current Approach | When Changed | Impact |
 |--------------|------------------|--------------|--------|
-| Sum/diff corner ordering. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] | X-sort/y-sort/distance ordering with permutation tests. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] | PyImageSearch documented the bug and improved method in 2016. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] | Planner should include explicit tie/permutation tests, not only happy-path square tests. [ASSUMED] |
-| Axis-aligned crop and resize. [ASSUMED] | Four-corner perspective warp. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html] | OpenCV 4.x docs still prescribe four source and destination points for perspective correction. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html] | Phase 4 should use `getPerspectiveTransform` and `warpPerspective`, not bbox crop normalization. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
-| Angle from rotated rectangle metadata. [ASSUMED] | Contract-defined top-edge angle from ordered corners. [VERIFIED: .planning/REQUIREMENTS.md] | Requirement GEO-05 defines this project convention. [VERIFIED: .planning/REQUIREMENTS.md] | Tests should assert exact formula against synthetic known angles. [ASSUMED] |
-| Classification on full 640x480 frame. [VERIFIED: .planning/research/STACK.md says to avoid full-frame heavy models] | Detect square cheaply, warp small face crop, classify later. [VERIFIED: .planning/research/STACK.md; VERIFIED: CLAUDE.md] | Project stack research selected contour + warp + tiny CNN before Phase 4. [VERIFIED: .planning/research/STACK.md] | Phase 4 is the normalization boundary for Phase 5. [VERIFIED: .planning/ROADMAP.md] |
+| Use sum/difference extrema for all corner ordering. [CITED: https://pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/] | Use a robust ordering method with duplicate/tie tests. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/; ASSUMED] | PyImageSearch documented the issue in 2016 and current testing should cover it. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] | Planner should require permutation and 45-degree tests for GEO-03. [ASSUMED] |
+| Use `minAreaRect` angle as object rotation. [ASSUMED] | Use the explicit top-edge vector from ordered corners. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] | Project requirement GEO-05 defines the angle source. [VERIFIED: .planning/REQUIREMENTS.md] | Planner should not accept `minAreaRect` angle as sufficient. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] |
+| Use dynamic document-scanner crop dimensions. [CITED: https://pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/] | Use a fixed 128x128 crop for the later classifier. [VERIFIED: CLAUDE.md] | Project stack locked classifier latency and crop size before Phase 4. [VERIFIED: CLAUDE.md] | Phase 5 can train and infer on a stable tensor shape. [ASSUMED] |
+| Let geometry directly return final OK/invalid results. [ASSUMED] | Return geometry artifacts now; integrate final reject statuses later. [VERIFIED: .planning/ROADMAP.md] | Roadmap separates Phase 4 geometry from Phase 7 reject integration. [VERIFIED: .planning/ROADMAP.md] | Planner should keep `detect_block` integration limited or behind clear boundaries. [VERIFIED: .planning/ROADMAP.md] |
 
 **Deprecated/outdated:**
 
-- Using OpenCV 2.x/3.x tutorial assumptions without checking OpenCV 4.x signatures is outdated for this project. [VERIFIED: .planning/research/STACK.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
-- Adding `imutils` solely for `order_points` is unnecessary because the project can implement and test the small NumPy ordering function locally. [VERIFIED: .planning/research/STACK.md; ASSUMED]
-- Solving block orientation with ArUco/AprilTag markers is out of scope for v1. [VERIFIED: .planning/REQUIREMENTS.md; VERIFIED: CLAUDE.md]
+- Treating `cv2.findContours`/`approxPolyDP` point order as already contract-ready is unsafe for this phase; Phase 3 exposes `SquareCandidate.approx_xy` but does not order it as TL/TR/BR/BL. [VERIFIED: src/block_detected/detector.py; VERIFIED: .planning/REQUIREMENTS.md]
+- Using `cv2.minAreaRect` angle for `angle_deg` is outdated for this project because GEO-05 explicitly defines top-edge orientation. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html]
+- Adding ArUco/AprilTag markers to solve orientation is forbidden by project constraints. [VERIFIED: CLAUDE.md; VERIFIED: .planning/REQUIREMENTS.md]
 
 ## Assumptions Log
 
 | # | Claim | Section | Risk if Wrong |
 |---|-------|---------|---------------|
-| A1 | The Phase 4 default crop should be 128x128, with 160x160 only if Phase 5 model metadata later requires it. | Summary, Standard Stack, Pitfalls | If the final classifier is designed around 160x160, Phase 4 tests/config need one coordinated size change. |
-| A2 | A local NumPy `order_corners_xy()` is preferred over adding `imutils`. | Standard Stack, State of the Art | If the project standardizes on `imutils` later, the local function may duplicate dependency behavior. |
-| A3 | Phase 4 should expose geometry helpers and package exports but should not replace the public `detect_block` stub with real pipeline behavior yet. | Architecture Patterns | If the planner wants early integration, Phase 4 could add a non-classifying internal pipeline helper, but it still cannot return `OK` without Phase 5 identity/confidence. |
-| A4 | Square contour geometry alone cannot guarantee semantic upright orientation of a symmetric face crop. | Don't Hand-Roll, Open Questions | If block faces have asymmetric visual markings, Phase 5 may define orientation normalization or rotation augmentation. |
+| A1 | The centroid-angle plus top-edge tie-break ordering semantics are acceptable for project TL/TR/BR/BL. | Architecture Patterns | If the user expects semantic physical face orientation, geometry-only ordering will be insufficient. |
+| A2 | 128x128 should be the default warp size. | Standard Stack, Architecture Patterns | If Phase 5 later chooses 160x160, tests and representative training data must be regenerated. |
+| A3 | Phase 5 can handle deterministic image-space crops that may be semantically rotated by multiples of 90 degrees. | Common Pitfalls | Classifier accuracy may drop on rotated blocks unless training includes rotation augmentation. |
+| A4 | Current worktree Phase 3 `SquareCandidate.approx_xy` is the intended upstream candidate interface. | Summary, Architecture Patterns | If Phase 3 is rewritten before Phase 4 planning, adapter tasks may change. |
+| A5 | Recomputing `face_area_px` is optional if Phase 3 candidate area is carried forward. | Standard Stack, Code Examples | If Phase 3 area semantics differ from ordered polygon area, downstream metrics may need one canonical definition. |
 
 ## Open Questions
 
-1. **Should the canonical crop stay at 128x128 or switch to 160x160?**
-   - What we know: Requirements allow either, while CLAUDE.md and stack research name 128x128. [VERIFIED: .planning/REQUIREMENTS.md; VERIFIED: CLAUDE.md; VERIFIED: .planning/research/STACK.md]
-   - What's unclear: Phase 5 model input shape does not exist yet. [VERIFIED: .planning/ROADMAP.md]
-   - Recommendation: Use `GeometrySettings(crop_size_px=128)` and a config field, then let Phase 5 lock model input shape. [ASSUMED]
+1. **Does Phase 5 require semantic upright face crops?**
+   - What we know: Phase 4 must produce consistent geometry and a classifier-suitable crop. [VERIFIED: .planning/ROADMAP.md]
+   - What's unclear: Whether block face artwork has a semantic top that the classifier expects. [ASSUMED]
+   - Recommendation: Phase 4 should output deterministic image-space crops and `angle_deg`; Phase 5 should train with rotation augmentation unless a semantic orientation cue is added. [ASSUMED]
 
-2. **Does Phase 5 need semantic upright crops or only perspective-normalized crops?**
-   - What we know: Phase 4 can produce consistent image-space TL/TR/BR/BL warps and `angle_deg`. [VERIFIED: .planning/REQUIREMENTS.md]
-   - What's unclear: The classifier's block-face markings and rotation sensitivity are not specified. [VERIFIED: .planning/REQUIREMENTS.md]
-   - Recommendation: Phase 4 should not rotate crops to guessed semantic orientation; Phase 5 should train with rotations or define a classifier-side orientation strategy if required. [ASSUMED]
+2. **Should the canonical crop be 128x128 or 160x160?**
+   - What we know: Requirements allow either, but CLAUDE.md says classify on 128x128 warp. [VERIFIED: .planning/REQUIREMENTS.md; VERIFIED: CLAUDE.md]
+   - What's unclear: No Phase 5 model architecture exists yet. [VERIFIED: .planning/ROADMAP.md]
+   - Recommendation: Lock Phase 4 default to 128 and keep `GeometrySettings.warp_size_px` configurable. [VERIFIED: CLAUDE.md; ASSUMED]
 
-3. **Should invalid geometry become exceptions or structured invalid results in Phase 4?**
-   - What we know: Phase 7 owns `invalid_geometry` rejection status, while Phase 4 owns geometry computation. [VERIFIED: .planning/ROADMAP.md; VERIFIED: .planning/REQUIREMENTS.md]
-   - What's unclear: The planner may prefer exceptions for pure helpers or a `GeometryResult` union for easier Phase 7 mapping. [ASSUMED]
-   - Recommendation: Raise `ValueError` from pure helpers in Phase 4 tests and keep error messages stable enough for Phase 7 to map later. [ASSUMED]
+3. **Where should geometry validation failures become public statuses?**
+   - What we know: REJ-03 invalid/skewed quad rejection is Phase 7. [VERIFIED: .planning/REQUIREMENTS.md; VERIFIED: .planning/ROADMAP.md]
+   - What's unclear: Whether Phase 4 should return errors, skip candidates, or attach validation diagnostics. [ASSUMED]
+   - Recommendation: Phase 4 should raise/return internal geometry validation errors with reasons; Phase 7 should map them to `DetectionStatus.INVALID_GEOMETRY`. [VERIFIED: .planning/ROADMAP.md; ASSUMED]
 
 ## Environment Availability
 
 | Dependency | Required By | Available | Version | Fallback |
 |------------|-------------|-----------|---------|----------|
-| Python | All Phase 4 code/tests | yes | 3.14.4 local; target Pi 3.11.x from stack docs. [VERIFIED: local `python3 --version`; VERIFIED: .planning/research/STACK.md] | None needed. [ASSUMED] |
-| OpenCV Python `cv2` | `getPerspectiveTransform`, `warpPerspective`, image fixtures | no in current shell | Missing import. [VERIFIED: local import probe] | Install dev extras with `python -m pip install -e ".[dev]"`. [VERIFIED: pyproject.toml] |
-| NumPy | Point math, means, tests | no in current shell | Missing import. [VERIFIED: local import probe] | Install dev extras with `python -m pip install -e ".[dev]"`. [VERIFIED: pyproject.toml] |
-| pytest | Nyquist validation tests | no in current shell | Missing import. [VERIFIED: local import probe] | Install dev extras with `python -m pip install -e ".[dev]"`. [VERIFIED: pyproject.toml] |
-| Synthetic image fixtures | Warp and geometry tests | yes | `tests/fixtures/vision/square_face.png`, `tests/fixtures/frames/frame.png`. [VERIFIED: local image fixture scan] | Add a color-coded synthetic quad fixture in `tests/test_geometry.py` if existing grayscale fixture is insufficient for orientation assertions. [ASSUMED] |
-| Real captured reference frames | Field realism | no | Only synthetic fixtures are documented. [VERIFIED: .planning/phases/03-preprocess-contour-detection/03-03-SUMMARY.md; VERIFIED: local image fixture scan] | Synthetic tests are enough for Phase 4 mechanics; real frames can wait for Phase 8 evaluation. [VERIFIED: .planning/ROADMAP.md; ASSUMED] |
+| Python | All Phase 4 code/tests. [VERIFIED: pyproject.toml] | yes | 3.14.4 local; target Pi stack 3.11.x. [VERIFIED: local `python3 --version`; VERIFIED: .planning/research/STACK.md] | None needed. [ASSUMED] |
+| OpenCV Python `cv2` | `getPerspectiveTransform`, `warpPerspective`, image fixtures. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | no locally | Missing import. [VERIFIED: local import probe] | Install project dev extras before automated geometry tests. [VERIFIED: pyproject.toml] |
+| NumPy | Ordering, center, angle, tests. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] | no locally | Missing import. [VERIFIED: local import probe] | Install project dev extras before automated geometry tests. [VERIFIED: pyproject.toml] |
+| pytest | Nyquist validation tests. [CITED: https://docs.pytest.org/en/stable/how-to/parametrize.html] | no locally | Missing import. [VERIFIED: local import probe] | Existing unittest tests do not cover Phase 4 geometry; install dev extras. [VERIFIED: tests/test_pipeline.py; ASSUMED] |
+| Phase 3 candidate module | Upstream `SquareCandidate.approx_xy`. [VERIFIED: src/block_detected/detector.py] | yes in current worktree | Untracked current worktree file. [VERIFIED: `git status --short`] | If Phase 3 code changes, add an adapter to read the final candidate field. [ASSUMED] |
+| Synthetic vision fixture | Warp orientation tests. [VERIFIED: tests/fixtures/vision/square_face.png] | yes in current worktree | Static PNG exists in current worktree. [VERIFIED: local `find tests/fixtures/vision`] | Generate asymmetric synthetic fixtures inside tests. [ASSUMED] |
 
 **Missing dependencies with no fallback:**
 
-- OpenCV Python and NumPy are required to run Phase 4 geometry tests in the current shell. [VERIFIED: local import probe; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html]
+- `cv2`, `numpy`, and `pytest` are required to run Phase 4 automated tests and are not importable in the current local Python environment. [VERIFIED: local import probes]
 
 **Missing dependencies with fallback:**
 
-- pytest is missing in the current shell, but the repo declares pytest in dev extras and existing tests use pytest. [VERIFIED: local import probe; VERIFIED: pyproject.toml; VERIFIED: tests/test_detector.py]
-- Real captured reference frames are absent, but Phase 4 can validate deterministic geometry with synthetic arrays. [VERIFIED: local image fixture scan; ASSUMED]
+- Real captured block-face fixtures are not required for Phase 4 mechanics if asymmetric synthetic fixtures verify ordering and warp orientation, but real fixtures remain useful before Phase 8 evaluation. [VERIFIED: .planning/ROADMAP.md; ASSUMED]
 
 ## Validation Architecture
 
@@ -433,97 +487,90 @@ def test_warp_maps_color_coded_corners_to_output_quadrants() -> None:
 
 | Property | Value |
 |----------|-------|
-| Framework | pytest `>=9`, current PyPI `9.0.3`, missing in current shell. [VERIFIED: pyproject.toml; VERIFIED: local PyPI JSON query; VERIFIED: local import probe] |
-| Config file | `pyproject.toml` with `testpaths = ["tests"]`. [VERIFIED: pyproject.toml] |
-| Quick run command | `python -m pytest tests/test_geometry.py -q`. [ASSUMED] |
-| Full suite command | `python -m pytest -q`. [VERIFIED: .planning/phases/03-preprocess-contour-detection/03-03-SUMMARY.md] |
+| Framework | pytest 9.0.3 recommended; missing locally. [VERIFIED: PyPI JSON probe; VERIFIED: local import probe] |
+| Config file | `pyproject.toml` has `[tool.pytest.ini_options] testpaths = ["tests"]`. [VERIFIED: pyproject.toml] |
+| Quick run command | `python -m pytest tests/test_geometry.py -q` [ASSUMED] |
+| Full suite command | `python -m pytest -q` [VERIFIED: pyproject.toml; ASSUMED] |
 
 ### Phase Requirements -> Test Map
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists? |
 |--------|----------|-----------|-------------------|--------------|
-| GEO-03 | `order_corners_xy()` returns TL, TR, BR, BL for every permutation of an axis-aligned quad. [VERIFIED: .planning/REQUIREMENTS.md] | unit | `python -m pytest tests/test_geometry.py::test_order_corners_handles_all_axis_aligned_permutations -q` | no, Wave 0. [VERIFIED: local `rg --files tests`] |
-| GEO-03 | `order_corners_xy()` returns stable order for rotated/skewed quads and avoids sum/diff tie failures. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/] | unit | `python -m pytest tests/test_geometry.py::test_order_corners_handles_skewed_and_diamond_quads -q` | no, Wave 0. [VERIFIED: local `rg --files tests`] |
-| GEO-03 | Invalid point arrays with wrong shape, duplicate corners, or non-finite values raise `ValueError`. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.isfinite.html] | unit | `python -m pytest tests/test_geometry.py::test_order_corners_rejects_invalid_points -q` | no, Wave 0. [VERIFIED: local `rg --files tests`] |
-| GEO-04 | `warp_face_bgr()` returns `(128, 128, 3)` `uint8` by default and does not mutate source frame. [VERIFIED: CLAUDE.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | unit | `python -m pytest tests/test_geometry.py::test_warp_face_default_128_uint8_non_mutating -q` | no, Wave 0. [VERIFIED: local `rg --files tests`] |
-| GEO-04 | Color-coded source corners land in expected output quadrants after warp. [CITED: https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html] | unit | `python -m pytest tests/test_geometry.py::test_warp_maps_ordered_corners_to_output_quadrants -q` | no, Wave 0. [VERIFIED: local `rg --files tests`] |
-| GEO-05 | `center_px` equals `np.mean(ordered, axis=0)` within float tolerance. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html] | unit | `python -m pytest tests/test_geometry.py::test_center_is_mean_of_ordered_corners -q` | no, Wave 0. [VERIFIED: local `rg --files tests`] |
-| GEO-05 | `angle_deg` equals `degrees(atan2(TR.y - TL.y, TR.x - TL.x))` for 0, positive, and negative image-space top-edge slopes. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://docs.python.org/3/library/math.html] | unit | `python -m pytest tests/test_geometry.py::test_angle_uses_top_edge_atan2_convention -q` | no, Wave 0. [VERIFIED: local `rg --files tests`] |
-| GEO-03/GEO-04/GEO-05 | `geometry_from_candidate()` consumes Phase 3 `SquareCandidate` and returns coherent `FaceGeometry`. [VERIFIED: src/block_detected/detector.py] | integration | `python -m pytest tests/test_geometry.py::test_geometry_from_square_candidate_end_to_end -q` | no, Wave 0. [VERIFIED: local `rg --files tests`] |
+| GEO-03 | Every permutation of each synthetic rotated square orders to deterministic TL, TR, BR, BL. [VERIFIED: .planning/REQUIREMENTS.md] | unit | `python -m pytest tests/test_geometry.py::test_ordering_is_stable_for_all_input_permutations -q` | no, Wave 0 |
+| GEO-03 | Degenerate point sets are rejected before warping. [ASSUMED] | unit | `python -m pytest tests/test_geometry.py::test_ordering_rejects_duplicate_or_nonfinite_points -q` | no, Wave 0 |
+| GEO-04 | Candidate warp returns `(128, 128, 3)` `uint8` BGR without mutating source frame. [VERIFIED: CLAUDE.md; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] | unit | `python -m pytest tests/test_geometry.py::test_warp_outputs_128x128_bgr_without_mutation -q` | no, Wave 0 |
+| GEO-04 | Asymmetric synthetic fixture keeps top-left marker in the crop's top-left region. [ASSUMED] | unit | `python -m pytest tests/test_geometry.py::test_warp_preserves_synthetic_quadrant_orientation -q` | no, Wave 0 |
+| GEO-05 | `center_px` equals float64 mean of ordered corners. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html] | unit | `python -m pytest tests/test_geometry.py::test_center_is_mean_of_ordered_corners -q` | no, Wave 0 |
+| GEO-05 | `angle_deg` equals top-edge `atan2(TR - TL)` for representative rotations. [VERIFIED: .planning/REQUIREMENTS.md; CITED: https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html] | unit | `python -m pytest tests/test_geometry.py::test_angle_matches_top_edge_orientation -q` | no, Wave 0 |
+| GEO-03/GEO-04/GEO-05 | `geometry_from_candidate` consumes current Phase 3 `SquareCandidate` and returns `FaceGeometry`. [VERIFIED: src/block_detected/detector.py] | integration | `python -m pytest tests/test_geometry.py::test_geometry_from_square_candidate -q` | no, Wave 0 |
 
 ### Sampling Rate
 
-- **Per task commit:** `python -m pytest tests/test_geometry.py -q`. [ASSUMED]
-- **Per wave merge:** `python -m pytest -q`. [VERIFIED: .planning/phases/03-preprocess-contour-detection/03-03-SUMMARY.md]
-- **Phase gate:** Full suite green after installing dev extras, with geometry tests proving order, warp shape/orientation, and center/angle formula. [VERIFIED: .planning/config.json; ASSUMED]
+- **Per task commit:** `python -m pytest tests/test_geometry.py -q` [ASSUMED]
+- **Per wave merge:** `python -m pytest -q` [ASSUMED]
+- **Phase gate:** Full suite green with dev extras installed, plus visual inspection or artifact assertion for one asymmetric warp fixture. [VERIFIED: .planning/config.json `nyquist_validation=true`; ASSUMED]
 
 ### Wave 0 Gaps
 
-- [ ] `src/block_detected/geometry.py` - covers `GeometrySettings`, `FaceGeometry`, `order_corners_xy`, `warp_face_bgr`, `compute_center_angle`, and `geometry_from_candidate`. [ASSUMED]
-- [ ] `tests/test_geometry.py` - covers GEO-03, GEO-04, and GEO-05. [ASSUMED]
-- [ ] `config/vision.example.json` geometry section - documents `crop_size_px=128` and any validation thresholds. [VERIFIED: config/vision.example.json currently has preprocess/detector only]
-- [ ] `src/block_detected/__init__.py` exports for new geometry types/helpers. [VERIFIED: src/block_detected/__init__.py currently exports Phase 1-3 symbols]
-- [ ] Dev environment install: `python -m pip install -e ".[dev]"` before running OpenCV/NumPy/pytest tests in the current shell. [VERIFIED: local import probe; VERIFIED: pyproject.toml]
+- [ ] `src/block_detected/geometry.py` - covers GEO-03, GEO-04, GEO-05. [ASSUMED]
+- [ ] `tests/test_geometry.py` - permutation, rotation, center, angle, warp, and candidate integration tests. [ASSUMED]
+- [ ] Install dev extras: `python -m pip install -e ".[dev]"` before running geometry tests. [VERIFIED: pyproject.toml; VERIFIED: local import probes]
 
 ## Security Domain
-
-Security enforcement is enabled by default because `.planning/config.json` does not explicitly set `security_enforcement: false`. [VERIFIED: .planning/config.json]
 
 ### Applicable ASVS Categories
 
 | ASVS Category | Applies | Standard Control |
 |---------------|---------|------------------|
 | V2 Authentication | no | Phase 4 has no authentication surface. [VERIFIED: .planning/ROADMAP.md] |
-| V3 Session Management | no | Phase 4 has no sessions. [VERIFIED: .planning/ROADMAP.md] |
+| V3 Session Management | no | Phase 4 has no session state. [VERIFIED: .planning/ROADMAP.md] |
 | V4 Access Control | no | Phase 4 has no user authorization boundary. [VERIFIED: .planning/ROADMAP.md] |
-| V5 Input Validation | yes | Validate frame shape/dtype, point array shape, finiteness, uniqueness, side lengths, crop size, and warp output shape before downstream use. [VERIFIED: src/block_detected/preprocess.py; CITED: https://numpy.org/doc/stable/reference/generated/numpy.isfinite.html; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html] |
+| V5 Input Validation | yes | Validate frame shape `(480, 640, 3)`, dtype `uint8`, corner shape `(4, 2)`, finite values, distinct points, side lengths, and warp size. [VERIFIED: src/block_detected/camera.py; VERIFIED: src/block_detected/detector.py; ASSUMED] |
 | V6 Cryptography | no | Phase 4 has no cryptographic operation. [VERIFIED: .planning/ROADMAP.md] |
 
-### Known Threat Patterns for Geometry Processing
+### Known Threat Patterns for OpenCV Geometry
 
 | Pattern | STRIDE | Standard Mitigation |
 |---------|--------|---------------------|
-| Malformed or non-finite corner arrays crash OpenCV or generate invalid matrices. [ASSUMED] | Denial of Service | Validate shape `(4, 2)`, dtype-converted finite values, uniqueness, side lengths, and area before warp. [CITED: https://numpy.org/doc/stable/reference/generated/numpy.isfinite.html; CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html] |
-| Oversized or zero crop size allocates unexpected memory or fails in OpenCV. [ASSUMED] | Denial of Service | Bound `crop_size_px` to positive configured values and test 128 default. [VERIFIED: CLAUDE.md; ASSUMED] |
-| Fabricated geometry on bad candidates reaches robot integration later. [VERIFIED: .planning/REQUIREMENTS.md says rejected/ambiguous frames must not include fake geometry] | Tampering / Safety | Phase 4 should raise/flag invalid geometry, and Phase 7 should map that to `DetectionStatus.INVALID_GEOMETRY` with no candidate fields. [VERIFIED: .planning/ROADMAP.md; VERIFIED: src/block_detected/detection_contract.py] |
-| Debug overlays or crop dumps fill disk if added later. [VERIFIED: Phase 2 delivered retention controls] | Denial of Service | Reuse Phase 2 `DebugFrameWriter` retention/sampling when saving warps. [VERIFIED: .planning/phases/02-camera-capture/02-03-SUMMARY.md; VERIFIED: src/block_detected/debug.py] |
+| Malformed frame or candidate array crashes OpenCV. [ASSUMED] | Denial of Service | Validate shape, dtype, finite values, and point count before OpenCV calls. [VERIFIED: src/block_detected/preprocess.py; ASSUMED] |
+| Degenerate quadrilateral produces invalid matrix or pathological crop. [ASSUMED] | Denial of Service | Enforce four distinct points, minimum side length, non-trivial area, and in-frame bounds before warp. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; ASSUMED] |
+| Debug artifacts expose arbitrary filesystem paths. [ASSUMED] | Information Disclosure / Tampering | Reuse Phase 2 `DebugFrameWriter` fixed directory and allowed-root controls instead of accepting per-candidate paths. [VERIFIED: src/block_detected/debug.py] |
 
 ## Sources
 
 ### Primary (HIGH confidence)
 
-- https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html - `getPerspectiveTransform`, `warpPerspective`, matrix/dsize/flags behavior. [CITED]
-- https://docs.opencv.org/4.x/da/d6e/tutorial_py_geometric_transformations.html - OpenCV perspective-transform tutorial with four point pairs, `np.float32`, and output-size convention. [CITED]
-- https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html - `contourArea`, `boundingRect`, `minAreaRect`, `approxPolyDP`, and shape descriptors used around geometry validation. [CITED]
-- https://numpy.org/doc/stable/reference/generated/numpy.mean.html - `np.mean` axis/dtype behavior for center calculation. [CITED]
-- https://numpy.org/doc/stable/reference/generated/numpy.isfinite.html - finite-point validation. [CITED]
-- https://docs.python.org/3/library/math.html - `math.atan2` quadrant-aware angle and radians behavior. [CITED]
-- `src/block_detected/detector.py` - Phase 3 `SquareCandidate` input interface. [VERIFIED]
-- `src/block_detected/detection_contract.py` - `CornersPx`, `PointPx`, status geometry rules, and contract conversion targets. [VERIFIED]
-- `src/block_detected/vision.py` - Phase 3 frame helper and candidate overlay boundary. [VERIFIED]
-- `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and `CLAUDE.md` - Phase scope, crop-size allowance, project constraints, and out-of-scope phases. [VERIFIED]
+- https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html - `getPerspectiveTransform`, `warpPerspective`, `dsize`, interpolation, border modes, and in-place limitation. [CITED]
+- https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html - `minAreaRect` angle semantics, `boxPoints`, `contourArea`, and convexity caveats. [CITED]
+- https://docs.opencv.org/4.x/de/dd4/samples_2cpp_2warpPerspective_demo_8cpp-example.html - OpenCV sample using TL/TR/BR/BL labels and perspective warp. [CITED]
+- https://numpy.org/doc/stable/reference/generated/numpy.mean.html - arithmetic mean behavior and dtype control. [CITED]
+- https://numpy.org/doc/stable/reference/generated/numpy.arctan2.html - quadrant-aware signed angle. [CITED]
+- https://docs.pytest.org/en/stable/how-to/parametrize.html - parametrized test pattern for rotations/permutations. [CITED]
+- Local `pyproject.toml` - project dev dependency ranges and pytest config. [VERIFIED]
+- Local `src/block_detected/detection_contract.py` - `PointPx`, `CornersPx`, `BoundingBoxPx`, `DetectionResult` validation. [VERIFIED]
+- Local `src/block_detected/detector.py` - current Phase 3 `SquareCandidate.approx_xy`, area, bbox, score. [VERIFIED]
 
 ### Secondary (MEDIUM confidence)
 
-- https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/ - robust corner-ordering pattern and sum/diff bug explanation. [CITED]
-- `.planning/research/STACK.md` - project stack decisions for OpenCV/NumPy/pytest and 128x128 warp direction. [VERIFIED]
-- `.planning/research/ARCHITECTURE.md` - pipeline stage boundary for `geometry.py`. [VERIFIED]
-- `.planning/research/PITFALLS.md` - wrong-corner-order pitfall. [VERIFIED]
-- `.planning/phases/03-preprocess-contour-detection/03-*-SUMMARY.md` - implemented Phase 3 handoff and out-of-scope notes. [VERIFIED]
-- Local PyPI index and JSON queries for current package versions and publish dates. [VERIFIED]
+- https://pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/ - common four-point transform pattern and dynamic crop example. [CITED]
+- https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/ - known failure mode in older sum/difference corner ordering. [CITED]
+- `.planning/phases/03-preprocess-contour-detection/03-RESEARCH.md` - upstream candidate assumptions and Phase 3/4 boundary. [VERIFIED]
+- `.planning/research/STACK.md` - project stack decisions for OpenCV, NumPy, pytest, and Pi constraints. [VERIFIED]
+- Local PyPI and PyPI JSON probes for current package versions and upload timestamps. [VERIFIED]
 
 ### Tertiary (LOW confidence)
 
-- Assumptions around semantic-upright classifier orientation and exact invalid-geometry thresholds remain pending Phase 5/7 decisions. [ASSUMED]
+- The top-edge tie-break for exact diamond-like squares is a project semantic choice and should be confirmed by tests/user expectations if the robot requires a different convention. [ASSUMED]
+- Phase 5 rotation augmentation requirement is inferred from square symmetry and the absence of a semantic orientation cue in Phase 4. [ASSUMED]
 
 ## Metadata
 
 **Confidence breakdown:**
 
-- Standard stack: HIGH - OpenCV, NumPy, Python `math`, pytest versions and APIs were verified via official docs, local `pyproject.toml`, and PyPI queries. [CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; VERIFIED: pyproject.toml; VERIFIED: local PyPI JSON query]
-- Architecture: HIGH - Phase 3 source now defines the exact candidate handoff, and roadmap/requirements define Phase 4 outputs. [VERIFIED: src/block_detected/detector.py; VERIFIED: .planning/ROADMAP.md]
-- Pitfalls: MEDIUM - API pitfalls are verified, while semantic-upright and real-image robustness depend on block markings and captured fixtures not specified yet. [CITED: https://pyimagesearch.com/2016/03/21/ordering-coordinates-clockwise-with-python-and-opencv/; ASSUMED]
-- Validation: MEDIUM - Test architecture is clear, but current shell lacks OpenCV/NumPy/pytest until dev extras are installed. [VERIFIED: local import probe; VERIFIED: pyproject.toml]
+- Standard stack: HIGH - OpenCV, NumPy, pytest versions and APIs were verified against PyPI/local probes and official docs. [VERIFIED: PyPI JSON probe; CITED: https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html; CITED: https://numpy.org/doc/stable/reference/generated/numpy.mean.html]
+- Architecture: MEDIUM - The module boundary matches current worktree Phase 3 code, but those Phase 3 files are untracked and could change before planning. [VERIFIED: `git status --short`; VERIFIED: src/block_detected/detector.py]
+- Pitfalls: HIGH for OpenCV `minAreaRect`/warp mechanics and MEDIUM for semantic orientation risks. [CITED: https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html; ASSUMED]
+- Validation: MEDIUM - Test architecture is clear, but `cv2`, `numpy`, and `pytest` are not currently installed locally. [VERIFIED: local import probes]
 
-**Research date:** 2026-05-31 [VERIFIED: local environment context]  
-**Valid until:** 2026-06-30 for OpenCV geometry APIs; revisit within 7 days of Phase 5 choosing model input shape or target-Pi dependency pins. [ASSUMED]
+**Research date:** 2026-05-31 [VERIFIED: user environment context]
+**Valid until:** 2026-06-30 for OpenCV/NumPy API usage; revisit before Phase 5 if the classifier input size or orientation contract changes. [ASSUMED]
