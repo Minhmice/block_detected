@@ -47,7 +47,12 @@ Plans:
   1. System captures 640×480 frames from Pi Camera (CSI) or USB camera via a single backend abstraction
   2. Exposure and white balance are locked when the hardware supports it, producing consistent frames under fixed lighting
   3. Raw frames (and optional debug overlays) are saved to a debug directory with monotonic frame identifiers
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Wave 0: pytest scaffolding, CaptureFrame/FrameSource, ImageSequenceFrameSource, camera.example.json (CAM-01 partial)
+- [ ] 02-02-PLAN.md — Wave 1: PiCamera2 + USB adapters, CAM-02 lock metadata, create_frame_source, hardware smoke (CAM-01, CAM-02)
+- [ ] 02-03-PLAN.md — Wave 2: DebugFrameWriter path/retention, CAM-03 debug artifacts (CAM-03)
 
 ### Phase 3: Preprocess & Contour Detection
 **Goal**: Input frames yield filtered square-face contour candidates ready for geometry
@@ -118,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Contract & Pipeline Skeleton | 0/2 | Planned | - |
-| 2. Camera & Capture | 0/TBD | Not started | - |
+| 2. Camera & Capture | 0/3 | Not started | - |
 | 3. Preprocess & Contour Detection | 0/TBD | Not started | - |
 | 4. Corner Ordering, Warp & Geometry | 0/TBD | Not started | - |
 | 5. CNN Classification | 0/TBD | Not started | - |
