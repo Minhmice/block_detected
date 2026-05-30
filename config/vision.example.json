@@ -18,5 +18,8 @@
     "aspect_min": 0.75,
     "aspect_max": 1.33,
     "approx_epsilon_ratio": 0.03
+  },
+  "geometry": {
+    "warp_size": 128
   }
 }
