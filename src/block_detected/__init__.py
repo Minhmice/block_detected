@@ -22,6 +22,17 @@ from .detection_contract import (
     result_to_json,
     validate_detection_result,
 )
+from .camera import (
+    CameraSettings,
+    CaptureFrame,
+    FrameSource,
+    ImageSequenceFrameSource,
+    PiCamera2FrameSource,
+    UsbVideoCaptureFrameSource,
+    create_frame_source,
+    load_camera_settings,
+)
+from .debug import DebugFrameWriter, DebugSettings
 from .pipeline import detect_block
 
 __version__ = "0.1.0"
@@ -42,8 +53,18 @@ __all__ = [
     "SAMPLE_NO_DETECTION",
     "SAMPLE_OUTPUTS_JSON",
     "SAMPLE_SUCCESS_BLOCK_1",
+    "CameraSettings",
+    "CaptureFrame",
+    "DebugFrameWriter",
+    "DebugSettings",
+    "FrameSource",
+    "ImageSequenceFrameSource",
+    "PiCamera2FrameSource",
+    "UsbVideoCaptureFrameSource",
     "__version__",
+    "create_frame_source",
     "detect_block",
+    "load_camera_settings",
     "make_multiple_candidates_result",
     "make_no_detection_result",
     "result_to_dict",
