@@ -13,9 +13,9 @@
 
 ### Camera & Capture
 
-- [ ] **CAM-01**: Capture 640×480 from Pi Camera or USB via stable backend abstraction
-- [ ] **CAM-02**: Lock exposure and white balance when hardware supports it
-- [ ] **CAM-03**: Save raw frames (and optional overlay) to debug directory with frame id
+- [x] **CAM-01**: Capture 640×480 from Pi Camera or USB via stable backend abstraction — Phase 2 *(2026-05-31)*
+- [x] **CAM-02**: Lock exposure and white balance when hardware supports it — Phase 2 *(2026-05-31)*
+- [x] **CAM-03**: Save raw frames (and optional overlay) to debug directory with frame id — Phase 2 *(2026-05-31)*
 
 ### Preprocess & Geometry
 
@@ -83,9 +83,9 @@
 | CONT-01 | Phase 1 | Complete |
 | CONT-02 | Phase 1 | Complete |
 | CONT-03 | Phase 1 | Complete |
-| CAM-01 | Phase 2 | Pending |
-| CAM-02 | Phase 2 | Pending |
-| CAM-03 | Phase 2 | Pending |
+| CAM-01 | Phase 2 | Complete |
+| CAM-02 | Phase 2 | Complete |
+| CAM-03 | Phase 2 | Complete |
 | GEO-01 | Phase 3 | Pending |
 | GEO-02 | Phase 3 | Pending |
 | GEO-03 | Phase 4 | Pending |

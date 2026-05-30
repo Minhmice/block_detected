@@ -11,7 +11,7 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
 - Decimal phases (e.g., 2.1): Urgent insertions via `/gsd-insert-phase`
 
 - [x] **Phase 1: Contract & Pipeline Skeleton** - Public `detect_block` API wired to existing `DetectionResult` contract
-- [ ] **Phase 2: Camera & Capture** - Stable 640×480 acquisition with debug frame saving
+- [x] **Phase 2: Camera & Capture** - Stable 640×480 acquisition with debug frame saving
 - [ ] **Phase 3: Preprocess & Contour Detection** - Grayscale/threshold/morphology chain and square-face candidate finding
 - [ ] **Phase 4: Corner Ordering, Warp & Geometry** - TL/TR/BR/BL ordering, perspective warp, center and angle
 - [ ] **Phase 5: CNN Classification** - TFLite INT8 4-class classifier with training pipeline
@@ -49,9 +49,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Wave 0: pytest scaffolding, CaptureFrame/FrameSource, ImageSequenceFrameSource, camera.example.json (CAM-01 partial)
-- [ ] 02-02-PLAN.md — Wave 1: PiCamera2 + USB adapters, CAM-02 lock metadata, create_frame_source, hardware smoke (CAM-01, CAM-02)
-- [ ] 02-03-PLAN.md — Wave 2: DebugFrameWriter path/retention, CAM-03 debug artifacts (CAM-03)
+- [x] 02-01-PLAN.md — Wave 0: pytest scaffolding, CaptureFrame/FrameSource, ImageSequenceFrameSource
+- [x] 02-02-PLAN.md — Wave 1: PiCamera2 + USB adapters, CAM-02 metadata, create_frame_source, camera_smoke
+- [x] 02-03-PLAN.md — Wave 2: DebugFrameWriter path/retention, CAM-03
 
 ### Phase 3: Preprocess & Contour Detection
 **Goal**: Input frames yield filtered square-face contour candidates ready for geometry
