@@ -19,8 +19,8 @@
 
 ### Preprocess & Geometry
 
-- [ ] **GEO-01**: Preprocess chain: BGR→gray, light blur, adaptive threshold or Canny, morphology open/close
-- [ ] **GEO-02**: Find square-face candidates via contours + `approxPolyDP` (4 vertices, convex, area min/max, aspect ~1:1)
+- [x] **GEO-01**: Preprocess chain: BGR→gray, light blur, adaptive threshold or Canny, morphology open/close
+- [x] **GEO-02**: Find square-face candidates via contours + `approxPolyDP` (4 vertices, convex, area min/max, aspect ~1:1)
 - [ ] **GEO-03**: Order corners consistently: top-left, top-right, bottom-right, bottom-left
 - [ ] **GEO-04**: `warpPerspective` face to canonical 128×128 (or 160×160) for classification
 - [ ] **GEO-05**: Compute `center_px` as mean of corners and `angle_deg` from top edge (e.g. atan2 TR−TL)
@@ -86,8 +86,8 @@
 | CAM-01 | Phase 2 | Complete |
 | CAM-02 | Phase 2 | Complete |
 | CAM-03 | Phase 2 | Complete |
-| GEO-01 | Phase 3 | Pending |
-| GEO-02 | Phase 3 | Pending |
+| GEO-01 | Phase 3 | Complete |
+| GEO-02 | Phase 3 | Complete |
 | GEO-03 | Phase 4 | Pending |
 | GEO-04 | Phase 4 | Pending |
 | GEO-05 | Phase 4 | Pending |

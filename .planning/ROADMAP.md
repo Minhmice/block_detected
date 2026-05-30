@@ -12,7 +12,7 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
 
 - [x] **Phase 1: Contract & Pipeline Skeleton** - Public `detect_block` API wired to existing `DetectionResult` contract
 - [x] **Phase 2: Camera & Capture** - Stable 640×480 acquisition with debug frame saving
-- [ ] **Phase 3: Preprocess & Contour Detection** - Grayscale/threshold/morphology chain and square-face candidate finding
+- [x] **Phase 3: Preprocess & Contour Detection** - Grayscale/threshold/morphology chain and square-face candidate finding
 - [ ] **Phase 4: Corner Ordering, Warp & Geometry** - TL/TR/BR/BL ordering, perspective warp, center and angle
 - [ ] **Phase 5: CNN Classification** - TFLite INT8 4-class classifier with training pipeline
 - [ ] **Phase 6: Pose & Calibration** - Pixel-to-mm homography and robot pickup pose
@@ -64,9 +64,11 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Wave 0: `preprocess.py`, GEO-01 masks, `vision.example.json`, `test_preprocess.py`
-- [ ] 03-02-PLAN.md — Wave 1: `detector.py`, GEO-02 square candidates, `test_detector.py`
-- [ ] 03-03-PLAN.md — Wave 2: `vision.py` frame helper + overlay, `square_face.png` fixture, integration tests
+- [x] 03-01-PLAN.md — Wave 0: `preprocess.py`, GEO-01 masks, `vision.example.json`, `test_preprocess.py`
+- [x] 03-02-PLAN.md — Wave 1: `detector.py`, GEO-02 square candidates, `test_detector.py`
+- [x] 03-03-PLAN.md — Wave 2: `vision.py` frame helper + overlay, `square_face.png` fixture, integration tests
+
+**Progress (2026-05-31):** Phase 3 complete — preprocess, detector, vision helper; 37 pytest tests green.
 
 ### Phase 4: Corner Ordering, Warp & Geometry
 **Goal**: Each candidate yields consistently ordered corners, a canonical face warp, and pixel pose geometry
