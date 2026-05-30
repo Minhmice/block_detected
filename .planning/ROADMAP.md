@@ -10,7 +10,7 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
 - Integer phases (1–8): Planned milestone work
 - Decimal phases (e.g., 2.1): Urgent insertions via `/gsd-insert-phase`
 
-- [ ] **Phase 1: Contract & Pipeline Skeleton** - Public `detect_block` API wired to existing `DetectionResult` contract
+- [ ] **Phase 1: Contract & Pipeline Skeleton** - Public `detect_block` API wired to existing `DetectionResult` contract *(Task 1: `detection_contract.py` done — see `.planning/notes/task-01-contract.md`)*
 - [ ] **Phase 2: Camera & Capture** - Stable 640×480 acquisition with debug frame saving
 - [ ] **Phase 3: Preprocess & Contour Detection** - Grayscale/threshold/morphology chain and square-face candidate finding
 - [ ] **Phase 4: Corner Ordering, Warp & Geometry** - TL/TR/BR/BL ordering, perspective warp, center and angle
@@ -29,7 +29,15 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
   1. Calling `detect_block(frame)` returns a `DetectionResult` that passes contract validation helpers
   2. Successful stub/synthetic detection populates `block_id`, `confidence`, `center_px`, `corners_px` (TL, TR, BR, BL), and `angle_deg`
   3. Rejected or ambiguous frames return the correct `status` with `debug.rejection_reason` and no fabricated corner geometry
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Wave 0: unittest scaffold (contract regression + failing detect_block tests)
+- [ ] 01-02-PLAN.md — Wave 1: flat `block_detected/` package, MULTIPLE_CANDIDATES fix, `detect_block` stub
+
+**Progress (2026-05-31):**
+- [x] Output contract module + validation + sample JSON (`detection_contract.py`, smoke test `python -B`)
+- [ ] `detect_block(frame)` entry point (stub acceptable)
 
 ### Phase 2: Camera & Capture
 **Goal**: Pipeline receives stable 640×480 frames from Pi Camera or USB with reproducible capture settings
@@ -109,7 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Contract & Pipeline Skeleton | 0/TBD | Not started | - |
+| 1. Contract & Pipeline Skeleton | 0/2 | Planned | - |
 | 2. Camera & Capture | 0/TBD | Not started | - |
 | 3. Preprocess & Contour Detection | 0/TBD | Not started | - |
 | 4. Corner Ordering, Warp & Geometry | 0/TBD | Not started | - |
