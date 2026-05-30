@@ -13,11 +13,12 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
 - [x] **Phase 1: Contract & Pipeline Skeleton** - Public `detect_block` API wired to existing `DetectionResult` contract
 - [x] **Phase 2: Camera & Capture** - Stable 640×480 acquisition with debug frame saving
 - [x] **Phase 3: Preprocess & Contour Detection** - Grayscale/threshold/morphology chain and square-face candidate finding
-- [ ] **Phase 4: Corner Ordering, Warp & Geometry** - TL/TR/BR/BL ordering, perspective warp, center and angle
-- [ ] **Phase 5: CNN Classification** - TFLite INT8 4-class classifier with training pipeline
-- [ ] **Phase 6: Pose & Calibration** - Pixel-to-mm homography and robot pickup pose
-- [ ] **Phase 7: Reject Logic & Integration** - Full end-to-end pipeline with safety reject paths
-- [ ] **Phase 8: Test & Evaluation** - Labeled test set, offline metrics, integration smoke test
+- [x] **Phase 4: Corner Ordering, Warp & Geometry** - TL/TR/BR/BL ordering, perspective warp, center and angle
+- [x] **Phase 5: CNN Classification** - TFLite INT8 4-class classifier with training pipeline
+- [x] **Phase 6: Pose & Calibration** - Pixel-to-mm homography and robot pickup pose
+- [x] **Phase 7: Reject Logic & Integration** - Full end-to-end pipeline with safety reject paths
+- [x] **Phase 8: Test & Evaluation** - Labeled test set, offline metrics, integration smoke test
+- [ ] **Phase 9: Next.js + FastAPI detection console UI** - WebSocket telemetry, MJPEG stream, Docker Compose
 
 ## Phase Details
 
@@ -78,7 +79,9 @@ Plans:
   1. Corners are output in consistent TL, TR, BR, BL order regardless of block rotation in the frame
   2. `warpPerspective` produces a canonical 128×128 (or 160×160) face crop suitable for classification
   3. `center_px` equals the mean of ordered corners and `angle_deg` matches top-edge orientation (TR − TL)
-**Plans**: TBD
+**Plans**: executed (autonomous)
+
+**Progress (2026-05-31):** `geometry.py` — order_corners, warp 128×128, center/angle.
 
 ### Phase 5: CNN Classification
 **Goal**: Warped face crops are classified into four block identities with documented confidence
@@ -88,7 +91,9 @@ Plans:
   1. TFLite INT8 model classifies a warped face crop into one of four block classes on target Pi hardware
   2. Classification confidence is exposed and mapped to `DetectionResult.confidence` with a documented acceptance threshold
   3. Training pipeline collects warped crops, trains a small CNN, and exports a deployable INT8 `.tflite` model
-**Plans**: TBD
+**Plans**: executed (autonomous)
+
+**Progress (2026-05-31):** `classifier.py` — stub + optional TFLite; `train_classifier.md` scaffold.
 
 ### Phase 6: Pose & Calibration
 **Goal**: When calibration is present, pixel geometry converts to robot-ready pickup coordinates
@@ -98,7 +103,9 @@ Plans:
   1. Calibration artifacts (table homography, robot origin offset, gripper offset; optional intrinsics) load without error
   2. When calibration is present, detection populates `pickup_pose` with `x_mm`, `y_mm`, and `theta_deg` derived from pixel center and angle
   3. Calibration procedure is documented using checkerboard or known table landmarks (no ArUco on blocks)
-**Plans**: TBD
+**Plans**: executed (autonomous)
+
+**Progress (2026-05-31):** `calibration.py`, `calibration.example.json`.
 
 ### Phase 7: Reject Logic & Integration
 **Goal**: Full pipeline runs end-to-end with robust rejection for ambiguous or unsafe detections
@@ -109,7 +116,9 @@ Plans:
   2. Classification below threshold returns `low_confidence`; invalid/skewed quads return `invalid_geometry`
   3. Multiple overlapping candidates return `multiple_candidates`; face area below minimum returns rejection with documented reason
   4. Integrated `detect_block` runs capture → preprocess → contours → geometry → classify → pose → reject in a single call
-**Plans**: TBD
+**Plans**: executed (autonomous)
+
+**Progress (2026-05-31):** Full `detect_block` pipeline with all reject paths.
 
 ### Phase 8: Test & Evaluation
 **Goal**: Pipeline accuracy and integration are measured against a real-world labeled test set
@@ -119,23 +128,48 @@ Plans:
   1. Labeled test set covers all 4 blocks across varied rotation, distance, lighting, pallet, and partial occlusion
   2. Offline evaluator reports per-class accuracy, corner error, and false reject rate on the test set
   3. Integration smoke test runs camera → `detect_block` → JSON result on sample frames without manual intervention
-**Plans**: TBD
+**Plans**: executed (autonomous)
+
+**Progress (2026-05-31):** `eval_offline.py`, integration tests; 50 pytest tests green.
+
+### Phase 9: Next.js + FastAPI detection console UI with WebSocket telemetry, MJPEG stream, and Docker Compose
+
+**Goal:** Operators run a Next.js cyber-console against a FastAPI wrapper that streams MJPEG, pushes WebSocket telemetry, and controls the existing `detect_block` pipeline (mock mode on dev, real camera on Pi).
+**Depends on:** Phase 8
+**Requirements**: UI-09-01, UI-09-02, UI-09-03, UI-09-04, UI-09-05, UI-09-06, UI-09-07, UI-09-08
+**Success Criteria** (what must be TRUE):
+  1. Browser shows live 640×480 MJPEG feed and Canvas overlay aligned to detection corners
+  2. WebSocket delivers FPS, latency, and camelCase detection JSON matching TypeScript types
+  3. All console buttons call real REST endpoints (start/stop/params/calibration/dataset save)
+  4. `MOCK_CAMERA=true` runs full UI without USB/Pi camera
+  5. `npm run dev:all` and `docker compose up` documented and working
+**Plans:** 7 plans
+
+Plans:
+- [ ] 09-01-PLAN.md — Wave 0: wire golden fixture, API test scaffold, dev:all, .env.example
+- [ ] 09-02-PLAN.md — Wave 1: Pydantic wire schemas, mock frame factory, /health + CORS
+- [ ] 09-03-PLAN.md — Wave 1: detection loop, MJPEG, WebSocket, REST routes
+- [ ] 09-04-PLAN.md — Wave 2: Next.js scaffold, Tailwind tokens, Zustand, api/ws libs
+- [ ] 09-05-PLAN.md — Wave 3: AppShell, camera, overlay, detection controls
+- [ ] 09-06-PLAN.md — Wave 3: classification, telemetry, calibration/dataset, log terminal
+- [ ] 09-07-PLAN.md — Wave 4: Docker Compose, README, integration UAT checkpoint
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+Phases execute in numeric order: 1 → 2 → … → 9
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Contract & Pipeline Skeleton | 3/3 | Complete | 2026-05-31 |
 | 2. Camera & Capture | 3/3 | Complete | 2026-05-31 |
-| 3. Preprocess & Contour Detection | 0/TBD | Not started | - |
-| 4. Corner Ordering, Warp & Geometry | 0/TBD | Not started | - |
-| 5. CNN Classification | 0/TBD | Not started | - |
-| 6. Pose & Calibration | 0/TBD | Not started | - |
-| 7. Reject Logic & Integration | 0/TBD | Not started | - |
-| 8. Test & Evaluation | 0/TBD | Not started | - |
+| 3. Preprocess & Contour Detection | 3/3 | Complete | 2026-05-31 |
+| 4. Corner Ordering, Warp & Geometry | 1/1 | Complete | 2026-05-31 |
+| 5. CNN Classification | 1/1 | Complete | 2026-05-31 |
+| 6. Pose & Calibration | 1/1 | Complete | 2026-05-31 |
+| 7. Reject Logic & Integration | 1/1 | Complete | 2026-05-31 |
+| 8. Test & Evaluation | 1/1 | Complete | 2026-05-31 |
+| 9. Next.js + FastAPI detection console UI | 0/7 | Planned | — |
 
 ---
 *Roadmap created: 2026-05-31*
