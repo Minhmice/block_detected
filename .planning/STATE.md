@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Task 1 contract complete; next: `detect_block` skeleton or `/gsd-plan-phase 1` remainder"
-last_updated: "2026-05-30T21:01:07.315Z"
-last_activity: 2026-05-30 -- Phase 01 execution started
+stopped_at: "Phase 01 complete; ready for /gsd-execute-phase 2"
+last_updated: "2026-05-31"
+last_activity: 2026-05-31 — Phase 01 executed (3/3 plans, 10 tests green)
 progress:
   total_phases: 8
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 6
-  completed_plans: 0
-  percent: 0
+  completed_plans: 3
+  percent: 25
 ---
 
 # Project State
@@ -21,63 +21,54 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-31)
 
 **Core value:** Reliable block ID plus four ordered corners and angle for robot pickup
-**Current focus:** Phase 01 — contract-pipeline-skeleton
+**Current focus:** Phase 2 — Camera & Capture
 
 ## Current Position
 
-Phase: 01 (contract-pipeline-skeleton) — EXECUTING
-Plan: 1 of 3
-Status: Executing Phase 01
-Last activity: 2026-05-30 -- Phase 01 execution started
+Phase: 2 of 8 (Camera & Capture)
+Plan: 02-01 next
+Status: Phase 1 complete
+Last activity: 2026-05-31 — Phase 1 executed (01-01, 01-02, 01-03)
 
-Progress: [█░░░░░░░░░] ~12% (contract foundation; see `.planning/notes/task-01-contract.md`)
+Progress: [██░░░░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0
+- Total plans completed: 3
 - Average duration: —
-- Total execution time: 0 hours
+- Total execution time: —
 
 **By Phase:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| — | — | — | — |
-
-**Recent Trend:**
-
-- Last 5 plans: —
-- Trend: —
-
-*Updated after each plan completion*
+| Phase | Plans | Completed |
+|-------|-------|-----------|
+| 01 | 3 | 3 |
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+- `MULTIPLE_CANDIDATES` = no-candidate rejection (no fabricated geometry)
+- `src/block_detected/` + editable install via `.venv` on PEP 668 hosts
+- `detect_block` stub: ordinary → `NO_DETECTION`; test sentinels for success/ambiguous
 
-- No ArUco; contour + warp + TFLite INT8 CNN (Mode B) as v1 path
-- Extend existing `detection_contract.py` as integration boundary
-- Warp size 128×128 (or 160×160) — finalize in Phase 4/5
+### Completed (Phase 1)
 
-### Completed (session)
-
-- **Task 1:** `detection_contract.py` — contract types, validation, JSON samples, smoke test (`python -B`).
+- Package, `detect_block`, contract shim, `make_multiple_candidates_result`
+- Tests: `tests/test_detection_contract.py`, `tests/test_pipeline.py`
 
 ### Pending Todos
 
-- Implement `detect_block(frame)` stub → `DetectionResult` (CONT-01).
+- Execute Phase 2 camera capture plans
 
 ### Blockers/Concerns
 
-None yet.
+None.
 
 ## Session Continuity
 
 Last session: 2026-05-31
-Stopped at: Task 1 contract complete; next: `detect_block` skeleton or `/gsd-plan-phase 1` remainder
+Stopped at: Phase 01 complete
 Resume file: None
