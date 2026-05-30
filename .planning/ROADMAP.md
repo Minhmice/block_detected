@@ -159,13 +159,19 @@ Plans:
 
 **Goal:** Dev machine runs live camera capture (USB or built-in) end-to-end through the console — no `MOCK_CAMERA`, no image sequence fallback
 **Depends on:** Phase 9
-**Requirements**: TBD (CAM-10-xx to be defined in plan)
+**Requirements**: CAM-10-01, CAM-10-02, CAM-10-03, CAM-10-04
 **Success Criteria** (what must be TRUE):
-  1. TBD (run `/gsd-plan-phase 10`)
-**Plans:** 0 plans
+  1. `camera_smoke.py --config config/camera.usb.mac.json` captures 640×480 BGR frames on dev Mac
+  2. `MOCK_CAMERA=false` + explicit START streams live MJPEG and WebSocket telemetry in console
+  3. Platform backend auto-selects AVFoundation on macOS (no hardcoded V4L2)
+  4. CI pytest suite passes with mocked VideoCapture (no hardware required)
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 10 to break down)
+- [ ] 10-01-PLAN.md — Wave 0: `_select_cv_backend`, `cv_backend` field, unit tests
+- [ ] 10-02-PLAN.md — Wave 1: `camera.usb.mac.json`, `.env.real.example`, factory test
+- [ ] 10-03-PLAN.md — Wave 2: API idle/start tests, non-blocking camera open, LIVE_CAMERA UI
+- [ ] 10-04-PLAN.md — Wave 3: README, UAT checklist, hw_camera marker (human checkpoint)
 
 ## Progress
 
@@ -183,7 +189,7 @@ Phases execute in numeric order: 1 → 2 → … → 10
 | 7. Reject Logic & Integration | 1/1 | Complete | 2026-05-31 |
 | 8. Test & Evaluation | 1/1 | Complete | 2026-05-31 |
 | 9. Next.js + FastAPI detection console UI | 0/7 | In progress | — |
-| 10. Real camera on dev machine | 0/0 | Not planned | — |
+| 10. Real camera on dev machine | 0/4 | Ready to execute | — |
 
 ---
 *Roadmap created: 2026-05-31*

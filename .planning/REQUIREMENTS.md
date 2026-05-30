@@ -66,6 +66,13 @@
 
 - **OPS-01**: Live tuning UI for threshold and reject parameters
 
+### Camera & Capture (Phase 10 — dev real camera)
+
+- **CAM-10-01**: Live USB/built-in capture at 640×480 without mock mode on dev machine
+- **CAM-10-02**: Platform-aware OpenCV VideoCapture backend (`auto` → AVFoundation on macOS, V4L2 on Linux)
+- **CAM-10-03**: Console MJPEG + WebSocket telemetry after explicit `POST /api/detection/start` when `MOCK_CAMERA=false`
+- **CAM-10-04**: `camera_smoke.py` validates live capture using `config/camera.usb.mac.json`
+
 ### Detection Console UI (Phase 9)
 
 - **UI-09-01**: MJPEG video stream at `GET /video/stream` viewable in browser camera panel
@@ -124,11 +131,16 @@
 | UI-09-06 | Phase 9 | Planned |
 | UI-09-07 | Phase 9 | Planned |
 | UI-09-08 | Phase 9 | Planned |
+| CAM-10-01 | Phase 10 | Planned |
+| CAM-10-02 | Phase 10 | Planned |
+| CAM-10-03 | Phase 10 | Planned |
+| CAM-10-04 | Phase 10 | Planned |
 
 **Coverage:**
 - v1 requirements: 25 total
 - Phase 9 UI requirements: 8 total
-- Mapped to phases: 33
+- Phase 10 camera requirements: 4 total
+- Mapped to phases: 37
 
 ---
 *Requirements defined: 2026-05-31*
