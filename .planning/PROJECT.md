@@ -12,7 +12,8 @@ For every valid frame, the system must reliably output **which block (1–4)** w
 
 ### Validated
 
-- ✓ **Output contract + public API (Phase 1)** — `src/block_detected/`: contract types, `make_no_detection_result()`, `make_multiple_candidates_result()`, `validate_detection_result()`, `detect_block(frame)` stub, root shim. Stdlib-only; 10 unittest tests green. *(Phase 1, 2026-05-31)*
+- ✓ **Output contract + public API (Phase 1)** — `detect_block`, contract validation, package layout. *(Phase 1, 2026-05-31)*
+- ✓ **Camera capture (Phase 2)** — `FrameSource` (image_sequence, picamera2, usb), 640×480 BGR, CAM-02 metadata, `DebugFrameWriter`, `scripts/camera_smoke.py`. 20 pytest tests green. *(Phase 2, 2026-05-31)*
 
 ### Active
 

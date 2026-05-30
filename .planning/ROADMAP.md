@@ -121,8 +121,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Contract & Pipeline Skeleton | 0/2 | Planned | - |
-| 2. Camera & Capture | 0/3 | Not started | - |
+| 1. Contract & Pipeline Skeleton | 3/3 | Complete | 2026-05-31 |
+| 2. Camera & Capture | 3/3 | Complete | 2026-05-31 |
 | 3. Preprocess & Contour Detection | 0/TBD | Not started | - |
 | 4. Corner Ordering, Warp & Geometry | 0/TBD | Not started | - |
 | 5. CNN Classification | 0/TBD | Not started | - |
