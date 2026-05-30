@@ -66,6 +66,17 @@
 
 - **OPS-01**: Live tuning UI for threshold and reject parameters
 
+### Detection Console UI (Phase 9)
+
+- **UI-09-01**: MJPEG video stream at `GET /video/stream` viewable in browser camera panel
+- **UI-09-02**: WebSocket at `/ws/detection` delivers live FPS, latency, and detection telemetry JSON
+- **UI-09-03**: Canvas/SVG overlay draws bounding box, four corners, center, angle arrow, pickup pose text
+- **UI-09-04**: REST controls: start/stop detection, update params, save calibration, save dataset frame
+- **UI-09-05**: Mock camera mode (`MOCK_CAMERA` / `DETECTION_MODE=mock`) with stable fake data when hardware unavailable
+- **UI-09-06**: Docker Compose starts frontend + backend with healthchecks
+- **UI-09-07**: Local dev via `npm run dev:all` or `make dev`; env vars for API/WS/stream URLs only
+- **UI-09-08**: camelCase wire format matches TypeScript types (`blockId`, `cornersPx`, `pickupPoseMm`, etc.)
+
 ## Out of Scope
 
 | Feature | Reason |
@@ -105,11 +116,19 @@
 | TEST-01 | Phase 8 | Complete (scaffold) |
 | TEST-02 | Phase 8 | Complete (scaffold) |
 | TEST-03 | Phase 8 | Complete |
+| UI-09-01 | Phase 9 | Planned |
+| UI-09-02 | Phase 9 | Planned |
+| UI-09-03 | Phase 9 | Planned |
+| UI-09-04 | Phase 9 | Planned |
+| UI-09-05 | Phase 9 | Planned |
+| UI-09-06 | Phase 9 | Planned |
+| UI-09-07 | Phase 9 | Planned |
+| UI-09-08 | Phase 9 | Planned |
 
 **Coverage:**
 - v1 requirements: 25 total
-- Mapped to phases: 25
-- Unmapped: 0 ✓
+- Phase 9 UI requirements: 8 total
+- Mapped to phases: 33
 
 ---
 *Requirements defined: 2026-05-31*

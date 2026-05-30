@@ -704,21 +704,13 @@ app.add_middleware(
 | A4 | Client-side-only API calls (no SSR backend fetch) | Next.js pattern | Docker networking confusion |
 | A5 | Next.js 16.x acceptable despite project not previously pinning frontend | Standard Stack | Minor breaking changes vs 15 |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Classification scores source**
-   - What we know: `DetectionResult.confidence` is scalar; CONTEXT wants 4-class panel.
-   - What's unclear: Whether `classify_face` exposes full softmax vector.
-   - Recommendation: Planner adds optional `ClassificationScores` in telemetry built from classifier when available; stub in mock mode.
+1. **Classification scores source** — **RESOLVED:** Optional `classificationScores` on telemetry wire; mock `{block01:0.25, block02:0.25, block03:0.25, block04:0.25}` when classifier has no softmax vector; real scores when `classifier.py` exposes them (`# TODO` at injection point in Plan 03).
 
-2. **Auto-start detection loop on backend boot?**
-   - What we know: REST has explicit start/stop; UI has START/STOP buttons.
-   - What's unclear: Default idle vs running in mock dev.
-   - Recommendation: Idle by default; mock mode may auto-start when `DETECTION_MODE=mock` for faster UX (discretion).
+2. **Auto-start detection loop on backend boot?** — **RESOLVED:** Idle by default; auto-start only when `MOCK_CAMERA=true` OR `DETECTION_MODE=mock` (lifespan hook in Plan 03). Real camera requires explicit POST `/api/detection/start`.
 
-3. **nginx in v1 compose?**
-   - What we know: Optional per CONTEXT discretion; TLS deferred.
-   - Recommendation: Wave 2 optional; dev uses direct ports + CORS.
+3. **nginx in v1 compose?** — **RESOLVED:** Deferred. Plan 07 includes commented optional Compose profile only; dev uses direct ports + `CORS_ORIGINS`. TLS/nginx is production hardening, out of v1 scope.
 
 ## Environment Availability
 
@@ -866,10 +858,10 @@ app.add_middleware(
 | Architecture | HIGH | Matches existing Python modules + documented streaming/WS patterns |
 | Pitfalls | MEDIUM-HIGH | Camera/overlay issues documented; classifier scores need planner decision |
 
-### Open Questions
-- Source of 4-class `ClassificationScores` for panel (not in current contract)
-- Auto-start detection in mock dev vs explicit START button only
-- Include nginx in v1 compose or defer
+### Open Questions (RESOLVED)
+- ClassificationScores: optional wire field; mock 0.25 split or classifier vector when available
+- Auto-start: only when MOCK_CAMERA/DETECTION_MODE=mock; else explicit START
+- nginx: deferred; comment-only optional profile in Plan 07
 
 ### Ready for Planning
 Research complete. Planner can now create PLAN.md files.

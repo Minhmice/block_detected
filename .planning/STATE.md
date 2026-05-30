@@ -1,35 +1,45 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
+milestone_name: milestone
 status: executing
-stopped_at: "Phase 03 complete; ready for Phase 04"
-last_updated: 2026-05-31
-last_activity: 2026-05-31 — Phase 03 executed (37 tests green)
+last_updated: "2026-05-30T21:46:37.640Z"
 progress:
-  total_phases: 8
+  total_phases: 9
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
-  percent: 62
+  total_plans: 16
+  completed_plans: 10
+  percent: 63
 ---
 
 # Project State
 
 **Core value:** Reliable block ID plus four ordered corners and angle for robot pickup
-**Current focus:** Phase 4 — Corner Ordering, Warp & Geometry
+**Current focus:** Phase 9 — Next.js + FastAPI detection console UI
 
 ## Current Position
 
-Phase: 4 of 8
-Status: Phase 3 complete
-Progress: [█████░░░░░] 62%
+Phase: 9 of 9
+Status: Ready to execute
+Progress: [█████████░] 89%
 
 ## Completed
 
-- Phase 1: contract + `detect_block` stub
-- Phase 2: `FrameSource` (image_sequence, picamera2, usb), `DebugFrameWriter`, `camera_smoke.py`
-- Phase 3: `preprocess_bgr`, `find_square_candidates`, `find_square_candidates_from_frame`, `draw_candidate_overlay`
+- Phases 1–3: contract, camera, preprocess/contours
+- Phase 4: `geometry.py` (TL/TR/BR/BL, warp 128, center, angle)
+- Phase 5: `classifier.py` (stub + optional TFLite)
+- Phase 6: `calibration.py` + example homography
+- Phase 7: integrated `detect_block` with reject paths
+- Phase 8: `eval_offline.py`, integration tests
 
 ## Next
 
-`/gsd-plan-phase 4` or `/gsd-execute-phase 4` when plans exist
+- `/gsd-execute-phase 9` — run Wave 0 plan 09-01 first
+- Deploy INT8 model to `models/block_classifier_int8.tflite`
+- Collect labeled set under `tests/fixtures/labeled/`
+
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 9 added: Next.js + FastAPI detection console UI with WebSocket telemetry, MJPEG stream, and Docker Compose

@@ -148,11 +148,11 @@ Plans:
 Plans:
 - [ ] 09-01-PLAN.md — Wave 0: wire golden fixture, API test scaffold, dev:all, .env.example
 - [ ] 09-02-PLAN.md — Wave 1: Pydantic wire schemas, mock frame factory, /health + CORS
-- [ ] 09-03-PLAN.md — Wave 1: detection loop, MJPEG, WebSocket, REST routes
-- [ ] 09-04-PLAN.md — Wave 2: Next.js scaffold, Tailwind tokens, Zustand, api/ws libs
-- [ ] 09-05-PLAN.md — Wave 3: AppShell, camera, overlay, detection controls
-- [ ] 09-06-PLAN.md — Wave 3: classification, telemetry, calibration/dataset, log terminal
-- [ ] 09-07-PLAN.md — Wave 4: Docker Compose, README, integration UAT checkpoint
+- [ ] 09-03-PLAN.md — Wave 2: detection loop, MJPEG, WebSocket, REST routes
+- [ ] 09-04-PLAN.md — Wave 3: Next.js scaffold, Tailwind tokens, Zustand, api/ws libs
+- [ ] 09-05-PLAN.md — Wave 4: AppShell, camera, overlay, detection controls
+- [ ] 09-06-PLAN.md — Wave 4: classification, telemetry, calibration/dataset, log terminal
+- [ ] 09-07-PLAN.md — Wave 5: Docker Compose, README, integration UAT checkpoint
 
 ## Progress
 
