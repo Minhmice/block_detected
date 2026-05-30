@@ -107,10 +107,10 @@
 | TEST-03 | Phase 8 | Pending |
 
 **Coverage:**
-- v1 requirements: 24 total
-- Mapped to phases: 24 (preliminary — confirm in ROADMAP)
+- v1 requirements: 25 total
+- Mapped to phases: 25
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-31*
-*Last updated: 2026-05-31 after initial definition*
+*Last updated: 2026-05-31 after roadmap traceability confirmed*
