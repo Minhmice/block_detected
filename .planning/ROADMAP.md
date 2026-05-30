@@ -19,6 +19,7 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
 - [x] **Phase 7: Reject Logic & Integration** - Full end-to-end pipeline with safety reject paths
 - [x] **Phase 8: Test & Evaluation** - Labeled test set, offline metrics, integration smoke test
 - [ ] **Phase 9: Next.js + FastAPI detection console UI** - WebSocket telemetry, MJPEG stream, Docker Compose
+- [ ] **Phase 10: Real camera on dev machine** - Live USB/Pi camera feed without mock mode
 
 ## Phase Details
 
@@ -154,10 +155,22 @@ Plans:
 - [ ] 09-06-PLAN.md — Wave 4: classification, telemetry, calibration/dataset, log terminal
 - [ ] 09-07-PLAN.md — Wave 5: Docker Compose, README, integration UAT checkpoint
 
+### Phase 10: Real camera capture on dev machine (no mock — USB/Pi camera live feed)
+
+**Goal:** Dev machine runs live camera capture (USB or built-in) end-to-end through the console — no `MOCK_CAMERA`, no image sequence fallback
+**Depends on:** Phase 9
+**Requirements**: TBD (CAM-10-xx to be defined in plan)
+**Success Criteria** (what must be TRUE):
+  1. TBD (run `/gsd-plan-phase 10`)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 10 to break down)
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → … → 9
+Phases execute in numeric order: 1 → 2 → … → 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -169,7 +182,8 @@ Phases execute in numeric order: 1 → 2 → … → 9
 | 6. Pose & Calibration | 1/1 | Complete | 2026-05-31 |
 | 7. Reject Logic & Integration | 1/1 | Complete | 2026-05-31 |
 | 8. Test & Evaluation | 1/1 | Complete | 2026-05-31 |
-| 9. Next.js + FastAPI detection console UI | 0/7 | Planned | — |
+| 9. Next.js + FastAPI detection console UI | 0/7 | In progress | — |
+| 10. Real camera on dev machine | 0/0 | Not planned | — |
 
 ---
 *Roadmap created: 2026-05-31*

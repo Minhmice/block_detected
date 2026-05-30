@@ -5,23 +5,23 @@ milestone_name: milestone
 status: executing
 last_updated: "2026-05-30T21:46:37.640Z"
 progress:
-  total_phases: 9
-  completed_phases: 3
+  total_phases: 10
+  completed_phases: 8
   total_plans: 16
   completed_plans: 10
-  percent: 63
+  percent: 80
 ---
 
 # Project State
 
 **Core value:** Reliable block ID plus four ordered corners and angle for robot pickup
-**Current focus:** Phase 9 — Next.js + FastAPI detection console UI
+**Current focus:** Phase 9 UAT in progress; Phase 10 queued (real camera)
 
 ## Current Position
 
-Phase: 9 of 9
-Status: Ready to execute
-Progress: [█████████░] 89%
+Phase: 9 of 10 (Phase 10 added)
+Status: Phase 9 executing / UAT
+Progress: [████████░░] 80%
 
 ## Completed
 
@@ -34,12 +34,13 @@ Progress: [█████████░] 89%
 
 ## Next
 
-- `/gsd-execute-phase 9` — run Wave 0 plan 09-01 first
+- Continue `/gsd-verify-work 9` — UAT checkpoint 1 (cold start)
+- `/gsd-plan-phase 10` — real USB/Pi camera on dev machine (no mock)
 - Deploy INT8 model to `models/block_classifier_int8.tflite`
-- Collect labeled set under `tests/fixtures/labeled/`
 
 ## Accumulated Context
 
 ### Roadmap Evolution
 
 - Phase 9 added: Next.js + FastAPI detection console UI with WebSocket telemetry, MJPEG stream, and Docker Compose
+- Phase 10 added: Real camera capture on dev machine (no mock — USB/Pi camera live feed)
