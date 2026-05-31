@@ -6,9 +6,11 @@ Quick run: python -m pytest tests/test_camera_source.py -q
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from unittest import mock
 
+import cv2
 import numpy as np
 import pytest
 
@@ -17,6 +19,7 @@ from block_detected.camera import (
     ImageSequenceFrameSource,
     PiCamera2FrameSource,
     UsbVideoCaptureFrameSource,
+    _select_cv_backend,
     create_frame_source,
     load_camera_settings,
 )
@@ -35,6 +38,43 @@ def test_fake_source_returns_640x480_bgr(fixture_image_dir: Path) -> None:
         assert frame2.frame_id == "frame_000002"
     finally:
         source.stop()
+
+
+def test_backend_selector_darwin(monkeypatch) -> None:
+    monkeypatch.setattr(sys, "platform", "darwin")
+    assert _select_cv_backend("auto") == cv2.CAP_AVFOUNDATION
+
+
+def test_backend_selector_linux(monkeypatch) -> None:
+    monkeypatch.setattr(sys, "platform", "linux")
+    assert _select_cv_backend("auto") == cv2.CAP_V4L2
+
+
+def test_backend_selector_explicit_override(monkeypatch) -> None:
+    monkeypatch.setattr(sys, "platform", "linux")
+    assert _select_cv_backend("avfoundation") == cv2.CAP_AVFOUNDATION
+
+
+def test_backend_selector_unknown_raises() -> None:
+    with pytest.raises(ValueError, match="unknown cv_backend"):
+        _select_cv_backend("bogus")
+
+
+def test_usb_capture_platform_backend() -> None:
+    settings = CameraSettings(backend="usb", camera_index=0, cv_backend="avfoundation")
+    source = UsbVideoCaptureFrameSource(settings)
+    fake_cap = mock.Mock()
+    fake_cap.isOpened.return_value = True
+    fake_cap.read.return_value = (True, np.zeros((480, 640, 3), dtype=np.uint8))
+    fake_cap.get.return_value = 640.0
+    fake_cap.set.return_value = True
+    with mock.patch("block_detected.camera.cv2.VideoCapture", return_value=fake_cap) as mock_vc:
+        source.start()
+        frame = source.read()
+        source.stop()
+    assert frame.image_bgr.shape == (480, 640, 3)
+    assert frame.source == "usb-opencv"
+    assert mock_vc.call_args[0][1] == cv2.CAP_AVFOUNDATION
 
 
 def test_backend_open_failure_is_explicit() -> None:

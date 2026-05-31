@@ -136,6 +136,16 @@
 | CAM-10-03 | Phase 10 | Planned |
 | CAM-10-04 | Phase 10 | Planned |
 
+### Phase 11 — Edge Impulse EIM
+
+- [x] **EI-11-01**: Model at `backend/models/block_detector.eim`, gitignored, `EI_MODEL_PATH` env
+- [x] **EI-11-02**: `edge_impulse_linux` dep, system apt packages documented, executable startup check
+- [x] **EI-11-03**: `edge_impulse_runner.py` singleton, `detect_from_frame` BGR → `DetectionResult`
+- [x] **EI-11-04**: `VISION_MOCK_MODE` skips EI, stable fake detections
+- [x] **EI-11-05**: Wire health, start/stop, MJPEG, WebSocket detection loop
+- [x] **EI-11-06**: `make dev` / README deployment section
+- [x] **EI-11-07**: `uname -m`, `getconf LONG_BIT`, `chmod`, backend tests recorded
+
 **Coverage:**
 - v1 requirements: 25 total
 - Phase 9 UI requirements: 8 total

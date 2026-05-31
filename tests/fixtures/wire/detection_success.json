@@ -1,0 +1,27 @@
+{
+  "type": "telemetry",
+  "fps": 28.4,
+  "latencyMs": 14.2,
+  "valid": true,
+  "rejectReason": null,
+  "detection": {
+    "blockId": 1,
+    "confidence": 0.94,
+    "status": "ok",
+    "centerPx": {"x": 320.0, "y": 240.0},
+    "cornersPx": {
+      "tl": {"x": 280.0, "y": 200.0},
+      "tr": {"x": 360.0, "y": 200.0},
+      "br": {"x": 360.0, "y": 280.0},
+      "bl": {"x": 280.0, "y": 280.0}
+    },
+    "angleDeg": 12.5,
+    "pickupPoseMm": {"xMm": 120.0, "yMm": 45.0, "thetaDeg": 12.5}
+  },
+  "classificationScores": {
+    "block01": 0.94,
+    "block02": 0.02,
+    "block03": 0.02,
+    "block04": 0.02
+  }
+}

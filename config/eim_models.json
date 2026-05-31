@@ -1,0 +1,15 @@
+{
+  "default_id": "shit-v1",
+  "models": [
+    {
+      "id": "minhmice-v2",
+      "label": "minhmice project v2",
+      "path": "models/minhmice-project-1-linux-aarch64-v1-impulse-#2.eim"
+    },
+    {
+      "id": "shit-v1",
+      "label": "shit v1",
+      "path": "models/shit-linux-aarch64-v1-impulse-#1.eim"
+    }
+  ]
+}

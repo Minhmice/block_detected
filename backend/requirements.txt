@@ -1,0 +1,11 @@
+# FastAPI console backend (install block_detected: pip install -e .. from repo root)
+fastapi>=0.136
+uvicorn[standard]>=0.48
+pydantic>=2.13
+opencv-python-headless>=4.11,<4.14
+numpy>=2,<3
+python-multipart
+websockets
+httpx
+edge_impulse_linux>=1.2.0
+PyAudio>=0.2.11

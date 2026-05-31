@@ -1,8 +1,8 @@
 # Stack Research
 
-**Domain:** Raspberry Pi vision — OpenCV geometry + on-device TFLite classification
+**Domain:** Raspberry Pi edge vision — contour + warp + TFLite CNN block detection (no ArUco)
 **Researched:** 2026-05-31
-**Confidence:** HIGH (core stack), MEDIUM (exact Pi OS package pins)
+**Confidence:** HIGH (Pi runtime, OpenCV, camera); MEDIUM (TFLite successor migration, numpy/opencv pin on Bookworm)
 
 ## Recommended Stack
 
@@ -10,87 +10,227 @@
 
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
-| Python | 3.11+ | Runtime | Pi OS standard; dataclass contract already in repo |
-| OpenCV | 4.8+ (`opencv-python-headless` on Pi) | Capture, preprocess, contours, warp | Industry default for contour→homography pipelines |
-| NumPy | 1.26+ | Array ops | OpenCV native dependency |
-| TensorFlow Lite | 2.14+ (`tflite-runtime` on Pi) | INT8 4-class CNN inference | Official on-device path; fits 128×128 tiny models |
-| picamera2 | latest (Pi Camera) | Stable 640×480 capture | libcamera stack; exposure/WB controls |
-| OpenCV VideoCapture | 4.x | USB camera fallback | Same pipeline code path |
+| Python | 3.11.x | Runtime on Pi and dev machines | Raspberry Pi OS Bookworm ships 3.11.2; PEP 668 requires venv for pip installs. Matches `tflite-runtime` and `ai-edge-litert` cp311 aarch64 wheels (verified PyPI 2026-05-31). |
+| OpenCV (`opencv-python`) | 4.11.0.86 – 4.12.x (pin one) | Contour detection, morphology, perspective warp, homography | Standard stack for square-face geometry pipelines. Pi Forum confirms 4.11.0.86 + numpy 2.x on Pi 5 Bookworm. Avoid apt/pip OpenCV mixing. |
+| NumPy | ≥1.26.4, <2.3 (pin in lockfile) | Array ops, corner ordering, warp buffers | Required by OpenCV Python bindings and TFLite I/O. Pin with OpenCV — numpy 2.x works with opencv-python ≥4.10; apt `python3-opencv` 4.6.0 needs numpy 1.24.x. |
+| TFLite runtime (`tflite-runtime`) | 2.14.0 | On-device INT8 CNN inference on Pi | Official lightweight inference package (~15 MB vs 600 MB+ full TF). cp311 `manylinux_2_34_aarch64` wheel exists on PyPI. `num_threads=4` on Pi 4/5. |
+| TensorFlow (dev only) | 2.15 – 2.17 on x86_64 | Train tiny 4-class CNN, export INT8 `.tflite` | Full TF/Keras belongs on a dev laptop/CI machine, not the Pi. Use `TFLiteConverter` + representative dataset for INT8. |
+| pytest | ≥8.0 (latest 9.x OK) | Contract tests, geometry unit tests, offline frame regression | Standard Python test runner; no special vision framework required for v1. |
 
 ### Supporting Libraries
 
 | Library | Version | Purpose | When to Use |
 |---------|---------|---------|-------------|
-| TensorFlow (dev machine) | 2.15+ | Train + export TFLite | Not on Pi — train on PC, deploy `.tflite` |
-| Pillow | 10+ | Debug frame save | Optional if not using `cv2.imwrite` |
-| pytest | 8+ | Contract + geometry unit tests | CI and laptop dev |
-| scipy / sklearn | optional | Eval metrics | Offline test harness only |
+| picamera2 | ≥0.3.36 (apt preferred) | Pi Camera Module capture via libcamera | **Required** when using Raspberry Pi Camera on Pi 4/5. OpenCV `VideoCapture` does not drive libcamera on Pi 5. |
+| Pillow | ≥10.0 | Save debug JPEG/PNG frames | Optional but useful for field tuning and eval harness artifact export. |
+| scipy | ≥1.11 | Euclidean distance in robust corner ordering | Optional — pure-numpy `order_points` is sufficient; add only if using imutils-style robust ordering. |
+| pytest-cov | ≥5.0 | Coverage reporting | CI / quality gate on contract and geometry modules. |
+| pytest-image-snapshot | ≥0.4.5 | Visual regression on warp/threshold outputs | Optional Phase 4+ when golden frames exist; not needed for contract-only tests. |
 
 ### Development Tools
 
 | Tool | Purpose | Notes |
 |------|---------|-------|
-| `requirements.txt` + optional `requirements-pi.txt` | Repro installs | Split heavy TF (train) vs `tflite-runtime` (deploy) |
-| `ruff` or `black` | Lint/format | Match team preference |
-| `scripts/capture_dataset.py` | Labeled warp crops | Feeds CNN training |
+| `python3 -m venv` | Isolated Pi/dev environments | **Mandatory** on Bookworm (PEP 668). Use `python3 -m venv .venv && source .venv/bin/activate`. |
+| `requirements.txt` + lock pins | Reproducible Pi deploy | Pin opencv-python, numpy, tflite-runtime together; document Pi OS version. |
+| `libcamera-hello` / `libcamera-still` | Camera hardware smoke test | Run before debugging Python pipeline. |
+| `v4l2-ctl` | USB camera exposure/format control | When using USB webcam instead of Pi Camera. |
+| Git LFS (optional) | Store labeled eval images | Keep test fixtures out of main blob history if large. |
 
 ## Installation
 
-```bash
-# Dev / train (laptop)
-python -m venv .venv && source .venv/bin/activate
-pip install opencv-python numpy tensorflow pytest
+### Raspberry Pi (inference runtime)
 
-# Pi deploy
-pip install opencv-python-headless numpy tflite-runtime picamera2 pytest
+```bash
+# System deps (Bookworm 64-bit)
+sudo apt update
+sudo apt install -y python3-venv python3-pip libatlas-base-dev libjpeg-dev libopenjp2-7
+
+# Pi Camera path — install picamera2 from apt (pulls libcamera stack)
+sudo apt install -y python3-picamera2   # optional if USB-only
+
+# Project venv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+
+# Core inference stack (pin exact versions in requirements.txt)
+pip install "numpy>=1.26.4,<2.3" \
+            "opencv-python>=4.11.0.86,<4.13" \
+            "tflite-runtime==2.14.0" \
+            "pytest>=8.0"
+
+# Verify
+python -c "import cv2, numpy, tflite_runtime.interpreter as tflite; print(cv2.__version__, numpy.__version__)"
+```
+
+If `pip install tflite-runtime` fails to find a wheel:
+
+```bash
+pip install --extra-index-url https://google-coral.github.io/py-repo/ tflite-runtime==2.14.0
+```
+
+### Dev machine (train + export INT8 model)
+
+```bash
+python3 -m venv .venv-train
+source .venv-train/bin/activate
+pip install "tensorflow>=2.15,<2.18" "numpy>=1.26" "opencv-python>=4.10" "pillow>=10"
+
+# After training — export (representative images must match warp preprocessing)
+# See Training Export Pattern below
+```
+
+### Training Export Pattern (INT8 full-integer)
+
+```python
+import tensorflow as tf
+import numpy as np
+
+def representative_dataset():
+    for warp_bgr in calibration_warps:          # ~100–500 warped 128×128 faces
+        x = preprocess_for_model(warp_bgr)        # MUST match Pi inference preprocessing
+        yield [x.astype(np.float32)]
+
+converter = tf.lite.TFLiteConverter.from_saved_model("saved_model/")
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+converter.representative_dataset = representative_dataset
+converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
+converter.inference_input_type = tf.uint8       # or tf.int8 — match Pi loader
+converter.inference_output_type = tf.uint8
+tflite_model = converter.convert()
+open("block_classifier_int8.tflite", "wb").write(tflite_model)
+```
+
+### Pi inference pattern
+
+```python
+import numpy as np
+import tflite_runtime.interpreter as tflite
+
+interpreter = tflite.Interpreter(
+    model_path="models/block_classifier_int8.tflite",
+    num_threads=4,
+)
+interpreter.allocate_tensors()
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+# Quantize warp to input scale/zero_point before set_tensor(...)
 ```
 
 ## Alternatives Considered
 
 | Recommended | Alternative | When to Use Alternative |
 |-------------|-------------|-------------------------|
-| TFLite INT8 CNN | ONNX Runtime + quantized model | If team already standardized on ONNX export |
-| picamera2 | legacy `picamera` | Never on Bookworm — libcamera only |
-| Contour pipeline | ArUco | **Rejected** — user constraint |
-| Tiny CNN | `cv2.matchTemplate` Mode A | Quick prototype only; not production default |
+| `tflite-runtime==2.14.0` | `ai-edge-litert>=2.1.5` | Google’s successor runtime; cp311/linux_aarch64 wheels on PyPI (2.1.5 verified). Use when migrating to Python 3.12+ or when `tflite-runtime` wheels disappear. API: `import ai_edge_litert.interpreter as tflite`. |
+| picamera2 + numpy arrays | OpenCV `VideoCapture(0)` | USB UVC webcam on any Pi; simpler, works with standard V4L2. **Do not use VideoCapture for Pi Camera Module on Pi 5.** |
+| pip `opencv-python` in venv | apt `python3-opencv` 4.6.0 | Offline/minimal-SD installs. Create venv with `--system-site-packages` and pin `numpy` to apt version (1.24.x). Trade-off: older OpenCV, fewer bugs from mixed installs. |
+| Contour + warp + tiny CNN | ONNX Runtime on Pi | Faster ecosystem momentum in 2026 blogs, but **project constraint is TFLite INT8**. Only switch if requirements change. |
+| Inline `order_points` (numpy) | `imutils` | imutils adds dependency for one function; PyImageSearch algorithm is 15 lines — copy into repo. |
+| Train on x86 with TF/Keras | Train on Pi | Pi training is slow and pulls huge deps. Always train/export off-device, deploy `.tflite` only. |
 
 ## What NOT to Use
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| `opencv-contrib` ArUco module | Out of scope | Contour + warp |
-| YOLOv8 bbox-only as primary | No ordered corners | Contour quad + warp |
-| Full TensorFlow on Pi | Slow, large | `tflite-runtime` |
-| Cloud vision APIs | Latency, offline requirement | Local CNN |
-| `opencv-python` GUI on headless Pi | Pulls GUI deps | `opencv-python-headless` |
+| **ArUco / AprilTag / `opencv-contrib` aruco module** | Explicit project constraint; requires fiducials on blocks | Contour → `approxPolyDP` → corner order → warp |
+| **YOLO / Ultralytics as primary detector** | Axis-aligned bbox only; no guaranteed TL/TR/BR/BL order or rotation for grasp | Contour quadrilateral + warp; CNN classifies warped face only |
+| **Cloud vision APIs** (Google Vision, Rekognition, Roboflow hosted inference) | Latency, offline requirement, cost, privacy | On-device `tflite-runtime` |
+| **Full `tensorflow` on Pi** | 600 MB+, slow install, no training on edge needed | `tflite-runtime` inference only |
+| **Legacy `picamera` library** | Deprecated; incompatible with libcamera stack | `picamera2` |
+| **`cv2.VideoCapture` for Pi Camera on Pi 5** | libcamera not exposed through OpenCV V4L backend on Pi 5 (open issue since 2022) | picamera2 `capture_array()` → OpenCV processing |
+| **Mixed apt + pip OpenCV** | Import/version conflicts, numpy ABI breaks | One source: either all pip in venv or apt + `--system-site-packages` with pinned numpy |
+| **Template matching (Mode A) as v1 default** | Lighting/view fragile vs CNN | TFLite INT8 CNN on 128×128 warp |
+| **Float32 TFLite on Pi** | 3–4× slower than INT8 on ARM NEON; larger model | Post-training full-integer quantization |
+| **End-to-end giant classifier on full 640×480 frame** | Wastes compute; harder to debug geometry failures | Detect square cheaply, classify small warp |
+| **Hardcoded `pip install --break-system-packages` on Pi** | Breaks PEP 668 guarantees, corrupts OS Python | Always use venv |
 
 ## Stack Patterns by Variant
 
-**If Pi Camera:**
-- Use `picamera2` with fixed `main` size 640×480, disable auto exposure after warmup
-- Because USB and CSI need different backends
+**If Raspberry Pi Camera Module (CSI):**
+- Install `python3-picamera2` via apt.
+- Configure `create_video_configuration(main={"size": (640, 480), "format": "RGB888"})` or `XRGB8888` with BGRA→BGR conversion.
+- Loop: `frame = picam2.capture_array()` → OpenCV pipeline.
+- Lock exposure/WB via `libcamera` controls (`AeEnable`, `AwbEnable`, manual exposure when tuned).
+- Include `cv2.waitKey(1)` if displaying preview (OpenCV quirk on Pi).
 
-**If USB camera only:**
-- `cv2.VideoCapture(0)` + `CAP_PROP_FRAME_WIDTH/HEIGHT`
-- Lock WB/exposure via V4L2 if supported
+**If USB webcam:**
+- Skip picamera2 entirely.
+- `cap = cv2.VideoCapture(0)` + `cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)` + `cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)`.
+- Use `v4l2-ctl` to fix exposure/white balance when autoconfig drifts.
 
-**If training data scarce:**
-- Start MobileNetV2-0.35 width or custom 3–4 layer CNN on 128×128
-- Because full ImageNet models are overkill
+**If developing on macOS/Windows (no Pi camera):**
+- Run pipeline on recorded 640×480 frames or USB webcam.
+- Same OpenCV + TFLite code paths; swap camera backend via a thin `FrameSource` protocol.
+- Train/export on x86; copy `.tflite` to Pi.
+
+**If Python 3.12+ OS (forward-looking):**
+- Switch inference import to `ai-edge-litert>=2.1.5` (cp312 aarch64 wheels verified on PyPI).
+- Keep export toolchain on TF 2.15+; `.tflite` format unchanged.
 
 ## Version Compatibility
 
 | Package A | Compatible With | Notes |
 |-----------|-----------------|-------|
-| `tflite-runtime` 2.14 | TFLite export from TF 2.14–2.16 | Re-export if op mismatch |
-| OpenCV 4.8+ | NumPy 1.26+ | Standard wheel pairing on aarch64 |
+| Python 3.11 (Bookworm) | `tflite-runtime==2.14.0` | cp311 manylinux aarch64 wheel confirmed PyPI 2026-05-31. **HIGH confidence.** |
+| Python 3.11 (Bookworm) | `ai-edge-litert==2.1.5` | cp311 manylinux aarch64 wheel confirmed. **HIGH confidence.** |
+| `opencv-python==4.11.0.86` | `numpy>=2.0,<2.3` | Pi 5 Bookworm forum-verified combo. **MEDIUM confidence** — pin and test on target hardware. |
+| apt `python3-opencv` 4.6.0 | `python3-numpy` 1.24.x (Debian bookworm) | Do not pip-upgrade numpy in `--system-site-packages` venv without upgrading OpenCV. **HIGH confidence.** |
+| `tflite-runtime` / TFLite export | Same preprocess + input dtype | Representative dataset must match warp normalization or INT8 accuracy collapses. **HIGH confidence** (Google docs). |
+| picamera2 0.3.x | Raspberry Pi OS Bookworm/64-bit | Pi 5 requires libcamera stack; legacy `start_x=1` does not apply. **HIGH confidence.** |
+| Full TensorFlow 2.15+ (x86) | Exported `.tflite` → `tflite-runtime 2.14` | Ops must be TFLITE_BUILTINS_INT8 compatible; keep model tiny (MobileNetV2-scale or custom 3–5 conv blocks). **MEDIUM confidence** — validate with `interpreter.get_tensor_details()`. |
+
+### Recommended `requirements.txt` (Pi inference)
+
+```text
+# block_detected — Pi inference (Python 3.11, aarch64, Bookworm)
+numpy>=1.26.4,<2.3
+opencv-python>=4.11.0.86,<4.13
+tflite-runtime==2.14.0
+pytest>=8.0
+pillow>=10.0          # optional debug saves
+# picamera2: install via apt (python3-picamera2), not pip, when using Pi Camera
+```
+
+### Recommended `requirements-train.txt` (dev machine)
+
+```text
+tensorflow>=2.15,<2.18
+numpy>=1.26
+opencv-python>=4.10
+pillow>=10
+pytest>=8.0
+```
+
+## Architecture-Relevant Stack Boundaries
+
+| Layer | Stack | Runs On |
+|-------|-------|---------|
+| Contract / types | stdlib `dataclasses`, `enum` | Pi + dev |
+| Capture | picamera2 **or** OpenCV VideoCapture | Pi |
+| Geometry | OpenCV imgproc + numpy | Pi |
+| Classify | TFLite INT8 | Pi |
+| Train / quantize | TensorFlow Keras | Dev machine only |
+| Test | pytest + numpy.testing | Dev + CI (Pi optional HW tests) |
+
+Keep `detection_contract.py` free of OpenCV/TFLite imports — already correct in repo.
 
 ## Sources
 
-- OpenCV contours / `approxPolyDP` — https://docs.opencv.org/4.x/d4/d73/tutorial_py_contours_begin.html
-- TensorFlow Lite converter — https://www.tensorflow.org/lite/models/image_classification/overview
-- picamera2 manual — Raspberry Pi documentation
+| Source | What Verified | Confidence |
+|--------|---------------|------------|
+| [TensorFlow Lite Python guide](https://www.tensorflow.org/lite/guide/python) | `tflite-runtime` install, aarch64 wheel support, `Interpreter` API | HIGH |
+| [Post-training quantization](https://www.tensorflow.org/lite/performance/post_training_quantization) | Full INT8 export, representative dataset, input/output types | HIGH |
+| [PyPI tflite-runtime 2.14.0](https://pypi.org/project/tflite-runtime/2.14.0/) | cp311 linux_aarch64 wheel availability | HIGH |
+| [PyPI ai-edge-litert 2.1.5](https://pypi.org/project/ai-edge-litert/2.1.5/) | Successor runtime, cp311 aarch64 wheels | HIGH |
+| [Raspberry Pi OS docs — Python/venv](https://www.raspberrypi.com/documentation/computers/os.html) | PEP 668, venv requirement on Bookworm+ | HIGH |
+| [picamera2 PyPI 0.3.36](https://pypi.org/project/picamera2/) | libcamera Python API, OpenCV integration examples | HIGH |
+| [OpenCV findContours docs](https://docs.opencv.org/4.x/d3/dc0/group__imgproc__shape.html) | Contour-based shape detection pattern | HIGH |
+| [PyImageSearch order_points](https://pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/) | TL/TR/BR/BL ordering algorithm | HIGH |
+| Raspberry Pi Forums (Pi 5 + OpenCV VideoCapture, picamera2+waitKey) | VideoCapture empty on Pi Camera; picamera2 integration quirks | MEDIUM |
+| Pi Forum: opencv-python 4.11 + numpy 2.2 on Pi 5 Bookworm | Version pin guidance | MEDIUM |
+| GitHub tensorflow#62003, google-ai-edge/LiteRT#5 | `tflite-runtime` → `ai-edge-litert` migration | MEDIUM |
 
 ---
-*Stack research for: non-ArUco cube block detection on Raspberry Pi*
+*Stack research for: Block Detected — Pi cube block detection pipeline*
 *Researched: 2026-05-31*

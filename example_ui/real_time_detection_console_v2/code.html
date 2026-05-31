@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Main Control Interface - Block Pickup Vision</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#0b1326",
+                        "primary": "#4cd7f6",
+                        "surface-container-highest": "#2d3449",
+                        "on-primary-container": "#00424f",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-error": "#690005",
+                        "on-surface": "#dae2fd",
+                        "on-secondary-fixed": "#002113",
+                        "on-secondary": "#003824",
+                        "secondary-container": "#00a572",
+                        "inverse-primary": "#00687a",
+                        "surface-bright": "#31394d",
+                        "on-secondary-fixed-variant": "#005236",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-tint": "#4cd7f6",
+                        "on-background": "#dae2fd",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#dae2fd",
+                        "outline-variant": "#3d494c",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-secondary-container": "#00311f",
+                        "surface-variant": "#2d3449",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container-low": "#131b2e",
+                        "surface-container": "#171f33",
+                        "tertiary-container": "#ff7f8b",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "surface-container-lowest": "#060e20",
+                        "on-primary-fixed": "#001f26",
+                        "primary-container": "#06b6d4",
+                        "surface": "#0b1326",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-tertiary": "#67001b",
+                        "on-tertiary-container": "#7d0023",
+                        "outline": "#869397",
+                        "error": "#ffb4ab",
+                        "on-primary": "#003640",
+                        "background": "#0b1326",
+                        "on-surface-variant": "#bcc9cd",
+                        "inverse-on-surface": "#283044",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#acedff",
+                        "on-tertiary-fixed": "#40000d",
+                        "tertiary": "#ffb2b7",
+                        "surface-container-high": "#222a3d",
+                        "secondary": "#4edea3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "container-padding": "12px",
+                        "margin": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-lg": ["JetBrains Mono"],
+                        "data-md": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "data-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .panel {
+            background-color: theme('colors.surface-container');
+            border: 1px solid theme('colors.outline-variant');
+        }
+        .data-input {
+            background-color: theme('colors.surface-container-highest');
+            border: 1px solid theme('colors.outline-variant');
+            color: theme('colors.on-surface');
+        }
+        .data-input:focus {
+            border-color: theme('colors.primary');
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface h-screen overflow-hidden flex flex-col font-body-md">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-gutter h-14 bg-surface-container-lowest border-b border-outline-variant z-50">
+<div class="flex items-center gap-4">
+<h1 class="font-headline-md text-[20px] font-bold text-primary tracking-tighter">VISION_OS // BLOCK_DETECTOR_V2</h1>
+<div class="hidden md:flex items-center gap-4 ml-8 border-l border-outline-variant pl-4 h-8">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-caps text-label-caps text-secondary">CONNECTED</span>
+</div>
+<div class="font-data-md text-data-md text-on-surface-variant ml-2">FPS: <span class="text-on-surface">30</span></div>
+<div class="font-data-md text-data-md text-on-surface-variant ml-2">Latency: <span class="text-on-surface">12ms</span></div>
+<select class="data-input font-label-caps text-label-caps ml-4 px-2 py-0.5 rounded cursor-pointer">
+<option>TEMPLATE</option>
+<option selected="">CNN</option>
+<option>FOMO</option>
+<option>HYBRID</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="font-label-caps text-label-caps px-3 py-1.5 border border-outline-variant rounded hover:bg-surface-container-highest transition-colors duration-150 active:scale-95 transition-transform text-on-surface">START_CAMERA</button>
+<button class="font-label-caps text-label-caps px-3 py-1.5 border border-outline-variant rounded hover:bg-surface-container-highest transition-colors duration-150 active:scale-95 transition-transform text-on-surface">STOP_CAMERA</button>
+<button class="font-label-caps text-label-caps px-3 py-1.5 bg-primary/20 border border-primary text-primary rounded hover:bg-primary/30 transition-colors duration-150 active:scale-95 transition-transform">RUN_DETECTION</button>
+<button class="font-label-caps text-label-caps px-3 py-1.5 bg-surface-container-highest border border-outline-variant rounded hover:bg-surface-container transition-colors duration-150 active:scale-95 transition-transform text-on-surface">INITIALIZE</button>
+<button class="font-label-caps text-label-caps px-4 py-1.5 bg-error text-on-error rounded hover:opacity-90 transition-opacity duration-150 active:scale-95 transition-transform font-bold ml-2">EMERGENCY_STOP</button>
+<div class="flex gap-2 ml-4 border-l border-outline-variant pl-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">terminal</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">refresh</span></button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col w-64 bg-surface-container-low border-r border-outline-variant z-40 h-full shrink-0">
+<div class="p-4 border-b border-outline-variant">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">Local-Host Console</div>
+<div class="font-headline-md text-headline-md text-primary">OPERATOR_01</div>
+</div>
+<div class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-3 bg-surface-container-highest border-l-4 border-primary text-primary active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">videocam</span>
+<span class="font-label-caps text-label-caps">Real-time</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 border-l-4 border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-200 ease-in-out active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">straighten</span>
+<span class="font-label-caps text-label-caps">Calibration</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 border-l-4 border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-200 ease-in-out active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">database</span>
+<span class="font-label-caps text-label-caps">Datasets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 border-l-4 border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-200 ease-in-out active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">monitoring</span>
+<span class="font-label-caps text-label-caps">Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 border-l-4 border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-200 ease-in-out active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings_input_component</span>
+<span class="font-label-caps text-label-caps">System</span>
+</a>
+</div>
+<div class="p-4 border-t border-outline-variant">
+<button class="w-full font-label-caps text-label-caps py-2 bg-primary text-on-primary rounded hover:bg-primary-fixed active:scale-95 transition-transform mb-4">
+                    NEW_SESSION
+                </button>
+<div class="flex gap-4">
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-[18px]">list_alt</span>
+<span class="font-label-caps text-label-caps">Logs</span>
+</a>
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span class="font-label-caps text-label-caps">Terminal</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Grid -->
+<main class="flex-1 p-4 grid grid-cols-12 gap-4 overflow-y-auto">
+<!-- Live Camera Preview (Span 8) -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-4 min-h-0">
+<!-- Camera Feed Panel -->
+<div class="panel flex-1 rounded flex flex-col overflow-hidden relative min-h-[400px]">
+<div class="flex justify-between items-center p-2 border-b border-outline-variant bg-surface-container-lowest">
+<div class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">videocam</span>
+                            CAM_FEED_01
+                        </div>
+<div class="flex flex-wrap gap-2 justify-end">
+<button class="font-label-caps text-[10px] px-2 py-1 border border-primary text-primary rounded bg-surface-container-highest">Show Contours</button>
+<button class="font-label-caps text-[10px] px-2 py-1 border border-outline-variant text-on-surface-variant rounded bg-surface-container-highest hover:text-on-surface">Square Corners</button>
+<button class="font-label-caps text-[10px] px-2 py-1 border border-outline-variant text-on-surface-variant rounded bg-surface-container-highest hover:text-on-surface">Warped Face</button>
+<button class="font-label-caps text-[10px] px-2 py-1 border border-outline-variant text-on-surface-variant rounded bg-surface-container-highest hover:text-on-surface">Center Point</button>
+<button class="font-label-caps text-[10px] px-2 py-1 border border-outline-variant text-on-surface-variant rounded bg-surface-container-highest hover:text-on-surface">Angle Arrow</button>
+<button class="font-label-caps text-[10px] px-2 py-1 border border-primary text-primary rounded bg-surface-container-highest">Pickup Pose</button>
+</div>
+</div>
+<div class="flex-1 relative bg-black flex justify-center items-center overflow-hidden group">
+<!-- Simulated Camera Feed with Image Placeholder -->
+<div class="absolute inset-0 bg-cover bg-center opacity-50" data-alt="A clinical, dark-themed industrial setting showing a top-down view of a robotic testing surface. The image is bathed in dim, cool-toned lighting typical of an engineering lab. The aesthetic is high-fidelity and precise, focusing on a metallic workspace where robotic calibration occurs." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCEAou-xeYkOVWzFxdBhQn81tm4gifJxPpM6E4aAHNLm1QjaGx8QknXCQ6UBRAIEJiI6yE8Iq_T6SuBJsVe80RLM4dIU6CMxccvk6AL3ROSJKz0n5RkJCxSG2n_FNRZk86bu919KhYF67XYF5XZdqeeAwGGeiOKp1Vqxfzh6iLcAly4ayP7Nw7JajqNl32ktqml8ox6SYngiVFbrG1WbjLISm5DCd2VH7SO_WMbh3nA1bUs15oH8t9GpR6bxVGZuTBSnbWrztKO2vGa');"></div>
+<!-- Crosshair Overlay -->
+<div class="absolute inset-0 pointer-events-none flex justify-center items-center">
+<!-- Technical Grid -->
+<div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+<div class="w-full h-px bg-primary opacity-30 absolute top-1/2"></div>
+<div class="h-full w-px bg-primary opacity-30 absolute left-1/2"></div>
+<div class="absolute w-8 h-8 border border-primary/50 top-1/2 left-1/2 -ml-4 -mt-4 rounded-full"></div>
+<!-- Simulated Block Detection -->
+<div class="absolute border-2 border-secondary w-32 h-32 ml-10 mt-10">
+<!-- Corners -->
+<div class="absolute -top-1 -left-1 w-2 h-2 bg-primary"></div>
+<div class="absolute -top-1 -right-1 w-2 h-2 bg-primary"></div>
+<div class="absolute -bottom-1 -left-1 w-2 h-2 bg-primary"></div>
+<div class="absolute -bottom-1 -right-1 w-2 h-2 bg-primary"></div>
+<div class="absolute -top-6 left-0 bg-secondary text-on-secondary font-data-md text-[10px] px-1 flex gap-2">
+<span>ID:01</span>
+<span>98.4%</span>
+</div>
+<!-- Center & Pose -->
+<div class="absolute top-1/2 left-1/2 w-8 h-px bg-red-500 origin-left transform rotate-45"></div>
+<div class="absolute top-1/2 left-1/2 w-8 h-px bg-green-500 origin-left transform -rotate-45"></div>
+<div class="absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-primary -ml-1 -mt-1"></div>
+<!-- Angle Arrow -->
+<div class="absolute top-1/2 left-1/2 w-12 h-px bg-yellow-400 origin-left transform -rotate-12"></div>
+<div class="absolute top-1/2 left-1/2 w-2 h-2 border-t border-r border-yellow-400 transform rotate-[-57deg] translate-x-11 -translate-y-0.5"></div>
+</div>
+</div>
+<!-- Live Readout / Badges -->
+<div class="absolute top-2 left-2 flex flex-col gap-2 pointer-events-none">
+<div class="font-data-md text-data-md text-primary opacity-70 bg-surface/50 px-2 rounded">
+                                X: 145.22<br/>
+                                Y: -89.41
+                            </div>
+</div>
+<div class="absolute top-2 right-2 flex flex-col gap-2 items-end pointer-events-none">
+<div class="px-2 py-0.5 bg-secondary/20 border border-secondary text-secondary font-label-caps text-label-caps rounded">VALID</div>
+<div class="px-2 py-0.5 bg-surface-container-highest border border-outline-variant text-on-surface-variant font-label-caps text-[10px] rounded hidden">N/A</div>
+</div>
+<!-- Mouse Position (Simulated visible on hover) -->
+<div class="absolute bottom-2 right-2 font-data-md text-[10px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+                            px: 412, 189
+                        </div>
+</div>
+<div class="p-2 border-t border-outline-variant bg-surface-container-lowest flex justify-between items-center">
+<button class="font-label-caps text-label-caps px-3 py-1.5 border border-outline-variant rounded hover:bg-surface-container-highest text-on-surface">Snapshot</button>
+<button class="font-label-caps text-label-caps px-3 py-1.5 bg-surface-container-highest border border-outline-variant rounded hover:bg-surface-container text-on-surface">Save Failed Frame</button>
+</div>
+</div>
+<!-- Classification & Output Row -->
+<div class="grid grid-cols-2 gap-4 h-64 shrink-0">
+<!-- Classification Panel -->
+<div class="panel rounded flex flex-col p-3">
+<div class="flex justify-between items-center mb-2">
+<div class="font-label-caps text-label-caps text-on-surface-variant">CLASSIFICATION_RESULT</div>
+<div class="font-label-caps text-[10px] text-secondary border border-secondary px-1 rounded">CNN_LOADED</div>
+</div>
+<div class="flex gap-4">
+<!-- Warped Preview -->
+<div class="w-32 h-32 border border-outline-variant bg-black flex items-center justify-center shrink-0">
+<div class="w-full h-full bg-cover bg-center opacity-80" data-alt="A close-up, high-contrast, dark-mode technical image of a single industrial block or electronic component. The lighting is harsh and directional to highlight texture and edges, fitting a machine vision classification interface. The overall tone is clinical and precise." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBeAqm5BH6PnszEB92E3qaiGQ2WxexeOq2hdCUlVYvYNCxsMX95hICQqF5zBT5qAwFNCASpftIMSpYSKyom9U9_ydVkFlYLh3I9f1Yb6MrnOtvzB0n3GTga6duA6DlF24tZAldkIh2OetRhzrW8eW0ShXeapbE6_Dz_sJu0HWf76qlzcUyoUUwSIWpE_Xdn97Xq39mwV6bsr4d8XNXhYYWf1953qhHnbVk-KLqVPaijw2swR5lUXQqERGaqY58uDKNRGOaqQ8TXCFTH');"></div>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">PRIMARY_CLASS</div>
+<div class="font-data-lg text-data-lg text-primary">BLOCK_01</div>
+<div class="font-data-md text-data-md text-secondary">CONFIDENCE: 98.4%</div>
+</div>
+<div class="mt-2">
+<div class="font-label-caps text-[10px] text-on-surface-variant mb-1">TOP 4 SCORES</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full mb-1"><div class="bg-primary h-1.5 rounded-full" style="width: 98%"></div></div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full mb-1"><div class="bg-outline h-1.5 rounded-full" style="width: 15%"></div></div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full mb-1"><div class="bg-outline h-1.5 rounded-full" style="width: 4%"></div></div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full"><div class="bg-outline h-1.5 rounded-full" style="width: 1%"></div></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Pickup Output -->
+<div class="panel rounded flex flex-col p-3">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-2 flex justify-between">
+                            PICKUP_TELEMETRY
+                            <div class="flex items-center gap-4">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[10px]">LINK</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-surface-bright"></span>
+<span class="text-[10px]">CMD</span>
+</div>
+<label class="flex items-center gap-2 cursor-pointer ml-2">
+<span class="font-label-caps text-[10px]">DRY-RUN</span>
+<div class="relative inline-block w-8 h-4 bg-surface-container-highest rounded-full border border-outline-variant">
+<div class="absolute left-0 top-0 w-4 h-4 bg-primary rounded-full transition-transform transform translate-x-4"></div>
+</div>
+</label>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-lowest border border-outline-variant rounded p-2 font-data-md text-[12px] text-on-surface-variant font-mono mb-2 overflow-y-auto">
+<div class="text-secondary mb-1">&gt; TARGET ACQUIRED</div>
+<div>center_px: [320, 240]</div>
+<div>corners_px: [[300, 220], [340, 220], [340, 260], [300, 260]]</div>
+<div>angle_deg: -12.4°</div>
+<div class="mt-2 text-primary">&gt; POSE_CALCULATION</div>
+<div>pickup_pose_mm: </div>
+<div class="pl-2">x: 145.22</div>
+<div class="pl-2">y: -89.41</div>
+<div class="pl-2">theta: 45.0°</div>
+</div>
+<button class="w-full font-label-caps text-label-caps py-2 bg-primary text-on-primary rounded hover:bg-primary-fixed active:scale-95 transition-transform font-bold">
+                            SEND TO ROBOT
+                        </button>
+</div>
+</div>
+</div>
+<!-- Parameters Sidebar (Span 4) -->
+<div class="col-span-12 lg:col-span-4 panel rounded p-4 flex flex-col h-[calc(100vh-2rem-56px)] overflow-y-auto">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-4 border-b border-outline-variant pb-2">DETECTION_PARAMETERS</div>
+<div class="space-y-6">
+<!-- Resolution Dropdown -->
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-1">INPUT_RESOLUTION</label>
+<select class="w-full data-input font-data-md text-data-md p-1.5 rounded appearance-none cursor-pointer">
+<option>640x480</option>
+<option>320x240</option>
+</select>
+</div>
+<!-- Sliders -->
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-caps text-[10px] text-on-surface-variant">BLUR_KERNEL</label>
+<input class="data-input w-16 px-1 py-0.5 text-right font-data-md text-[12px] rounded" type="number" value="5"/>
+</div>
+<input class="w-full h-0.5 bg-outline-variant appearance-none accent-primary rounded-full" max="15" min="1" step="2" type="range" value="5"/>
+</div>
+<div class="pt-2 border-t border-outline-variant">
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-caps text-[10px] text-on-surface-variant">CANNY_THRESH_MIN</label>
+<input class="data-input w-16 px-1 py-0.5 text-right font-data-md text-[12px] rounded" type="number" value="50"/>
+</div>
+<input class="w-full h-0.5 bg-outline-variant appearance-none accent-primary rounded-full" max="255" min="0" type="range" value="50"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-caps text-[10px] text-on-surface-variant">CANNY_THRESH_MAX</label>
+<input class="data-input w-16 px-1 py-0.5 text-right font-data-md text-[12px] rounded" type="number" value="150"/>
+</div>
+<input class="w-full h-0.5 bg-outline-variant appearance-none accent-primary rounded-full" max="255" min="0" type="range" value="150"/>
+</div>
+<div class="pt-2 border-t border-outline-variant">
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-caps text-[10px] text-on-surface-variant">CONTOUR_AREA_MIN</label>
+<input class="data-input w-20 px-1 py-0.5 text-right font-data-md text-[12px] rounded" type="number" value="1000"/>
+</div>
+<input class="w-full h-0.5 bg-outline-variant appearance-none accent-primary rounded-full" max="10000" min="0" type="range" value="1000"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-caps text-[10px] text-on-surface-variant">CONTOUR_AREA_MAX</label>
+<input class="data-input w-20 px-1 py-0.5 text-right font-data-md text-[12px] rounded" type="number" value="50000"/>
+</div>
+<input class="w-full h-0.5 bg-outline-variant appearance-none accent-primary rounded-full" max="100000" min="0" type="range" value="50000"/>
+</div>
+<div class="pt-2 border-t border-outline-variant">
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-caps text-[10px] text-on-surface-variant">ASPECT_RATIO_TOLERANCE</label>
+<input class="data-input w-16 px-1 py-0.5 text-right font-data-md text-[12px] rounded" type="number" value="0.1"/>
+</div>
+<input class="w-full h-0.5 bg-outline-variant appearance-none accent-primary rounded-full" max="1" min="0" step="0.05" type="range" value="0.1"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-caps text-[10px] text-on-surface-variant">CONFIDENCE_THRESH</label>
+<input class="data-input w-16 px-1 py-0.5 text-right font-data-md text-[12px] rounded" type="number" value="85"/>
+</div>
+<input class="w-full h-0.5 bg-outline-variant appearance-none accent-primary rounded-full" max="100" min="0" type="range" value="85"/>
+</div>
+</div>
+<!-- Toggles & Mode -->
+<div class="pt-4 border-t border-outline-variant space-y-3">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-1">THRESHOLD_MODE</label>
+<select class="w-full data-input font-data-md text-data-md p-1.5 rounded appearance-none cursor-pointer">
+<option selected="">Canny</option>
+<option>Adaptive</option>
+<option>HSV</option>
+</select>
+</div>
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="relative inline-block w-8 h-4 bg-primary/20 rounded-full border border-primary">
+<div class="absolute left-0 top-0 w-4 h-4 bg-primary rounded-full transition-transform transform translate-x-4"></div>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface">Reject if angle error high</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<div class="relative inline-block w-8 h-4 bg-primary/20 rounded-full border border-primary">
+<div class="absolute left-0 top-0 w-4 h-4 bg-primary rounded-full transition-transform transform translate-x-4"></div>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface">Reject if corner not complete</span>
+</label>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-outline-variant">
+<button class="w-full font-label-caps text-label-caps py-2 bg-surface-container-highest border border-outline-variant rounded hover:bg-surface-container text-on-surface transition-colors">
+                        RESET DEFAULTS
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

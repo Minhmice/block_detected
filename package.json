@@ -1,0 +1,12 @@
+{
+  "name": "block-detected",
+  "private": true,
+  "scripts": {
+    "dev:all": "concurrently -n backend,frontend -c blue,green \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "PYTHONPATH=backend:src .venv/bin/uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --workers 1 --app-dir backend",
+    "dev:frontend": "cd frontend && npm run dev -- --port 3000"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.0"
+  }
+}

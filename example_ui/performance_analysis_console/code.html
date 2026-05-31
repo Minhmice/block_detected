@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VISION_OS_v2.4 - Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#4edea3",
+                        "primary": "#4cd7f6",
+                        "outline": "#869397",
+                        "on-tertiary-container": "#7d0023",
+                        "inverse-on-surface": "#283044",
+                        "outline-variant": "#3d494c",
+                        "on-tertiary": "#67001b",
+                        "surface-container-low": "#131b2e",
+                        "tertiary-container": "#ff7f8b",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container": "#171f33",
+                        "primary-fixed": "#acedff",
+                        "primary-container": "#06b6d4",
+                        "surface-container-high": "#222a3d",
+                        "surface-tint": "#4cd7f6",
+                        "on-tertiary-fixed": "#40000d",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "tertiary-fixed": "#ffdadb",
+                        "secondary-container": "#00a572",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-secondary-container": "#00311f",
+                        "on-primary-container": "#00424f",
+                        "surface-variant": "#2d3449",
+                        "on-surface-variant": "#bcc9cd",
+                        "background": "#0b1326",
+                        "on-primary-fixed": "#001f26",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-surface": "#dae2fd",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-background": "#dae2fd",
+                        "inverse-primary": "#00687a",
+                        "on-secondary-fixed-variant": "#005236",
+                        "secondary-fixed": "#6ffbbe",
+                        "inverse-surface": "#dae2fd",
+                        "surface-dim": "#0b1326",
+                        "tertiary": "#ffb2b7",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "surface-container-lowest": "#060e20",
+                        "on-primary": "#003640",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#2d3449",
+                        "on-secondary": "#003824",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#31394d",
+                        "surface": "#0b1326",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin": "24px",
+                        "unit": "4px",
+                        "container-padding": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "data-lg": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "data-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom scrollbar for dark UI */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0b1326; }
+        ::-webkit-scrollbar-thumb { background: #3d494c; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #869397; }
+        
+        .panel {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 0.125rem;
+        }
+        
+        .inlay {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+        
+        /* Chart pseudo-elements */
+        .sparkline-chart {
+            background: linear-gradient(to right, #1e293b 0%, #1e293b 20%, #4cd7f6 21%, #4cd7f6 23%, #1e293b 24%, #1e293b 50%, #4cd7f6 51%, #4cd7f6 53%, #1e293b 54%, #1e293b 80%, #4cd7f6 81%, #4cd7f6 83%, #1e293b 84%, #1e293b 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pt-12 pl-64 overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 h-12 bg-surface dark:bg-surface border-b border-outline-variant flex items-center justify-between px-margin">
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps tracking-widest text-primary">VISION_OS_v2.4</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-container-high transition-colors p-1 rounded-sm active:opacity-80" data-icon="settings_input_component">settings_input_component</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-container-high transition-colors p-1 rounded-sm active:opacity-80" data-icon="sensors">sensors</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-container-high transition-colors p-1 rounded-sm active:opacity-80" data-icon="lan">lan</span>
+</div>
+<button class="bg-[#e11d48] text-white font-label-caps text-label-caps px-3 py-1 rounded-sm border border-[#be123c] hover:bg-[#be123c] active:opacity-80 transition-colors uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                EMERGENCY_STOP
+            </button>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-12 h-[calc(100vh-48px)] w-64 bg-surface-container dark:bg-surface-container border-r border-outline-variant flex flex-col justify-between py-4 z-40">
+<div class="flex flex-col gap-2 px-2">
+<div class="mb-4 px-2">
+<h2 class="font-headline-md text-headline-md text-primary">ROBOTIC_ARM_01</h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">account_circle</span>
+<span class="font-data-md text-data-md text-on-surface-variant">OPERATOR_042</span>
+</div>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">videocam</span>
+<span class="font-label-caps text-label-caps uppercase">Real-time</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">straighten</span>
+<span class="font-label-caps text-label-caps uppercase">Calibration</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">database</span>
+<span class="font-label-caps text-label-caps uppercase">Datasets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container border-l-2 border-secondary hover:bg-surface-container-highest transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-label-caps text-label-caps uppercase">Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-label-caps text-label-caps uppercase">System</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="font-label-caps text-label-caps uppercase">Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+<span class="font-label-caps text-label-caps uppercase">Terminal</span>
+</a>
+</div>
+<div class="flex flex-col gap-2 px-2 border-t border-outline-variant pt-2 mt-auto">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-label-caps text-label-caps uppercase">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+<span class="font-label-caps text-label-caps uppercase">Documentation</span>
+</a>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="p-gutter min-h-full">
+<div class="mb-4">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">PERFORMANCE_AUDIT</h1>
+<p class="font-data-md text-data-md text-on-surface-variant mt-1">MODEL: BLOCK_DETECTOR_V2 | DATASET: EVAL_SET_094</p>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Metrics Row (Full Width) -->
+<div class="col-span-12 grid grid-cols-6 gap-unit">
+<div class="panel p-container-padding flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Accuracy</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-data-lg text-data-lg text-secondary">94.2%</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">arrow_upward</span>
+</div>
+</div>
+<div class="panel p-container-padding flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Precision</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-data-lg text-data-lg text-on-surface">0.92</span>
+</div>
+</div>
+<div class="panel p-container-padding flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Recall</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-data-lg text-data-lg text-on-surface">0.91</span>
+</div>
+</div>
+<div class="panel p-container-padding flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">F1 Score</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-data-lg text-data-lg text-primary">0.91</span>
+</div>
+</div>
+<div class="panel p-container-padding flex flex-col justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Avg FPS</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-data-lg text-data-lg text-on-surface">59.9</span>
+<div class="w-8 h-4 sparkline-chart ml-auto rounded-[1px]"></div>
+</div>
+</div>
+<div class="panel p-container-padding flex flex-col justify-between border-l-2 border-l-primary-container">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Avg Latency</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-data-lg text-data-lg text-error">12.4ms</span>
+<span class="material-symbols-outlined text-error text-[16px]">warning</span>
+</div>
+</div>
+</div>
+<!-- Left Column: Matrices & Tables (8 cols) -->
+<div class="col-span-8 flex flex-col gap-gutter">
+<!-- Confusion Matrix -->
+<div class="panel p-container-padding flex flex-col">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label-caps text-label-caps text-primary uppercase border-b border-primary pb-1">Confusion Matrix</span>
+<span class="font-data-md text-data-md text-on-surface-variant">n=10,000</span>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left font-data-md text-data-md border-collapse">
+<thead>
+<tr>
+<th class="p-2 border-b border-outline-variant text-on-surface-variant">True\Pred</th>
+<th class="p-2 border-b border-outline-variant text-center">BLK_01</th>
+<th class="p-2 border-b border-outline-variant text-center">BLK_02</th>
+<th class="p-2 border-b border-outline-variant text-center">BLK_03</th>
+<th class="p-2 border-b border-outline-variant text-center">BLK_04</th>
+<th class="p-2 border-b border-outline-variant text-center">UNK</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="p-2 border-b border-outline-variant text-on-surface-variant">BLK_01</td>
+<td class="p-2 border border-outline-variant text-center bg-[#064e3b] text-secondary">1950</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">12</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">5</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">1</td>
+<td class="p-2 border border-outline-variant text-center bg-[#4c1d95] text-[#c4b5fd]">32</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-outline-variant text-on-surface-variant">BLK_02</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">8</td>
+<td class="p-2 border border-outline-variant text-center bg-[#065f46] text-secondary">2100</td>
+<td class="p-2 border border-outline-variant text-center bg-[#064e3b]">45</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">3</td>
+<td class="p-2 border border-outline-variant text-center bg-[#4c1d95] text-[#c4b5fd]">14</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-outline-variant text-on-surface-variant">BLK_03</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">2</td>
+<td class="p-2 border border-outline-variant text-center bg-[#064e3b]">38</td>
+<td class="p-2 border border-outline-variant text-center bg-[#047857] text-secondary">1850</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">10</td>
+<td class="p-2 border border-outline-variant text-center bg-[#5b21b6] text-[#c4b5fd]">50</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-outline-variant text-on-surface-variant">BLK_04</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">0</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">4</td>
+<td class="p-2 border border-outline-variant text-center bg-[#022c22]">8</td>
+<td class="p-2 border border-outline-variant text-center bg-[#059669] text-secondary">2010</td>
+<td class="p-2 border border-outline-variant text-center bg-[#4c1d95] text-[#c4b5fd]">18</td>
+</tr>
+<tr>
+<td class="p-2 border-b border-outline-variant text-on-surface-variant">UNK</td>
+<td class="p-2 border border-outline-variant text-center bg-[#7f1d1d] text-error">42</td>
+<td class="p-2 border border-outline-variant text-center bg-[#7f1d1d] text-error">15</td>
+<td class="p-2 border border-outline-variant text-center bg-[#991b1b] text-error">60</td>
+<td class="p-2 border border-outline-variant text-center bg-[#7f1d1d] text-error">22</td>
+<td class="p-2 border border-outline-variant text-center bg-[#1e293b] text-on-surface">1800</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Per-Class Results Table -->
+<div class="panel p-container-padding flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-4">Per-Class Metrics</span>
+<div class="inlay w-full">
+<table class="w-full text-left font-data-md text-data-md">
+<thead class="bg-[#0f172a] border-b border-outline-variant">
+<tr>
+<th class="p-2 text-on-surface-variant">CLASS</th>
+<th class="p-2 text-on-surface-variant text-right">SAMPLES</th>
+<th class="p-2 text-on-surface-variant text-right">CORRECT</th>
+<th class="p-2 text-on-surface-variant text-right">FP</th>
+<th class="p-2 text-on-surface-variant text-right">FN</th>
+<th class="p-2 text-on-surface-variant text-right">ACCURACY</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-[#334155] hover:bg-[#283044] transition-colors cursor-pointer">
+<td class="p-2 text-primary">BLK_01</td>
+<td class="p-2 text-right">2000</td>
+<td class="p-2 text-right text-secondary">1950</td>
+<td class="p-2 text-right">52</td>
+<td class="p-2 text-right">50</td>
+<td class="p-2 text-right text-on-surface">97.5%</td>
+</tr>
+<tr class="border-b border-[#334155] hover:bg-[#283044] transition-colors cursor-pointer">
+<td class="p-2 text-primary">BLK_02</td>
+<td class="p-2 text-right">2170</td>
+<td class="p-2 text-right text-secondary">2100</td>
+<td class="p-2 text-right">69</td>
+<td class="p-2 text-right">70</td>
+<td class="p-2 text-right text-on-surface">96.7%</td>
+</tr>
+<tr class="border-b border-[#334155] hover:bg-[#283044] transition-colors cursor-pointer">
+<td class="p-2 text-primary">BLK_03</td>
+<td class="p-2 text-right">1950</td>
+<td class="p-2 text-right text-secondary">1850</td>
+<td class="p-2 text-right">118</td>
+<td class="p-2 text-right">100</td>
+<td class="p-2 text-right text-warning" style="color: #fbbf24;">94.8%</td>
+</tr>
+<tr class="hover:bg-[#283044] transition-colors cursor-pointer">
+<td class="p-2 text-primary">BLK_04</td>
+<td class="p-2 text-right">2040</td>
+<td class="p-2 text-right text-secondary">2010</td>
+<td class="p-2 text-right">36</td>
+<td class="p-2 text-right">30</td>
+<td class="p-2 text-right text-on-surface">98.5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Right Column: Failures & Stress Tests (4 cols) -->
+<div class="col-span-4 flex flex-col gap-gutter">
+<!-- Failure Gallery -->
+<div class="panel p-container-padding flex flex-col h-full">
+<span class="font-label-caps text-label-caps text-error uppercase mb-4 border-b border-error pb-1 inline-block w-max">Recent Failures</span>
+<div class="flex flex-col gap-3 overflow-y-auto pr-2" style="max-height: 400px;">
+<!-- Failure Item 1 -->
+<div class="inlay flex flex-col p-1">
+<div class="relative w-full h-24 bg-[#0b1326] border border-[#334155] mb-1">
+<!-- Simulated Image -->
+<div class="absolute inset-0 opacity-50 bg-[url('https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&amp;fit=crop&amp;q=80&amp;w=300')] bg-cover bg-center grayscale" data-alt="A macro shot of a metallic, machined robotic block sitting on an industrial surface, slightly out of focus due to motion blur, under stark factory lighting. The image has a high-contrast, technical aesthetic."></div>
+<!-- Bounding Box -->
+<div class="absolute top-4 left-8 w-16 h-12 border-2 border-error border-dashed"></div>
+<span class="absolute bottom-1 right-1 font-data-md text-[10px] text-error bg-[#0b1326]/80 px-1">CONF: 0.42</span>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="font-data-md text-[10px] text-on-surface-variant">ID: F-8921</span>
+<span class="font-label-caps text-[10px] text-error uppercase bg-error-container px-1 py-0.5 rounded-sm">MOTION_BLUR</span>
+</div>
+</div>
+<!-- Failure Item 2 -->
+<div class="inlay flex flex-col p-1">
+<div class="relative w-full h-24 bg-[#0b1326] border border-[#334155] mb-1">
+<!-- Simulated Image -->
+<div class="absolute inset-0 opacity-50 bg-[url('https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&amp;fit=crop&amp;q=80&amp;w=300')] bg-cover bg-center grayscale" data-alt="A close-up of a precision engineered metal block on an assembly line. Intense, blown-out overhead lighting causes severe glare on the metallic surface, obscuring details. Clinical, high-contrast dark mode style."></div>
+<!-- Bounding Box -->
+<div class="absolute top-2 left-12 w-14 h-14 border-2 border-error border-dashed"></div>
+<span class="absolute bottom-1 right-1 font-data-md text-[10px] text-error bg-[#0b1326]/80 px-1">CONF: 0.51</span>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="font-data-md text-[10px] text-on-surface-variant">ID: F-8922</span>
+<span class="font-label-caps text-[10px] text-[#fbbf24] uppercase bg-[#78350f] px-1 py-0.5 rounded-sm">LIGHT_REFLECTION</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Stress Test Panels -->
+<div class="panel p-container-padding flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-4">Environmental Stress</span>
+<div class="flex flex-col gap-4 font-data-md text-data-md">
+<!-- Distance -->
+<div>
+<div class="flex justify-between text-on-surface mb-1 text-[12px]">
+<span>DISTANCE (Z-AXIS)</span>
+</div>
+<div class="flex w-full h-4 bg-[#1e293b] rounded-[1px] border border-[#334155]">
+<div class="h-full bg-secondary flex items-center justify-center text-[10px] text-background font-bold" style="width: 33%">NEAR</div>
+<div class="h-full bg-secondary opacity-70 flex items-center justify-center text-[10px] text-background font-bold" style="width: 33%">MID</div>
+<div class="h-full bg-error opacity-80 flex items-center justify-center text-[10px] text-white font-bold" style="width: 34%">FAR</div>
+</div>
+</div>
+<!-- Lighting -->
+<div>
+<div class="flex justify-between text-on-surface mb-1 text-[12px]">
+<span>ILLUMINATION</span>
+</div>
+<div class="flex w-full h-4 bg-[#1e293b] rounded-[1px] border border-[#334155]">
+<div class="h-full bg-error opacity-80 flex items-center justify-center text-[10px] text-white font-bold" style="width: 20%">LOW</div>
+<div class="h-full bg-secondary flex items-center justify-center text-[10px] text-background font-bold" style="width: 60%">NOMINAL</div>
+<div class="h-full bg-[#fbbf24] opacity-90 flex items-center justify-center text-[10px] text-black font-bold" style="width: 20%">GLARE</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

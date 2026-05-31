@@ -3,25 +3,25 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-05-30T22:24:49.387Z"
+last_updated: "2026-05-30T23:28:37.942Z"
 progress:
-  total_phases: 10
-  completed_phases: 3
-  total_plans: 20
-  completed_plans: 12
-  percent: 60
+  total_phases: 11
+  completed_phases: 4
+  total_plans: 24
+  completed_plans: 16
+  percent: 67
 ---
 
 # Project State
 
 **Core value:** Reliable block ID plus four ordered corners and angle for robot pickup
-**Current focus:** Phase 10 ready to execute (real camera on dev Mac)
+**Current focus:** Phase 11 complete — Pi UAT for live aarch64 EIM optional
 
 ## Current Position
 
-Phase: 10 of 10
-Status: Ready to execute
-Progress: [████████░░] 80%
+Phase: 11 of 11
+Status: Complete
+Progress: [██████████] 100%
 
 ## Completed
 
@@ -34,9 +34,8 @@ Progress: [████████░░] 80%
 
 ## Next
 
-- `/gsd-execute-phase 10` — real USB camera on dev Mac (Wave 0: platform backend fix)
+- Pi 5 UAT: `VISION_MOCK_MODE=false`, live camera + `.eim` inference
 - Continue `/gsd-verify-work 9` if console UAT incomplete
-- Deploy INT8 model to `models/block_classifier_int8.tflite`
 
 ## Accumulated Context
 
@@ -44,3 +43,4 @@ Progress: [████████░░] 80%
 
 - Phase 9 added: Next.js + FastAPI detection console UI with WebSocket telemetry, MJPEG stream, and Docker Compose
 - Phase 10 added: Real camera capture on dev machine (no mock — USB/Pi camera live feed)
+- Phase 11 added: Edge Impulse .eim deployment for Pi 5 inference — load model, run camera inference, WebSocket telemetry

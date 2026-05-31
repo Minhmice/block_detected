@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Datasets - VISION_OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary": "#4edea3",
+                      "primary": "#4cd7f6",
+                      "outline": "#869397",
+                      "on-tertiary-container": "#7d0023",
+                      "inverse-on-surface": "#283044",
+                      "outline-variant": "#3d494c",
+                      "on-tertiary": "#67001b",
+                      "surface-container-low": "#131b2e",
+                      "tertiary-container": "#ff7f8b",
+                      "on-secondary-fixed": "#002113",
+                      "surface-container": "#171f33",
+                      "primary-fixed": "#acedff",
+                      "primary-container": "#06b6d4",
+                      "surface-container-high": "#222a3d",
+                      "surface-tint": "#4cd7f6",
+                      "on-tertiary-fixed": "#40000d",
+                      "on-tertiary-fixed-variant": "#92002a",
+                      "tertiary-fixed": "#ffdadb",
+                      "secondary-container": "#00a572",
+                      "tertiary-fixed-dim": "#ffb2b7",
+                      "on-secondary-container": "#00311f",
+                      "on-primary-container": "#00424f",
+                      "surface-variant": "#2d3449",
+                      "on-surface-variant": "#bcc9cd",
+                      "background": "#0b1326",
+                      "on-primary-fixed": "#001f26",
+                      "secondary-fixed-dim": "#4edea3",
+                      "on-surface": "#dae2fd",
+                      "primary-fixed-dim": "#4cd7f6",
+                      "on-background": "#dae2fd",
+                      "inverse-primary": "#00687a",
+                      "on-secondary-fixed-variant": "#005236",
+                      "secondary-fixed": "#6ffbbe",
+                      "inverse-surface": "#dae2fd",
+                      "surface-dim": "#0b1326",
+                      "tertiary": "#ffb2b7",
+                      "on-primary-fixed-variant": "#004e5c",
+                      "surface-container-lowest": "#060e20",
+                      "on-primary": "#003640",
+                      "error-container": "#93000a",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-highest": "#2d3449",
+                      "on-secondary": "#003824",
+                      "error": "#ffb4ab",
+                      "surface-bright": "#31394d",
+                      "surface": "#0b1326",
+                      "on-error": "#690005"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "margin": "24px",
+                      "unit": "4px",
+                      "container-padding": "12px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "data-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ],
+                      "data-lg": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .panel { border: 1px solid theme('colors.outline-variant'); }
+        .active-border { border: 1px solid theme('colors.primary'); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen flex flex-col overflow-hidden">
+<!-- TopAppBar -->
+<header class="flex items-center justify-between px-margin w-full h-12 bg-surface border-b border-outline-variant fixed top-0 w-full z-50 h-12 flat no shadows">
+<div class="flex items-center gap-gutter">
+<span class="font-label-caps text-label-caps tracking-widest text-primary">VISION_OS_v2.4</span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<span class="font-data-md text-data-md text-secondary">CONNECTED</span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<span class="font-data-md text-data-md text-on-surface-variant">FPS: <span class="text-on-surface">59.9</span></span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<span class="font-data-md text-data-md text-on-surface-variant">Latency: <span class="text-on-surface">12.4ms</span></span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<span class="font-data-md text-data-md text-on-surface-variant">Mode: <span class="text-on-surface">CNN</span></span>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-surface-bright text-on-surface px-3 py-1 font-label-caps text-label-caps border border-outline-variant hover:bg-surface-container-high transition-colors">INITIALIZE</button>
+<button class="bg-error text-on-error px-4 py-1 font-label-caps text-label-caps font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 16px;">warning</span>
+                 EMERGENCY_STOP
+            </button>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors">settings_input_component</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors">sensors</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors">lan</span>
+</div>
+</div>
+</header>
+<div class="flex flex-1 mt-12 overflow-hidden">
+<!-- SideNavBar -->
+<nav class="flex flex-col h-full py-4 gap-2 bg-surface-container border-r border-outline-variant w-64 shrink-0 overflow-y-auto">
+<div class="px-4 mb-4">
+<h2 class="font-headline-md text-headline-md text-primary truncate">ROBOTIC_ARM_01</h2>
+<p class="font-data-md text-data-md text-on-surface-variant">OPERATOR_042</p>
+</div>
+<div class="flex flex-col gap-1 w-full">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">videocam</span>
+<span class="font-label-caps text-label-caps">Real-time</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">straighten</span>
+<span class="font-label-caps text-label-caps">Calibration</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 bg-secondary-container text-on-secondary-container border-l-2 border-secondary transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">database</span>
+<span class="font-label-caps text-label-caps">Datasets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">System</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Logs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-label-caps text-label-caps">Terminal</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-1 w-full pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-caps text-label-caps">Documentation</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col p-4 gap-4 overflow-hidden bg-background">
+<!-- Summary Cards & Warning Row -->
+<div class="grid grid-cols-12 gap-4 shrink-0">
+<div class="col-span-8 grid grid-cols-4 gap-4">
+<div class="panel bg-surface p-3 flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TOTAL SAMPLES</span>
+<span class="font-data-lg text-data-lg text-primary">14,204</span>
+</div>
+<div class="panel bg-surface p-3 flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">block_01</span>
+<span class="font-data-lg text-data-lg text-on-surface">4.2k</span>
+</div>
+<div class="panel bg-surface p-3 flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">block_02</span>
+<span class="font-data-lg text-data-lg text-on-surface">3.8k</span>
+</div>
+<div class="panel bg-surface p-3 flex flex-col gap-1 active-border">
+<span class="font-label-caps text-label-caps text-on-surface-variant">block_03</span>
+<span class="font-data-lg text-data-lg text-primary">1.2k</span>
+</div>
+<div class="panel bg-surface p-3 flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">block_04</span>
+<span class="font-data-lg text-data-lg text-on-surface">4.1k</span>
+</div>
+<div class="panel bg-surface p-3 flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">fail</span>
+<span class="font-data-lg text-data-lg text-error">142</span>
+</div>
+<div class="panel bg-surface p-3 flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">unknown</span>
+<span class="font-data-lg text-data-lg text-on-surface-variant">89</span>
+</div>
+<div class="panel bg-surface p-3 flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">CLASS BALANCE</span>
+<span class="font-data-lg text-data-lg text-tertiary">IMBALANCED</span>
+</div>
+</div>
+<div class="col-span-4 panel bg-surface p-3 flex flex-col justify-center gap-2 border-tertiary">
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-caps text-label-caps">SYSTEM WARNING</span>
+</div>
+<p class="font-data-md text-data-md text-on-surface">Class imbalance detected. Add more samples for <span class="text-primary font-bold">BLOCK_03</span> to improve model accuracy.</p>
+</div>
+</div>
+<!-- Main Workspace: Browser + Inspector -->
+<div class="flex flex-1 gap-4 overflow-hidden min-h-0">
+<!-- Dataset Browser Panel -->
+<div class="flex-1 flex flex-col panel bg-surface overflow-hidden">
+<!-- Filter Bar -->
+<div class="p-2 border-b border-outline-variant flex items-center justify-between shrink-0 bg-surface-container-low">
+<div class="flex items-center gap-4">
+<select class="bg-surface-bright border border-outline-variant text-on-surface font-data-md text-data-md py-1 px-2 focus:ring-1 focus:ring-primary focus:border-primary outline-none">
+<option>Label: All</option>
+<option>block_01</option>
+<option>block_02</option>
+<option selected="">block_03</option>
+</select>
+<div class="flex items-center gap-2 text-on-surface-variant font-data-md text-data-md border border-outline-variant px-2 py-1 bg-surface-bright">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_month</span>
+<span>Past 7 Days</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="form-checkbox bg-surface-bright border-outline-variant text-primary focus:ring-primary focus:ring-offset-background" type="checkbox"/>
+<span class="font-data-md text-data-md text-on-surface">Verified</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="form-checkbox bg-surface-bright border-outline-variant text-error focus:ring-error focus:ring-offset-background" type="checkbox"/>
+<span class="font-data-md text-data-md text-on-surface">Failed</span>
+</label>
+</div>
+</div>
+<!-- Grid -->
+<div class="flex-1 overflow-y-auto p-4 scrollbar-hide">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+<!-- Selected Item -->
+<div class="panel active-border bg-surface-container p-2 flex flex-col gap-2 cursor-pointer relative">
+<div class="absolute top-0 right-0 w-2 h-2 bg-primary"></div>
+<div class="aspect-square bg-surface-bright relative overflow-hidden border border-outline-variant">
+<div class="absolute inset-0 border-2 border-primary m-2 z-10 pointer-events-none" style="opacity: 0.5;"></div>
+<img alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." class="w-full h-full object-cover opacity-80" data-alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0WSERQtdhR2QffvT6vEiqoVn3fD9_3qR0GtEpOtWcrJisEil47b-sFkOaS_Hg6rtFDknciW1Khs7ThMz1x-x7KbTUYGd2hbfzltgLuHBi9ta_5_A4ioqofFZJvQuEDHZi3MkvifbqiVMfZ1sNSaQgg0c1lREwBY4A3-gmG-gGGmdqaNPhGy0npRpSdnKvAc83TPY8MuhMPcFO8wqHJP3lmkAfNVNU8AfNccMDKMxVUK_4TScV9Q6sWtNe1DMAiUWtyXZBCDXnzH2l"/>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-data-md text-data-md text-primary">block_03</span>
+<span class="font-label-caps text-label-caps bg-secondary-container text-on-secondary-container px-1">VERIFIED</span>
+</div>
+<span class="font-data-md text-data-md text-on-surface-variant text-xs">CONF: 0.98</span>
+</div>
+<!-- Standard Items -->
+<div class="panel border-outline-variant bg-surface p-2 flex flex-col gap-2 cursor-pointer hover:border-primary transition-colors">
+<div class="aspect-square bg-surface-bright relative overflow-hidden border border-outline-variant">
+<img alt="Close up view of a cylindrical metal component on a dark lab table. Blueish sterile lighting. Technical UI crosshairs superimposed on the image. High information density, modern engineering style." class="w-full h-full object-cover opacity-60" data-alt="Close up view of a cylindrical metal component on a dark lab table. Blueish sterile lighting. Technical UI crosshairs superimposed on the image. High information density, modern engineering style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHxj8bExZgtg3gZXR0xGoUIRafDuxt4EN95p8_cnNLs1OtUH8lWkyzjd5Uz-zLPdiiUKd-YKoYXYvv1sE3YPJaggvzf2XDA9lDYA71_mO_goU0oes7j6Oi_2JTWk12OiTT8OeyZSC9YBc3QPMflBcwqoGwPM6_9BP7BFVmeESyyP1GLv_8Gi_vsnUpqs1r5DxkicSCDnUFuoB3_DCxHcySq6BhYWoo6Sxn4AXRWVLk65-ro9UGYTvWeAsWYYDeJ14dM4YoiCMqyOLL"/>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-data-md text-data-md text-on-surface">block_03</span>
+<span class="font-label-caps text-label-caps border border-outline-variant text-on-surface-variant px-1">UNVERIFIED</span>
+</div>
+<span class="font-data-md text-data-md text-on-surface-variant text-xs">CONF: 0.82</span>
+</div>
+<div class="panel border-outline-variant bg-surface p-2 flex flex-col gap-2 cursor-pointer hover:border-primary transition-colors">
+<div class="aspect-square bg-surface-bright relative overflow-hidden border border-outline-variant">
+<img alt="Industrial gear part isolated on a dark technical background. Sharp focus, high contrast. Overlay of red warning bounding box. Clinical laboratory lighting environment." class="w-full h-full object-cover opacity-60 grayscale" data-alt="Industrial gear part isolated on a dark technical background. Sharp focus, high contrast. Overlay of red warning bounding box. Clinical laboratory lighting environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjDsFfJXlUKRPGszSrmrrIuBA1OxZjUTzVA0HEeNc3Zhgm_iCfe-GW_vavaBH2fpjnzdIV6EKa8eWDp89HwZycUXIpYdMibbZJtlJ9zOqk4Khw9ezys2e6gOVRRRs0lJQyqN8Giq7DjS_-sfFs7Ox6MiqbWyqidTQs5Ik55X-aZXQdJi29U2AZc8iR2VRnhv1wbto0uk6aP19pa8R3lbX1JYnhVDfaYSMkNX1JcBEn5ddfr71CjT3_ej5zMOgtt5kR4lQT0gYfhPXF"/>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-data-md text-data-md text-on-surface">block_03</span>
+<span class="font-label-caps text-label-caps border border-error text-error px-1">FAILED</span>
+</div>
+<span class="font-data-md text-data-md text-on-surface-variant text-xs">CONF: 0.41</span>
+</div>
+<div class="panel border-outline-variant bg-surface p-2 flex flex-col gap-2 cursor-pointer hover:border-primary transition-colors">
+<div class="aspect-square bg-surface-bright relative overflow-hidden border border-outline-variant">
+<img alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." class="w-full h-full object-cover opacity-60" data-alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD392x4T118jEaC6m8UxGVs8-ZYePs8GuBm3waiIVYEv3E3WXmQuXrvGHTzZsHR8FkM_LZeYXBMXwTO3PYUyKnV5BbTSIeMkJ3L95TZjLybKOPIT65PhfdoU3Eid8vWhpGfDGNzGMlzo8U3ir-szupdkoBsxjHkVc4H-8Q53Nq0iLFFhxzzqd7sQ3KPoCwiAe9RTpqgplxcz8BAeiL0ThvTWtsOEqsP3AjvsItc09RJDC8QVA8RxHuSHGfQ3tQ4HyAL7AFfchLlwegT"/>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-data-md text-data-md text-on-surface">block_03</span>
+<span class="font-label-caps text-label-caps bg-secondary-container text-on-secondary-container px-1">VERIFIED</span>
+</div>
+<span class="font-data-md text-data-md text-on-surface-variant text-xs">CONF: 0.95</span>
+</div>
+<div class="panel border-outline-variant bg-surface p-2 flex flex-col gap-2 cursor-pointer hover:border-primary transition-colors">
+<div class="aspect-square bg-surface-bright relative overflow-hidden border border-outline-variant">
+<img alt="Close up view of a cylindrical metal component on a dark lab table. Blueish sterile lighting. Technical UI crosshairs superimposed on the image. High information density, modern engineering style." class="w-full h-full object-cover opacity-60" data-alt="Close up view of a cylindrical metal component on a dark lab table. Blueish sterile lighting. Technical UI crosshairs superimposed on the image. High information density, modern engineering style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCHE8h3S-Ez8v0FfvaKx75Jqn1q6K-BSUW0xC947_JNrvKgqxixZryoa6MnqfX9N3FPqJXoY5vFY1uBzTr_una12bQdzfBHnxIY_fupZphZfQ-xFaMkb75cfJZg8XsDwfHNT5vv8mepbofgSsxKR3mhFWYgw68c412QhHKmK1n30J2zxKdFsHKDcARS4uZSnJctED4AYNQCN4LMJsl2hWu_7_5RHYZpko-EJm9-3ff-zNMeXyjDNAWdFQ79dZ1rW2-o3-gQoSGDZvI"/>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-data-md text-data-md text-on-surface">block_03</span>
+<span class="font-label-caps text-label-caps bg-secondary-container text-on-secondary-container px-1">VERIFIED</span>
+</div>
+<span class="font-data-md text-data-md text-on-surface-variant text-xs">CONF: 0.91</span>
+</div>
+<div class="panel border-outline-variant bg-surface p-2 flex flex-col gap-2 cursor-pointer hover:border-primary transition-colors">
+<div class="aspect-square bg-surface-bright relative overflow-hidden border border-outline-variant">
+<img alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." class="w-full h-full object-cover opacity-60" data-alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1bGLpHvhbRLOAUXA3pJnN3khmFG0XRujzjJcnzIbptpn34A_07qfuYZv_xdEEabiHXuseKZ_YwpvCQGXTubuym-vdFtjN-LyapGBmO7BxJ2KwSiC3lSIWTlOCiBQTdMOxdNHZvy8VW0sZ85mAOBGaIGzFNkpn7zdPYMlUhTmjh-0WeBFrNTbCWi51C747a7UNgN0PQagO8h_FEVMbb1EGQkODHCq6S449LWz0azZtWVek8OQkVxdH-xFb3TY-0Bg-lhyQdnMOJEeB"/>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-data-md text-data-md text-on-surface">block_03</span>
+<span class="font-label-caps text-label-caps border border-outline-variant text-on-surface-variant px-1">UNVERIFIED</span>
+</div>
+<span class="font-data-md text-data-md text-on-surface-variant text-xs">CONF: 0.76</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sample Inspector (Right Sidebar) -->
+<div class="w-80 shrink-0 panel bg-surface-container flex flex-col overflow-y-auto scrollbar-hide">
+<div class="p-3 border-b border-outline-variant bg-surface-container-low">
+<span class="font-label-caps text-label-caps text-primary">SAMPLE INSPECTOR</span>
+</div>
+<div class="p-4 flex flex-col gap-4">
+<!-- Large Preview -->
+<div class="panel bg-background aspect-video relative border-primary overflow-hidden">
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+<div class="w-8 h-8 border-t-2 border-l-2 border-primary absolute top-2 left-2"></div>
+<div class="w-8 h-8 border-t-2 border-r-2 border-primary absolute top-2 right-2"></div>
+<div class="w-8 h-8 border-b-2 border-l-2 border-primary absolute bottom-2 left-2"></div>
+<div class="w-8 h-8 border-b-2 border-r-2 border-primary absolute bottom-2 right-2"></div>
+<div class="w-[60%] h-[60%] border border-secondary opacity-50"></div>
+</div>
+<img alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." class="w-full h-full object-cover" data-alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4H14GdWDrWMSBQAWLdQ4J0KozISa2LzsmK3RloX1mt5RUHrWFfykk9ergzYa6aorpwW_2hrtMFyhxY3mGZqr-cfzsg_FSx_ZoFP4N6d0mmX_Su53QahtpodgAuTZ6fJZwLpeqBAa62aO_QaX7pr2dyUgRQjOK2ZF_ycrje7tCpvzzbGZAWo5044UqgtKMuyz-I9jhrH2whf_j5vo_SK1SCbEOBAFQKUJaxJQRY-R38nBg51tOg_Sbjp3sBVl0kRAKcjPhKwofM4GY"/>
+</div>
+<!-- Data Readouts -->
+<div class="grid grid-cols-2 gap-2">
+<div class="panel bg-surface p-2 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant text-[10px]">ID</span>
+<span class="font-data-md text-data-md text-on-surface">SMP-9421A</span>
+</div>
+<div class="panel bg-surface p-2 flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant text-[10px]">RESOLUTION</span>
+<span class="font-data-md text-data-md text-on-surface">1920x1080</span>
+</div>
+</div>
+<!-- ROI Crop & Warped Face -->
+<div class="flex gap-2">
+<div class="flex-1 panel bg-surface p-2 flex flex-col items-center gap-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant text-[10px]">ROI CROP</span>
+<div class="w-full aspect-square bg-background border border-outline-variant relative overflow-hidden">
+<img alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." class="w-full h-full object-cover scale-150 origin-center" data-alt="Industrial engineering console display showing a dark gray metallic machined block resting on a scuffed metal surface. High contrast clinical lighting creates sharp shadows and highlights. Grid lines and subtle cyan technical overlay UI elements are visible. Clinical, high-fidelity aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkumN2CMjK8L3ns1EGvn6Ok5fkNtBmaQPgy_1-J8Vq_ZdYRZq73j-8wd8-2QWz5sfxIRUG5F1lG2iYQMU88IrWinIivaj7pA_Bwprzj87bm4GU0ta9jBXwlq_QwsA2GBcNXxpII-lNuMqoT0rsce8CBZ1C7zidLxlVz-2xNCF_sYP0o9D8DNbjLKgM7CPLskQGMStXCWuqwpnRtn9A88r_xutn9M22WvMKVgq0QQdt5KCQ13jVzv80gkJw-PBXykSEhlwilC1_BxTV"/>
+</div>
+</div>
+<div class="flex-1 panel bg-surface p-2 flex flex-col items-center gap-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant text-[10px]">128x128 WARP</span>
+<div class="w-full aspect-square bg-background border border-outline-variant relative overflow-hidden flex items-center justify-center">
+<div class="w-[80%] h-[80%] bg-surface-bright grayscale">
+<!-- Placeholder for warped texture -->
+<div class="w-full h-full bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,#2d3449_2px,#2d3449_4px)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Controls -->
+<div class="flex flex-col gap-2 mt-4 pt-4 border-t border-outline-variant">
+<label class="font-label-caps text-label-caps text-on-surface-variant">ASSIGNED LABEL</label>
+<select class="w-full bg-surface-bright border border-outline-variant text-on-surface font-data-md text-data-md py-2 px-2 focus:ring-1 focus:ring-primary focus:border-primary outline-none">
+<option>block_01</option>
+<option>block_02</option>
+<option selected="">block_03</option>
+<option>fail</option>
+</select>
+<div class="flex gap-2 mt-2">
+<button class="flex-1 bg-surface-bright text-on-surface border border-outline-variant py-2 font-label-caps text-label-caps hover:bg-error hover:text-on-error transition-colors">
+                                    DELETE
+                                </button>
+<button class="flex-[2] bg-primary text-on-primary py-2 font-label-caps text-label-caps font-bold hover:opacity-90 transition-opacity">
+                                    CONFIRM LABEL
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="panel bg-surface-container-low p-2 shrink-0 flex items-center justify-between border-t-0">
+<div class="flex gap-2">
+<button class="bg-surface-bright text-on-surface px-4 py-1 font-label-caps text-label-caps border border-outline-variant hover:bg-surface-container-high transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 16px;">upload</span>
+                        IMPORT
+                    </button>
+<button class="bg-surface-bright text-on-surface px-4 py-1 font-label-caps text-label-caps border border-outline-variant hover:bg-surface-container-high transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 16px;">download</span>
+                        EXPORT
+                    </button>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface text-on-surface px-4 py-1 font-label-caps text-label-caps border border-outline-variant hover:border-primary transition-colors">
+                        SPLIT DATASET
+                    </button>
+<button class="bg-surface text-on-surface px-4 py-1 font-label-caps text-label-caps border border-outline-variant hover:border-error hover:text-error transition-colors">
+                        CLEAR UNVERIFIED
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

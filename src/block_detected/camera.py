@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -41,6 +42,7 @@ class CameraSettings:
     device_path: Optional[str] = None
     image_dir: Optional[str] = None
     glob_pattern: str = "*.png"
+    cv_backend: str = "auto"
     debug: Optional[dict[str, Any]] = None
 
     def __post_init__(self) -> None:
@@ -90,6 +92,105 @@ def _empty_cam02_metadata() -> dict[str, object]:
     }
 
 
+_CV_BACKEND_MAP: dict[str, int] = {
+    "v4l2": cv2.CAP_V4L2,
+    "avfoundation": cv2.CAP_AVFOUNDATION,
+    "dshow": getattr(cv2, "CAP_DSHOW", 700),
+    "any": cv2.CAP_ANY,
+}
+
+
+def _select_cv_backend(cv_backend: str) -> int:
+    """Return cv2 VideoCapture apiPreference for the given backend name."""
+    if cv_backend and cv_backend != "auto":
+        key = cv_backend.lower()
+        if key not in _CV_BACKEND_MAP:
+            raise ValueError(f"unknown cv_backend: {cv_backend!r}")
+        return _CV_BACKEND_MAP[key]
+    if sys.platform == "darwin":
+        return cv2.CAP_AVFOUNDATION
+    if sys.platform.startswith("linux"):
+        return cv2.CAP_V4L2
+    return cv2.CAP_ANY
+
+
+def list_usb_camera_indices(max_index: int = 10, cv_backend: str = "auto") -> list[int]:
+    """Probe OpenCV camera indices that open successfully."""
+    if sys.platform == "darwin":
+        max_index = min(max_index, 2)
+    backend_api = _select_cv_backend(cv_backend)
+    found: list[int] = []
+    consecutive_misses = 0
+    miss_limit = 1 if sys.platform == "darwin" else 2
+    # #region agent log
+    try:
+        import json as _json
+        import time as _time
+        from pathlib import Path as _Path
+
+        _log_path = _Path(__file__).resolve().parents[2] / ".cursor" / "debug-7b62f0.log"
+        with _log_path.open("a", encoding="utf-8") as _f:
+            _f.write(
+                _json.dumps(
+                    {
+                        "sessionId": "7b62f0",
+                        "timestamp": int(_time.time() * 1000),
+                        "location": "camera.py:list_usb_camera_indices:entry",
+                        "message": "probe start",
+                        "data": {
+                            "max_index": max_index,
+                            "platform": sys.platform,
+                            "cv_backend": cv_backend,
+                            "miss_limit": miss_limit,
+                        },
+                        "hypothesisId": "A",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass
+    # #endregion
+    for index in range(max_index):
+        cap = cv2.VideoCapture(index, backend_api)
+        try:
+            opened = cap.isOpened()
+            if opened:
+                found.append(index)
+                consecutive_misses = 0
+            else:
+                consecutive_misses += 1
+        finally:
+            cap.release()
+        if consecutive_misses >= miss_limit and found:
+            break
+    # #region agent log
+    try:
+        import json as _json
+        import time as _time
+        from pathlib import Path as _Path
+
+        _log_path = _Path(__file__).resolve().parents[2] / ".cursor" / "debug-7b62f0.log"
+        with _log_path.open("a", encoding="utf-8") as _f:
+            _f.write(
+                _json.dumps(
+                    {
+                        "sessionId": "7b62f0",
+                        "timestamp": int(_time.time() * 1000),
+                        "location": "camera.py:list_usb_camera_indices:exit",
+                        "message": "probe done",
+                        "data": {"found": found, "max_index": max_index},
+                        "hypothesisId": "A",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass
+    # #endregion
+    return found
+
+
 def load_camera_settings(path: Path) -> CameraSettings:
     data = json.loads(path.read_text(encoding="utf-8"))
     profile = data.get("active_profile", "image_sequence")
@@ -113,6 +214,7 @@ def load_camera_settings(path: Path) -> CameraSettings:
         device_path=merged.get("device_path"),
         image_dir=merged.get("image_dir"),
         glob_pattern=str(merged.get("glob_pattern", "*.png")),
+        cv_backend=str(merged.get("cv_backend", "auto")),
         debug=data.get("debug"),
     )
     return settings
@@ -166,14 +268,16 @@ class UsbVideoCaptureFrameSource:
         self._control_metadata = _empty_cam02_metadata()
 
     def start(self) -> None:
+        backend_api = _select_cv_backend(self._settings.cv_backend)
         index = self._settings.camera_index
         if self._settings.device_path:
-            cap = cv2.VideoCapture(self._settings.device_path, cv2.CAP_V4L2)
+            cap = cv2.VideoCapture(self._settings.device_path, backend_api)
         else:
-            cap = cv2.VideoCapture(index, cv2.CAP_V4L2)
+            cap = cv2.VideoCapture(index, backend_api)
         if not cap.isOpened():
             raise RuntimeError(
-                f"failed to open USB camera index={index} device={self._settings.device_path!r}"
+                f"failed to open USB camera index={index} device={self._settings.device_path!r} "
+                f"backend={self._settings.cv_backend!r}"
             )
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, self._settings.width)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self._settings.height)

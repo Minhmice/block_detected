@@ -19,7 +19,8 @@ Deliver a Pi-compatible vision pipeline that detects one of four colored cube bl
 - [x] **Phase 7: Reject Logic & Integration** - Full end-to-end pipeline with safety reject paths
 - [x] **Phase 8: Test & Evaluation** - Labeled test set, offline metrics, integration smoke test
 - [ ] **Phase 9: Next.js + FastAPI detection console UI** - WebSocket telemetry, MJPEG stream, Docker Compose
-- [ ] **Phase 10: Real camera on dev machine** - Live USB/Pi camera feed without mock mode
+- [x] **Phase 10: Real camera on dev machine** - Live USB/Pi camera feed without mock mode
+- [x] **Phase 11: Edge Impulse .eim deployment** - Pi 5 aarch64 inference via FastAPI detection loop
 
 ## Phase Details
 
@@ -168,15 +169,15 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 10-01-PLAN.md — Wave 0: `_select_cv_backend`, `cv_backend` field, unit tests
-- [ ] 10-02-PLAN.md — Wave 1: `camera.usb.mac.json`, `.env.real.example`, factory test
-- [ ] 10-03-PLAN.md — Wave 2: API idle/start tests, non-blocking camera open, LIVE_CAMERA UI
-- [ ] 10-04-PLAN.md — Wave 3: README, UAT checklist, hw_camera marker (human checkpoint)
+- [x] 10-01-PLAN.md — Wave 0: `_select_cv_backend`, `cv_backend` field, unit tests
+- [x] 10-02-PLAN.md — Wave 1: `camera.usb.mac.json`, `.env.real.example`, factory test
+- [x] 10-03-PLAN.md — Wave 2: API idle/start tests, non-blocking camera open, LIVE_CAMERA UI
+- [x] 10-04-PLAN.md — Wave 3: README, UAT checklist, hw_camera marker (human checkpoint)
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → … → 10
+Phases execute in numeric order: 1 → 2 → … → 11
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -189,7 +190,28 @@ Phases execute in numeric order: 1 → 2 → … → 10
 | 7. Reject Logic & Integration | 1/1 | Complete | 2026-05-31 |
 | 8. Test & Evaluation | 1/1 | Complete | 2026-05-31 |
 | 9. Next.js + FastAPI detection console UI | 0/7 | In progress | — |
-| 10. Real camera on dev machine | 0/4 | Ready to execute | — |
+| 10. Real camera on dev machine | 4/4 | Complete (UAT pending) | 2026-05-31 |
+| 11. Edge Impulse .eim deployment | 4/4 | Complete | 2026-05-31 |
+
+### Phase 11: Edge Impulse .eim deployment for Pi 5 inference — load model, run camera inference, WebSocket telemetry
+
+**Goal:** Load Edge Impulse Linux AARCH64 `.eim` on Pi 5, run single-instance inference on camera frames, and stream normalized detection telemetry to the Next.js console (mock mode on non-Pi dev)
+**Depends on:** Phase 10
+**Requirements**: EI-11-01, EI-11-02, EI-11-03, EI-11-04, EI-11-05, EI-11-06, EI-11-07
+**Success Criteria** (what must be TRUE):
+  1. Model at `backend/models/block_detector.eim` (gitignored); env `EI_MODEL_PATH` and startup checks pass (exists, executable)
+  2. `edge_impulse_runner.py` loads runner once; `classify_frame(BGR)` returns contract-aligned JSON fields
+  3. Detection loop wires EI into `/health`, start/stop, MJPEG, WebSocket with optional geometry pre-step
+  4. `VISION_MOCK_MODE=true` skips EI and returns stable fake detections for frontend dev
+  5. `make dev` / `npm run dev:all` + README document placement, chmod, deps, `/health`, frontend URL
+  6. Validation recorded: `uname -m`, `getconf LONG_BIT`, `chmod +x`, backend tests
+**Plans:** 4 plans
+
+Plans:
+- [x] 11-01-PLAN.md — Wave 0: model dir, gitignore, env, eim_model validation, requirements
+- [x] 11-02-PLAN.md — Wave 1: edge_impulse_runner + vision_mock + unit tests
+- [x] 11-03-PLAN.md — Wave 2: detection loop wiring, /health EI fields, lifespan check
+- [x] 11-04-PLAN.md — Wave 3: README deployment docs, validation sign-off, full pytest
 
 ---
 *Roadmap created: 2026-05-31*

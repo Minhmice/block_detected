@@ -12,7 +12,7 @@
     "image_sequence": {
       "_comment": "Offline dev — point image_dir at tests/fixtures/frames",
       "backend": "image_sequence",
-      "image_dir": "tests/fixtures/frames",
+      "image_dir": "images",
       "glob_pattern": "*.png"
     },
     "picamera2": {

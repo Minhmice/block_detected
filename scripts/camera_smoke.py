@@ -3,6 +3,7 @@
 
 Examples:
   python scripts/camera_smoke.py --config config/camera.example.json
+  python scripts/camera_smoke.py --config config/camera.usb.mac.json --frames 3
   python scripts/camera_smoke.py --config config/camera.example.json --save-debug
 
 On Raspberry Pi with CSI camera, switch active_profile to picamera2 in JSON first.

@@ -1,0 +1,26 @@
+{
+  "_comment": "USB camera on macOS dev — cv_backend=avfoundation required",
+  "active_profile": "usb",
+  "defaults": {
+    "width": 640,
+    "height": 480,
+    "warmup_frames": 5,
+    "lock_exposure": false,
+    "lock_white_balance": false
+  },
+  "profiles": {
+    "usb": {
+      "_comment": "Built-in FaceTime / USB UVC via AVFoundation on macOS",
+      "backend": "usb",
+      "camera_index": 0,
+      "cv_backend": "avfoundation"
+    }
+  },
+  "debug": {
+    "enabled": false,
+    "directory": "debug_frames",
+    "every_n_frames": 1,
+    "max_files": 200,
+    "run_id": null
+  }
+}
