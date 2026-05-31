@@ -65,34 +65,6 @@ async def update_config(body: EimConfigUpdateWire, request: Request) -> EimConfi
 
     eim_runtime.set_selected_id(body.model_id)
     ei_runner_service.reload()
-    # #region agent log
-    try:
-        import json as _json
-        import time as _time
-        from pathlib import Path as _Path
-
-        _log_path = _Path(__file__).resolve().parents[3] / ".cursor" / "debug-7b62f0.log"
-        with _log_path.open("a", encoding="utf-8") as _f:
-            _f.write(
-                _json.dumps(
-                    {
-                        "sessionId": "7b62f0",
-                        "timestamp": int(_time.time() * 1000),
-                        "location": "eim.py:update_config",
-                        "message": "model switched",
-                        "data": {
-                            "model_id": body.model_id,
-                            "vision_mock_mode": is_vision_mock_mode(),
-                            "was_running": was_running,
-                        },
-                        "hypothesisId": "C",
-                    }
-                )
-                + "\n"
-            )
-    except Exception:
-        pass
-    # #endregion
 
     if was_running and not is_vision_mock_mode():
         await loop.start()

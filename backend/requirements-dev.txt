@@ -1,0 +1,10 @@
+# Mac dev / Docker mock / CI — no Edge Impulse or PyAudio
+# Install block_detected: pip install -e .. from repo root
+fastapi>=0.136
+uvicorn[standard]>=0.48
+pydantic>=2.13
+opencv-python-headless>=4.11,<4.14
+numpy>=2,<3
+python-multipart
+websockets
+httpx

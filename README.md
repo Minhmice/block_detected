@@ -6,33 +6,32 @@ Non-ArUco cube block detection pipeline for robot pick-and-place, plus a Next.js
 
 ### Local development
 
-1. **Python backend**
-   ```bash
-   python3 -m venv .venv && source .venv/bin/activate
-   pip install -e ".[dev]"
-   pip install -r backend/requirements.txt
-   cp .env.example .env
-   cp frontend/.env.local.example frontend/.env.local
-   ```
+**Prerequisites:** Python 3.11 (`brew install python@3.11`), Node.js 20+.
 
-2. **Frontend**
-   ```bash
-   cd frontend && npm install && cd ..
-   npm install   # root concurrently for dev:all
-   ```
+```bash
+make setup          # once — Python 3.11 venv, deps, .env files (no PyAudio)
+make dev            # every session → http://localhost:3000 + backend :8000
+make doctor         # check venv, env files, key imports
+```
 
-3. **Start both**
-   ```bash
-   make dev
-   # or: npm run dev:all
-   ```
-   Open http://localhost:3000
+If `.venv` was created with another Python version:
+
+```bash
+make setup FORCE=1  # recreate venv with 3.11
+```
+
+**Mac vs Pi Python deps**
+
+| Platform | Install command | Includes PyAudio / Edge Impulse |
+|----------|-----------------|--------------------------------|
+| Mac dev (default) | `make setup` → `requirements-dev.txt` | No — use `VISION_MOCK_MODE=true` |
+| Raspberry Pi 5 | `pip install -r backend/requirements-pi.txt` | Yes — live `.eim` inference |
 
 ### Mock vs real camera
 
 | Mode | Env vars | Behavior |
 |------|----------|----------|
-| Mock (dev) | `MOCK_CAMERA=true` or `DETECTION_MODE=mock` | Cycles `images/*.jpg`; auto-starts detection loop |
+| Mock (dev) | `MOCK_CAMERA=true` or `DETECTION_MODE=mock` | Cycles `images/*.png`; auto-starts detection loop |
 | Real USB | `MOCK_CAMERA=false`, `CAMERA_CONFIG=config/camera.usb.mac.json` | OpenCV VideoCapture (AVFoundation on macOS) |
 | Pi CSI | `MOCK_CAMERA=false`, profile `picamera2` | Requires picamera2 on device |
 
@@ -60,8 +59,13 @@ docker compose up --build
 ### Raspberry Pi
 
 - Install `python3-picamera2` via apt for CSI camera
-- Deploy `block_detected` package + `backend/` + Edge Impulse `.eim` model
-- Set `MOCK_CAMERA=false` and tune `config/camera.example.json`
+- System packages for Edge Impulse + PyAudio:
+  ```bash
+  sudo apt-get install -y libatlas-base-dev libportaudio0 libportaudio2 libportaudiocpp0 portaudio19-dev
+  pip install -r backend/requirements-pi.txt
+  ```
+- Deploy `block_detected` package + `backend/` + Edge Impulse `.eim` models (`chmod +x models/*.eim`)
+- Set `MOCK_CAMERA=false`, `VISION_MOCK_MODE=false`, tune `config/camera.example.json`
 - Run backend: `uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1`
 
 ## Edge Impulse (.eim) deployment
@@ -90,16 +94,18 @@ Model binaries under `backend/models/*.eim` are gitignored. Registry paths under
 
 ```bash
 sudo apt-get install -y libatlas-base-dev libportaudio0 libportaudio2 libportaudiocpp0 portaudio19-dev
-pip install -r backend/requirements.txt
-# PyAudio is pulled via requirements.txt; on Pi you may prefer: sudo apt-get install python3-pyaudio
+pip install -r backend/requirements-pi.txt
+# Optional: sudo apt-get install python3-pyaudio
 ```
+
+Mac dev does **not** install PyAudio or `edge_impulse_linux` — use `make setup` instead.
 
 ### Environment
 
 | Variable | Example | Purpose |
 |----------|---------|---------|
 | `EI_MODELS_CONFIG` | `config/eim_models.json` | Registry of selectable `.eim` models |
-| `EI_MODEL_ID` | `minhmice-v2` | Default selected model id (bootstrap) |
+| `EI_MODEL_ID` | `shit-v1` | Default selected model id (bootstrap) |
 | `EI_MODEL_PATH` | *(empty)* | Optional override path to a single `.eim` |
 | `VISION_MOCK_MODE` | `true` (dev Mac) / `false` (Pi 5) | Skip EI and return stable mock detections |
 
@@ -107,7 +113,7 @@ Add to `.env` (see `.env.example`):
 
 ```
 EI_MODELS_CONFIG=config/eim_models.json
-EI_MODEL_ID=minhmice-v2
+EI_MODEL_ID=shit-v1
 EI_MODEL_PATH=
 VISION_MOCK_MODE=true
 ```

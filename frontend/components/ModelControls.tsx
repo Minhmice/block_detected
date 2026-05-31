@@ -44,23 +44,6 @@ export function ModelControls() {
       appendLog("ERR", "Stop detection before changing EIM model");
       return;
     }
-    // #region agent log
-    fetch("http://127.0.0.1:7800/ingest/4bf68a7c-eec8-41ad-8178-d40cbaef00f6", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Debug-Session-Id": "7b62f0",
-      },
-      body: JSON.stringify({
-        sessionId: "7b62f0",
-        location: "ModelControls.tsx:handleApply",
-        message: "apply clicked",
-        data: { selectedId, visionMockMode, cameraRunning },
-        timestamp: Date.now(),
-        hypothesisId: "C",
-      }),
-    }).catch(() => {});
-    // #endregion
     setBusy(true);
     try {
       const config = await postEimConfig({ modelId: selectedId });

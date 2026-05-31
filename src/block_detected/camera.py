@@ -122,35 +122,6 @@ def list_usb_camera_indices(max_index: int = 10, cv_backend: str = "auto") -> li
     found: list[int] = []
     consecutive_misses = 0
     miss_limit = 1 if sys.platform == "darwin" else 2
-    # #region agent log
-    try:
-        import json as _json
-        import time as _time
-        from pathlib import Path as _Path
-
-        _log_path = _Path(__file__).resolve().parents[2] / ".cursor" / "debug-7b62f0.log"
-        with _log_path.open("a", encoding="utf-8") as _f:
-            _f.write(
-                _json.dumps(
-                    {
-                        "sessionId": "7b62f0",
-                        "timestamp": int(_time.time() * 1000),
-                        "location": "camera.py:list_usb_camera_indices:entry",
-                        "message": "probe start",
-                        "data": {
-                            "max_index": max_index,
-                            "platform": sys.platform,
-                            "cv_backend": cv_backend,
-                            "miss_limit": miss_limit,
-                        },
-                        "hypothesisId": "A",
-                    }
-                )
-                + "\n"
-            )
-    except Exception:
-        pass
-    # #endregion
     for index in range(max_index):
         cap = cv2.VideoCapture(index, backend_api)
         try:
@@ -164,30 +135,6 @@ def list_usb_camera_indices(max_index: int = 10, cv_backend: str = "auto") -> li
             cap.release()
         if consecutive_misses >= miss_limit and found:
             break
-    # #region agent log
-    try:
-        import json as _json
-        import time as _time
-        from pathlib import Path as _Path
-
-        _log_path = _Path(__file__).resolve().parents[2] / ".cursor" / "debug-7b62f0.log"
-        with _log_path.open("a", encoding="utf-8") as _f:
-            _f.write(
-                _json.dumps(
-                    {
-                        "sessionId": "7b62f0",
-                        "timestamp": int(_time.time() * 1000),
-                        "location": "camera.py:list_usb_camera_indices:exit",
-                        "message": "probe done",
-                        "data": {"found": found, "max_index": max_index},
-                        "hypothesisId": "A",
-                    }
-                )
-                + "\n"
-            )
-    except Exception:
-        pass
-    # #endregion
     return found
 
 

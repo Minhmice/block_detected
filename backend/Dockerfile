@@ -1,8 +1,8 @@
 FROM python:3.11-slim-bookworm AS backend
 
 WORKDIR /app
-COPY backend/requirements.txt backend/requirements.txt
-RUN pip install --no-cache-dir -r backend/requirements.txt
+COPY backend/requirements-dev.txt backend/requirements-dev.txt
+RUN pip install --no-cache-dir -r backend/requirements-dev.txt
 
 COPY pyproject.toml README.md ./
 COPY src ./src
