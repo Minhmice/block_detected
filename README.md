@@ -1,155 +1,141 @@
-# Block Detected
+# Block Detected — YOLO
 
-Non-ArUco cube block detection pipeline for robot pick-and-place, plus a Next.js operator console backed by FastAPI.
+Dự án nhận diện khối/vật thể bằng mô hình YOLO (Ultralytics), hỗ trợ hai chế độ:
 
-## Detection Console UI
+- **Webcam realtime** — `run_yolo_webcam.py`
+- **Xử lý hàng loạt ảnh** — `batch_detect_square.py` (vẽ hộp vuông quanh detection)
 
-### Local development
+## Yêu cầu
 
-**Prerequisites:** Python 3.11 (`brew install python@3.11`), Node.js 20+.
+- **Python** 3.10 trở lên (khuyến nghị 3.11+)
+- **Webcam** (cho chế độ realtime)
+- **GPU NVIDIA** (tùy chọn, tăng tốc inference; không bắt buộc)
+
+## Cài đặt
+
+### 1. Clone hoặc mở thư mục dự án
+
+```powershell
+cd C:\Users\minhmice\Documents\projects\block_detected
+```
+
+### 2. Tạo virtual environment (khuyến nghị)
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Trên Linux/macOS:
 
 ```bash
-make setup          # once — Python 3.11 venv, deps, .env files (no PyAudio)
-make dev            # every session → http://localhost:3000 + backend :8000
-make doctor         # check venv, env files, key imports
-```
-
-If `.venv` was created with another Python version:
-
-```bash
-make setup FORCE=1  # recreate venv with 3.11
-```
-
-**Mac vs Pi Python deps**
-
-| Platform | Install command | Includes PyAudio / Edge Impulse |
-|----------|-----------------|--------------------------------|
-| Mac dev (default) | `make setup` → `requirements-dev.txt` | No — use `VISION_MOCK_MODE=true` |
-| Raspberry Pi 5 | `pip install -r backend/requirements-pi.txt` | Yes — live `.eim` inference |
-
-### Mock vs real camera
-
-| Mode | Env vars | Behavior |
-|------|----------|----------|
-| Mock (dev) | `MOCK_CAMERA=true` or `DETECTION_MODE=mock` | Cycles `images/*.png`; auto-starts detection loop |
-| Real USB | `MOCK_CAMERA=false`, `CAMERA_CONFIG=config/camera.usb.mac.json` | OpenCV VideoCapture (AVFoundation on macOS) |
-| Pi CSI | `MOCK_CAMERA=false`, profile `picamera2` | Requires picamera2 on device |
-
-### Real camera on dev Mac
-
-1. Copy env template: `cp .env.real.example .env`
-2. Grant **Terminal** or **Cursor** camera access: **System Settings → Privacy & Security → Camera**
-3. Smoke test (no backend required):
-   ```bash
-   python scripts/camera_smoke.py --config config/camera.usb.mac.json --frames 3
-   ```
-   Expect three JSON lines with `"shape": [480, 640, 3]`.
-4. Start console: `make dev` → open http://localhost:3000 → **INITIALIZE** → **RUN_DETECTION**
-
-Detection does **not** auto-start when `MOCK_CAMERA=false`; click **RUN_DETECTION** to open the camera.
-
-If `camera_smoke` fails with `failed to open USB camera`, check camera permission or try `camera_index: 1` in `config/camera.usb.mac.json`.
-
-### Docker
-
-```bash
-docker compose up --build
-```
-
-### Raspberry Pi
-
-- Install `python3-picamera2` via apt for CSI camera
-- System packages for Edge Impulse + PyAudio:
-  ```bash
-  sudo apt-get install -y libatlas-base-dev libportaudio0 libportaudio2 libportaudiocpp0 portaudio19-dev
-  pip install -r backend/requirements-pi.txt
-  ```
-- Deploy `block_detected` package + `backend/` + Edge Impulse `.eim` models (`chmod +x models/*.eim`)
-- Set `MOCK_CAMERA=false`, `VISION_MOCK_MODE=false`, tune `config/camera.example.json`
-- Run backend: `uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1`
-
-## Edge Impulse (.eim) deployment
-
-Deploy the Linux AARCH64 impulse exported from Edge Impulse Studio for on-device classification on Raspberry Pi 5.
-
-### Model placement
-
-Two Linux AARCH64 impulses are registered in [`config/eim_models.json`](config/eim_models.json):
-
-```bash
-chmod +x models/minhmice-project-1-linux-aarch64-v1-impulse-#2.eim
-chmod +x models/shit-linux-aarch64-v1-impulse-#1.eim
-```
-
-Optional legacy single-path override (gitignored deploy copy):
-
-```bash
-cp models/minhmice-project-1-linux-aarch64-v1-impulse-#2.eim backend/models/block_detector.eim
-chmod +x backend/models/block_detector.eim
-```
-
-Model binaries under `backend/models/*.eim` are gitignored. Registry paths under `models/` are tracked.
-
-### System dependencies (Raspberry Pi / Debian)
-
-```bash
-sudo apt-get install -y libatlas-base-dev libportaudio0 libportaudio2 libportaudiocpp0 portaudio19-dev
-pip install -r backend/requirements-pi.txt
-# Optional: sudo apt-get install python3-pyaudio
-```
-
-Mac dev does **not** install PyAudio or `edge_impulse_linux` — use `make setup` instead.
-
-### Environment
-
-| Variable | Example | Purpose |
-|----------|---------|---------|
-| `EI_MODELS_CONFIG` | `config/eim_models.json` | Registry of selectable `.eim` models |
-| `EI_MODEL_ID` | `shit-v1` | Default selected model id (bootstrap) |
-| `EI_MODEL_PATH` | *(empty)* | Optional override path to a single `.eim` |
-| `VISION_MOCK_MODE` | `true` (dev Mac) / `false` (Pi 5) | Skip EI and return stable mock detections |
-
-Add to `.env` (see `.env.example`):
-
-```
-EI_MODELS_CONFIG=config/eim_models.json
-EI_MODEL_ID=shit-v1
-EI_MODEL_PATH=
-VISION_MOCK_MODE=true
-```
-
-### Run and verify
-
-```bash
-cp .env.example .env
-make dev
-curl http://127.0.0.1:8000/health
-open http://localhost:3000
-```
-
-`/health` returns Edge Impulse status fields:
-
-- `eiModelId` / `eiModelLabel` — selected registry entry
-- `visionMockMode` — when true, EI runner is not loaded
-- `eiModelLoaded` — true when model is executable and mock mode is off
-- `eiModelExecutable` — file exists and has execute permission
-- `eiModelError` — actionable message (e.g. missing file or `chmod +x` hint)
-
-On Pi 5 with live camera: set `VISION_MOCK_MODE=false`, ensure models are executable, pick a model in the console **Model** panel, then **RUN_DETECTION**.
-
-Reference test (Pi, live EIM):
-
-```bash
-PYTHONPATH=backend:src pytest tests/test_reference_four_blocks.py -k live -v
-```
-
-### Reference UI
-
-Static HTML mockups live in `example_ui/` (reference only — do not delete).
-
-## Tests
-
-```bash
+python3 -m venv .venv
 source .venv/bin/activate
-PYTHONPATH=backend:src pytest tests/ -q
 ```
+
+### 3. Cài dependencies
+
+```powershell
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Lần cài đầu có thể mất vài phút vì `ultralytics` kéo theo PyTorch và các thư viện vision.
+
+### 4. Kiểm tra model
+
+Mặc định dùng `models/train-3.pt`. Đảm bảo file tồn tại:
+
+```
+models/
+  train-3.pt    # model đã train (bắt buộc cho mặc định)
+  train-2.pt
+  train.pt
+  yolo26n.pt
+```
+
+Đặt các file `.pt` trong `models/`. Webcam tự quét và chuyển model; batch dùng `--model`.
+
+## Cấu trúc thư mục
+
+```
+block_detected/
+├── requirements.txt
+├── run_yolo_webcam.py      # inference webcam
+├── batch_detect_square.py  # inference ảnh tĩnh
+├── models/                 # file .pt
+├── images/                 # ảnh đầu vào (batch)
+└── images_out/             # ảnh đã vẽ box (tự tạo khi chạy batch)
+```
+
+## Sử dụng
+
+### Webcam realtime
+
+```powershell
+python run_yolo_webcam.py
+```
+
+Cửa sổ **YOLO Webcam Inference** hiển thị video có bounding box.
+
+| Phím / thao tác | Chức năng |
+|-----------------|-----------|
+| `q` | Thoát |
+| `v` hoặc **click nút Model** (góc dưới trái) | Chuyển model tiếp theo trong `models/*.pt` |
+| `c` | Chuyển camera (0 → 5) |
+| `↑` / `↓` | Tăng / giảm ngưỡng confidence (chế độ normal) |
+| `m` | Bật/tắt overlay lịch sử nhiều khung |
+| `n` | Bật/tắt eval mode (nhãn %, conf cố định 0.01) |
+
+Cấu hình trong đầu file `run_yolo_webcam.py`: độ phân giải camera, `CAMERA_INDEX`, v.v.
+
+### Batch — xử lý thư mục ảnh
+
+Đặt ảnh vào `images/` (`.jpg`, `.jpeg`, `.png`, `.bmp`, `.webp`), rồi chạy:
+
+```powershell
+python batch_detect_square.py
+```
+
+Kết quả lưu vào `images_out/` (cùng tên file).
+
+**Tham số tùy chọn:**
+
+```powershell
+python batch_detect_square.py --input images --output images_out --conf 0.01 --show
+```
+
+| Tham số | Mặc định | Mô tả |
+|---------|----------|--------|
+| `--model` | `models/train-3.pt` | Đường dẫn model YOLO |
+| `--input` | `images` | Thư mục ảnh đầu vào |
+| `--output` | `images_out` | Thư mục ảnh đã annotate |
+| `--conf` | `0.01` | Ngưỡng confidence |
+| `--show` | (tắt) | Xem từng ảnh; nhấn phím bất kỳ để tiếp, `q` để dừng |
+
+## Xử lý lỗi thường gặp
+
+**`Model file not found`**
+
+- Kiểm tra `models/train-3.pt` có tồn tại.
+- Hoặc truyền `--model` trỏ tới file `.pt` hợp lệ.
+
+**`Failed to open webcam`**
+
+- Đóng app khác đang dùng camera.
+- Thử đổi `CAMERA_INDEX` trong `run_yolo_webcam.py` hoặc nhấn `c` để đổi nguồn.
+
+**Cài đặt PyTorch / CUDA**
+
+- `pip install -r requirements.txt` cài bản CPU phù hợp hệ điều hành.
+- GPU NVIDIA: xem [hướng dẫn PyTorch](https://pytorch.org/get-started/locally/) rồi cài `torch` tương thích trước khi chạy lại script.
+
+**Inference chậm**
+
+- Giảm `CAMERA_WIDTH` / `CAMERA_HEIGHT` trong `run_yolo_webcam.py`.
+- Dùng model nhỏ hơn (ví dụ `models/yolo26n.pt`) với `--model`.
+
+## Ghi chú
+
+- Script dùng [Ultralytics YOLO](https://docs.ultralytics.com/) và OpenCV.
+- File `.pt` thường lớn và đã được loại khỏi git (xem `.gitignore`). Tải hoặc copy model vào `models/` sau khi clone.

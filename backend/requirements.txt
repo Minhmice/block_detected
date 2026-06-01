@@ -1,2 +1,0 @@
-# Alias for Mac dev / CI (no PyAudio). Use requirements-pi.txt on Raspberry Pi.
--r requirements-dev.txt

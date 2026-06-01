@@ -1,2 +1,0 @@
-# Copy exported .eim here as block_detector.eim then:
-# chmod +x backend/models/block_detector.eim

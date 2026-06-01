@@ -1,6 +1,0 @@
-{
-  "_comment": "Classifier backend: stub (dev/tests) or tflite (deployed INT8 model on Pi).",
-  "backend": "stub",
-  "model_path": "models/block_classifier_int8.tflite",
-  "min_confidence": 0.55
-}

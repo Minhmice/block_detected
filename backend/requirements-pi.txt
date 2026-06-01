@@ -1,4 +1,0 @@
-# Raspberry Pi 5 live inference — install after apt portaudio packages
--r requirements-dev.txt
-edge_impulse_linux>=1.2.0
-PyAudio>=0.2.11

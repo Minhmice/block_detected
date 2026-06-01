@@ -1,9 +1,53 @@
-.venv/
+# Python
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+pip-log.txt
+pip-delete-this-directory.txt
 .pytest_cache/
-debug_frames/
+.mypy_cache/
+.ruff_cache/
 *.egg-info/
 dist/
 build/
-backend/models/*.eim
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Project output
+images_out/
+runs/
+wandb/
+
+# Logs & debug
+*.log
+.cursor/
+
+# YOLO / Ultralytics caches
+*.cache
+
+# Model weights (large binaries — keep folder via .gitkeep)
+models/*.pt
+models/*.onnx
+models/*.engine
+!models/.gitkeep

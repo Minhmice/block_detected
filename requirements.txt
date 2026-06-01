@@ -1,0 +1,5 @@
+# YOLO webcam & batch detection scripts
+# Python 3.10+ recommended (tested on 3.13)
+
+ultralytics>=8.4.0
+opencv-python>=4.8.0
