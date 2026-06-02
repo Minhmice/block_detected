@@ -53,7 +53,7 @@ src/block_detected/
     └── input/handlers.py       # handle_key, on_mouse
 ```
 
-Repo root (outside package): `models/*.pt`, `images/`, `run_yolo_webcam.py`
+Repo root (outside package): `models/*.pt`, `images/`, `main.py`
 
 ## Change map
 
@@ -78,7 +78,8 @@ Repo root (outside package): `models/*.pt`, `images/`, `run_yolo_webcam.py`
 | Key bindings | `ui/input/handlers.py` |
 | Webcam main loop flow | `apps/webcam/app.py` |
 | New runnable app (batch) | `apps/batch/app.py` (create) |
-| CLI entry script | `run_yolo_webcam.py` |
+| Webcam CLI entry script | `main.py` |
+| Batch CLI entry | `pyproject.toml` → `block-detected-batch` |
 | Console script name | `pyproject.toml` → `[project.scripts]` |
 
 ## Where to add future CV features
@@ -106,14 +107,14 @@ Repo root (outside package): `models/*.pt`, `images/`, `run_yolo_webcam.py`
 
 ```bash
 pip install -e ".[dev]"
-python run_yolo_webcam.py
+python main.py
 python -m pytest tests/ -q
 ```
 
 ## GSD planning
 
 - Phase 2 complete — see `02-VERIFICATION.md`
-- Next: `/gsd-add-phase` for batch inference or tracking
+- Phase 3 planned — batch image inference (`03-*-PLAN.md`)
 
 ## Do not edit
 

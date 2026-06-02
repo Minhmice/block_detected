@@ -5,7 +5,7 @@
 ## Naming Patterns
 
 **Files:**
-- Use `snake_case.py` at project root for runnable scripts: `run_yolo_webcam.py`, `batch_detect_square.py`
+- Use `snake_case.py` at project root for runnable scripts: `main.py`, `batch_detect_square.py`
 - No package directory; scripts are standalone modules, not a `src/` layout
 
 **Functions:**
@@ -26,7 +26,7 @@
 **Types:**
 - Use modern Python 3.10+ type hints where present: `list[Path]`, `tuple[int, int, int, int]`, `cv2.VideoCapture | None`, `dict`
 - Return `int` from `main()` for process exit codes (0 success, 1 failure)
-- Type hints are more complete in `run_yolo_webcam.py` than in `batch_detect_square.py`; match the richer style when adding code
+- Type hints are more complete in `main.py` than in `batch_detect_square.py`; match the richer style when adding code
 
 ## Code Style
 
@@ -49,7 +49,7 @@
 2. Blank line
 3. Third-party (`cv2`, `ultralytics`)
 
-**Example from `run_yolo_webcam.py`:**
+**Example from `main.py`:**
 ```python
 import sys
 from collections import deque
@@ -78,7 +78,7 @@ from ultralytics import YOLO
 - Convert to `str` only when passing to OpenCV or Ultralytics APIs: `YOLO(str(model_path))`, `cv2.imread(str(image_path))`
 
 **Configuration:**
-- Webcam tunables live as top-of-file constants in `run_yolo_webcam.py` (resolution, camera index, confidence bounds)
+- Webcam tunables live as top-of-file constants in `main.py` (resolution, camera index, confidence bounds)
 - Batch tunables use `argparse` in `batch_detect_square.py` via `parse_args()`
 
 ## Error Handling
@@ -87,8 +87,8 @@ from ultralytics import YOLO
 - Validate preconditions early in `main()`; print `[ERROR]` and `return 1` on failure
 - Use `[WARN]` for recoverable issues (unreadable image, camera switch failure, frame read failure)
 - Use `[INFO]` for normal operational messages and user actions
-- Wrap model load and inference in `try/except Exception` in `run_yolo_webcam.py`; log and exit or break loop
-- Use `finally` for resource cleanup (camera release, window destroy) in `run_yolo_webcam.py`
+- Wrap model load and inference in `try/except Exception` in `main.py`; log and exit or break loop
+- Use `finally` for resource cleanup (camera release, window destroy) in `main.py`
 
 **Exit codes:**
 ```python
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 ## Comments
 
 **When to Comment:**
-- Use docstrings sparingly; only one exists today on `draw_model_switch_button()` in `run_yolo_webcam.py`
+- Use docstrings sparingly; only one exists today on `draw_model_switch_button()` in `main.py`
 - Prefer self-explanatory function names over inline comments
 - README (`README.md`) holds user-facing usage docs (Vietnamese); code comments are not required to duplicate README
 
@@ -149,7 +149,7 @@ def draw_model_switch_button(frame, model_name: str) -> tuple[int, int, int, int
 **Parameters:**
 - Pass OpenCV frames and YOLO `result` objects directly; no wrapper classes
 - Use optional state via `dict` for OpenCV mouse callbacks: `ui_state: dict = {"button_rect": None}`
-- Nested closures with `nonlocal` for UI actions tied to loop state (`switch_model()` in `run_yolo_webcam.py`)
+- Nested closures with `nonlocal` for UI actions tied to loop state (`switch_model()` in `main.py`)
 
 **Return Values:**
 - Helpers return concrete data: `list[Path]`, box tuples, clamped coordinates, button rect
@@ -163,7 +163,7 @@ def draw_model_switch_button(frame, model_name: str) -> tuple[int, int, int, int
 - Webcam: auto-discover all `models/*.pt` via `discover_model_paths()`; batch: single path from `--model`
 
 **Inference API (inconsistency to be aware of):**
-- `run_yolo_webcam.py` calls `model(frame, conf=..., verbose=False)` (callable syntax)
+- `main.py` calls `model(frame, conf=..., verbose=False)` (callable syntax)
 - `batch_detect_square.py` calls `model.predict(source=img, conf=..., verbose=False)`
 - Both access `results[0]` and iterate `result.boxes`; check `result.boxes is None` before looping
 

@@ -18,7 +18,7 @@
 - Purpose: Orchestrate frame loop, wire layers
 - Location: `src/block_detected/apps/`
 - Depends on: detection, vision, io, ui, config
-- Used by: `run_yolo_webcam.py`, console script
+- Used by: `main.py`, console script
 
 **Detection:**
 - Purpose: Load models, run inference, parse boxes
@@ -70,7 +70,7 @@
 
 **Webcam:**
 - Location: `src/block_detected/apps/webcam/app.py` → `main()`
-- Triggers: `python run_yolo_webcam.py`, `block-detected-webcam`
+- Triggers: `python main.py`, `block-detected-webcam`
 
 ## Error Handling
 

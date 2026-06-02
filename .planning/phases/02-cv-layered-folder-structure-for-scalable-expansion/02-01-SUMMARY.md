@@ -11,7 +11,7 @@ status: complete
 - Verified layered package tree (apps/config/core/detection/vision/io/ui)
 - Added `io/images/iter_image_paths` stub
 - Added `apps/batch/` doc stub
-- Entry points unchanged: `run_yolo_webcam.py`, `block-detected-webcam`
+- Entry points unchanged: `main.py`, `block-detected-webcam`
 
 ## Self-Check: PASSED
 

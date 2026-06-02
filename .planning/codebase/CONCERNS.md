@@ -5,26 +5,26 @@
 ## Tech Debt
 
 **Duplicated inference logic across scripts:**
-- Issue: `run_yolo_webcam.py` and `batch_detect_square.py` each load Ultralytics `YOLO`, parse `result.boxes`, and draw annotations independently. Box drawing differs (webcam: `result.plot()` + optional history overlay; batch: square boxes via `draw_square_box`). No shared package or module.
-- Files: `run_yolo_webcam.py`, `batch_detect_square.py`
+- Issue: `main.py` and `batch_detect_square.py` each load Ultralytics `YOLO`, parse `result.boxes`, and draw annotations independently. Box drawing differs (webcam: `result.plot()` + optional history overlay; batch: square boxes via `draw_square_box`). No shared package or module.
+- Files: `main.py`, `batch_detect_square.py`
 - Impact: Bug fixes and API changes (e.g. unified square boxes on webcam) require editing two files; behavior drifts between realtime and batch.
 - Fix approach: Extract a small `detection/` or `lib/` module with `load_model()`, `run_inference()`, and optional `draw_boxes(mode="rect"|"square")`; keep scripts as thin CLIs.
 
 **Inconsistent configuration style:**
-- Issue: Webcam uses module-level constants (`CAMERA_INDEX`, `CONF_MIN`, `DEFAULT_MODEL_NAME`, etc. in `run_yolo_webcam.py`); batch uses `argparse` (`batch_detect_square.py`). README tells users to edit source for webcam settings but flags for batch.
-- Files: `run_yolo_webcam.py`, `batch_detect_square.py`, `README.md`
+- Issue: Webcam uses module-level constants (`CAMERA_INDEX`, `CONF_MIN`, `DEFAULT_MODEL_NAME`, etc. in `main.py`); batch uses `argparse` (`batch_detect_square.py`). README tells users to edit source for webcam settings but flags for batch.
+- Files: `main.py`, `batch_detect_square.py`, `README.md`
 - Impact: Harder to script, deploy, or document one set of runtime options.
 - Fix approach: Add `argparse` (or env vars) to webcam for model dir, camera index, resolution, default conf; align defaults with batch (`--conf 0.01` vs webcam default `0.25`).
 
 **Hardcoded platform-specific keyboard codes:**
-- Issue: Confidence adjustment uses magic `cv2.waitKeyEx` return values `2490368` (up) and `2621440` (down) in `run_yolo_webcam.py`.
-- Files: `run_yolo_webcam.py` (lines ~260–271)
+- Issue: Confidence adjustment uses magic `cv2.waitKeyEx` return values `2490368` (up) and `2621440` (down) in `main.py`.
+- Files: `main.py` (lines ~260–271)
 - Impact: Arrow keys may not adjust confidence on macOS/Linux or with different OpenCV builds; README documents arrows as working everywhere.
 - Fix approach: Use `cv2.waitKey` with `ord` for `+`/`-` or `w`/`s`, or map keys via a small lookup table per platform; document portable keys in `README.md`.
 
 **Full model reload on every switch:**
 - Issue: `switch_model()` constructs a new `YOLO(str(current_path))` on each switch instead of caching loaded models.
-- Files: `run_yolo_webcam.py` (`switch_model` nested function)
+- Files: `main.py` (`switch_model` nested function)
 - Impact: Noticeable pause and memory churn when cycling multiple `.pt` files during live capture.
 - Fix approach: Preload all discovered models into a `dict[Path, YOLO]` at startup, or lazy-cache on first use.
 
@@ -44,7 +44,7 @@
 
 **Model switch failure desyncs UI and weights:**
 - Symptoms: After a failed load, on-screen status and button show the new `current_path.name`, but inference still uses the previous `model` object.
-- Files: `run_yolo_webcam.py` (`switch_model`: increments `model_index` / `current_path` before `try`, only assigns `model` on success)
+- Files: `main.py` (`switch_model`: increments `model_index` / `current_path` before `try`, only assigns `model` on success)
 - Trigger: Place a corrupt or incompatible `.pt` in `models/`, cycle models with `v` or the UI button until load throws.
 - Workaround: Restart script; remove bad `.pt` from `models/`.
 
@@ -56,7 +56,7 @@
 
 **Webcam exits on single bad frame or inference error:**
 - Symptoms: One failed `cap.read()` or one inference exception breaks the entire loop instead of retrying.
-- Files: `run_yolo_webcam.py` (main loop `break` on read failure and on inference `except`)
+- Files: `main.py` (main loop `break` on read failure and on inference `except`)
 - Trigger: Brief camera glitch or transient GPU OOM.
 - Workaround: Restart script; reduce resolution constants.
 
@@ -64,7 +64,7 @@
 
 **Trusted model binaries (PyTorch pickle):**
 - Risk: `.pt` weights are loaded via Ultralytics/PyTorch; malicious weights can execute code on load.
-- Files: `run_yolo_webcam.py`, `batch_detect_square.py`, `models/*.pt` (local only, gitignored)
+- Files: `main.py`, `batch_detect_square.py`, `models/*.pt` (local only, gitignored)
 - Current mitigation: None in code; operator must trust model source.
 - Recommendations: Only load weights from known training runs; document provenance; avoid loading arbitrary downloaded `.pt` on shared machines.
 
@@ -84,13 +84,13 @@
 
 **Per-frame full-resolution YOLO on webcam:**
 - Problem: Every captured frame at up to 1280×720 runs through the model with no skipping or ROI.
-- Files: `run_yolo_webcam.py` (`CAMERA_WIDTH`, `CAMERA_HEIGHT`, main loop `model(frame, ...)`)
+- Files: `main.py` (`CAMERA_WIDTH`, `CAMERA_HEIGHT`, main loop `model(frame, ...)`)
 - Cause: Synchronous inference in the display loop; no threading or frame decimation.
 - Improvement path: Lower resolution; process every Nth frame; run inference in a worker thread and show latest result; use TensorRT/exported engine if GPU available.
 
 **Redundant work in normal webcam mode:**
 - Problem: Code calls `extract_boxes(result)` and also `result.plot()`, then optionally draws history on top of the plotted image.
-- Files: `run_yolo_webcam.py` (`extract_boxes`, `result.plot`, `draw_overlay_history`)
+- Files: `main.py` (`extract_boxes`, `result.plot`, `draw_overlay_history`)
 - Cause: History overlay needs raw boxes; plot already draws boxes.
 - Improvement path: Single render path: either custom draw from boxes only, or disable built-in plot boxes when overlay is on.
 
@@ -102,26 +102,26 @@
 
 **Default confidence thresholds encourage noisy detections:**
 - Problem: Batch default `--conf 0.01` and webcam eval mode `EVAL_CONF = 0.01` surface many low-confidence boxes.
-- Files: `batch_detect_square.py`, `run_yolo_webcam.py`
+- Files: `batch_detect_square.py`, `main.py`
 - Cause: Tuned for inspection/debug, not production filtering.
 - Improvement path: Document production defaults (e.g. 0.25–0.5); separate `--debug` flag for low conf.
 
 ## Fragile Areas
 
 **OpenCV GUI and camera portability:**
-- Files: `run_yolo_webcam.py`, `batch_detect_square.py` (`cv2.imshow`, `VideoCapture`, `waitKeyEx`)
+- Files: `main.py`, `batch_detect_square.py` (`cv2.imshow`, `VideoCapture`, `waitKeyEx`)
 - Why fragile: Behavior varies by OS, headless servers, and display backend; camera indices 0–5 are probed heuristically.
 - Safe modification: Test on target OS; guard GUI with `--headless` for batch-only servers; use `CAP_DSHOW` / `CAP_AVFOUNDATION` only behind platform checks if needed.
 - Test coverage: None.
 
 **Ultralytics API coupling:**
-- Files: `run_yolo_webcam.py` (`model(frame, ...)`), `batch_detect_square.py` (`model.predict(source=img, ...)`)
+- Files: `main.py` (`model(frame, ...)`), `batch_detect_square.py` (`model.predict(source=img, ...)`)
 - Why fragile: Minor version bumps can change result object shape or kwargs.
 - Safe modification: Pin `ultralytics` in `requirements.txt` to exact version after validation; wrap inference in one function.
 - Test coverage: None.
 
 **Mouse callback and mutable `ui_state` dict:**
-- Files: `run_yolo_webcam.py` (`on_mouse`, `ui_state`, `cv2.setMouseCallback`)
+- Files: `main.py` (`on_mouse`, `ui_state`, `cv2.setMouseCallback`)
 - Why fragile: Relies on closure `switch_model` and `button_rect` updated every frame; race-free only because single-threaded loop.
 - Safe modification: Keep all UI mutations on main thread; avoid refactoring to async without revisiting callback design.
 - Test coverage: None.
@@ -179,13 +179,13 @@
 
 **Model discovery and default selection:**
 - What's not tested: `discover_model_paths()`, `default_model_index()` when `train-3.pt` missing.
-- Files: `run_yolo_webcam.py`
+- Files: `main.py`
 - Risk: Wrong default model or empty list handling regressions.
 - Priority: Medium
 
 **Model switch failure handling:**
 - What's not tested: Failed load keeps previous weights but updates `current_path` (known bug).
-- Files: `run_yolo_webcam.py`
+- Files: `main.py`
 - Risk: User trusts wrong label on screen during demo.
 - Priority: High
 

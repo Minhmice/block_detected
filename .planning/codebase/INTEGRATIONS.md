@@ -11,7 +11,7 @@
   - Remote capability: Ultralytics library can download pretrained weights via HTTP when passed a model name string (e.g. `yolo26n.pt`); project scripts use explicit filesystem paths under `models/` and do not invoke remote download in normal operation
 
 **HTTP (transitive, unused by project scripts):**
-- `requests` — Pulled in by `ultralytics`; not imported directly in `run_yolo_webcam.py` or `batch_detect_square.py`
+- `requests` — Pulled in by `ultralytics`; not imported directly in `main.py` or `batch_detect_square.py`
 
 **Other external APIs:**
 - Not detected — No REST clients, GraphQL, gRPC, or third-party SaaS integrations in application code
@@ -67,7 +67,7 @@
 ## Hardware Integrations
 
 **Webcam:**
-- OpenCV `cv2.VideoCapture(index)` in `run_yolo_webcam.py`
+- OpenCV `cv2.VideoCapture(index)` in `main.py`
   - Default index `0`; cycles `0`–`5` via `c` key or `CAMERA_INDEX` / `MAX_CAMERA_INDEX` constants
   - Resolution set via `CAP_PROP_FRAME_WIDTH` / `CAP_PROP_FRAME_HEIGHT` (default 1280×720)
   - No network/IP camera URLs — local device indices only

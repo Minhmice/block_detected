@@ -35,18 +35,18 @@ pip install pytest pytest-cov
 - Recommended: top-level `tests/` mirroring script names
 
 **Naming:**
-- Recommended pattern: `tests/test_run_yolo_webcam.py`, `tests/test_batch_detect_square.py`
+- Recommended pattern: `tests/test_main.py`, `tests/test_batch_detect_square.py`
 - Use `test_<function_name>_<scenario>` for test functions: `test_clamp_bounds`, `test_discover_model_paths_empty_dir`
 
 **Structure:**
 ```
 block_detected/
-├── run_yolo_webcam.py
+├── main.py
 ├── batch_detect_square.py
 ├── tests/
 │   ├── __init__.py          # optional; empty is fine
 │   ├── conftest.py          # shared fixtures (mock YOLO, sample images)
-│   ├── test_run_yolo_webcam.py
+│   ├── test_main.py
 │   └── test_batch_detect_square.py
 └── requirements.txt         # add pytest as dev dependency separately
 ```
@@ -100,19 +100,19 @@ import numpy as np
 
 
 def test_extract_boxes_empty_result():
-    from run_yolo_webcam import extract_boxes
+    from main import extract_boxes
 
     result = MagicMock()
     result.boxes = None
     assert extract_boxes(result) == []
 
 
-@patch("run_yolo_webcam.YOLO")
+@patch("main.YOLO")
 def test_main_exits_when_no_models(mock_yolo, tmp_path, monkeypatch):
-    monkeypatch.setattr("run_yolo_webcam.MODELS_DIR", tmp_path / "models")
+    monkeypatch.setattr("main.MODELS_DIR", tmp_path / "models")
     (tmp_path / "models").mkdir()
 
-    from run_yolo_webcam import main
+    from main import main
 
     assert main() == 1
     mock_yolo.assert_not_called()
@@ -174,14 +174,14 @@ def fake_yolo_result():
 **View Coverage:**
 ```bash
 pip install pytest-cov
-python -m pytest --cov=run_yolo_webcam --cov=batch_detect_square --cov-report=term-missing
+python -m pytest --cov=main --cov=batch_detect_square --cov-report=term-missing
 ```
 
 **Priority coverage targets (no GPU/display needed):**
 | Module | Functions | Rationale |
 |--------|-----------|-----------|
 | `batch_detect_square.py` | `clamp`, `draw_square_box`, `parse_args` | Pure logic, easy unit tests |
-| `run_yolo_webcam.py` | `discover_model_paths`, `default_model_index`, `extract_boxes`, `point_in_rect` | Pure logic |
+| `main.py` | `discover_model_paths`, `default_model_index`, `extract_boxes`, `point_in_rect` | Pure logic |
 | Both | `main()` early-exit paths | Validate error messages and exit codes with mocks |
 
 **Low priority / integration-only:**
@@ -211,7 +211,7 @@ addopts = "-m 'not integration'"
 
 **E2E Tests:**
 - Not used
-- Manual UAT only: run `python run_yolo_webcam.py` and `python batch_detect_square.py --show` per `README.md`
+- Manual UAT only: run `python main.py` and `python batch_detect_square.py --show` per `README.md`
 
 ## CI/CD
 
@@ -265,11 +265,11 @@ def test_draw_square_box_side(blank_bgr_image, x1, y1, x2, y2, side):
 | Area | Files | Risk | Priority |
 |------|-------|------|----------|
 | Square box geometry / clamping | `batch_detect_square.py` | Wrong boxes on edge detections | High |
-| Model path discovery | `run_yolo_webcam.py` | Webcam fails silently if discovery breaks | High |
+| Model path discovery | `main.py` | Webcam fails silently if discovery breaks | High |
 | CLI defaults and overrides | `batch_detect_square.py` | Wrong paths/conf in production runs | Medium |
-| Mouse callback / model switch | `run_yolo_webcam.py` | UI regression | Medium |
+| Mouse callback / model switch | `main.py` | UI regression | Medium |
 | Inference loops | Both scripts | Runtime errors on bad frames | Low (mock in unit tests) |
-| Camera open/switch | `run_yolo_webcam.py` | Hardware-dependent | Low (mock only) |
+| Camera open/switch | `main.py` | Hardware-dependent | Low (mock only) |
 
 ## Manual Verification
 
@@ -279,7 +279,7 @@ def test_draw_square_box_side(blank_bgr_image, x1, y1, x2, y2, side):
 
 **Pre-release checklist:**
 1. `python batch_detect_square.py` on `images/` — verify `images_out/` output
-2. `python run_yolo_webcam.py` — verify model load, detection overlay, quit with `q`
+2. `python main.py` — verify model load, detection overlay, quit with `q`
 3. Confirm `models/train-3.pt` exists locally (gitignored; not in CI without fixture model)
 
 ---

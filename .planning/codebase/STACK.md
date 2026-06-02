@@ -23,7 +23,7 @@
 ## Frameworks
 
 **Core:**
-- Ultralytics YOLO (`ultralytics>=8.4.0`) — Object detection inference via `YOLO` class in `run_yolo_webcam.py` and `batch_detect_square.py`
+- Ultralytics YOLO (`ultralytics>=8.4.0`) — Object detection inference via `YOLO` class in `main.py` and `batch_detect_square.py`
 - OpenCV (`opencv-python>=4.8.0`) — Webcam capture, image I/O, drawing, GUI windows (`cv2.VideoCapture`, `cv2.imread`/`imwrite`, `cv2.imshow`)
 
 **Testing:**
@@ -61,7 +61,7 @@
 - No `.env` file present; `.gitignore` excludes `.env` and `.env.*` (allows `!.env.example`, but no `.env.example` exists)
 - All runtime configuration is **in-script constants** or **CLI arguments** — no external config files
 
-**In-script constants (`run_yolo_webcam.py`):**
+**In-script constants (`main.py`):**
 - `MODELS_DIR` — `models/` relative to script
 - `DEFAULT_MODEL_NAME` — `train-3.pt`
 - `CAMERA_INDEX`, `MAX_CAMERA_INDEX`, `CAMERA_WIDTH`, `CAMERA_HEIGHT`
@@ -83,7 +83,7 @@
 
 **Development:**
 - Python 3.10+ with pip
-- Webcam hardware for `run_yolo_webcam.py`
+- Webcam hardware for `main.py`
 - Local YOLO weights in `models/*.pt` (gitignored; `models/.gitkeep` preserves directory)
 - Sample images in `images/` for batch mode (project includes sample PNGs)
 - Disk space for PyTorch/Ultralytics install (README notes first install can take several minutes)

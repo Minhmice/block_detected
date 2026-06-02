@@ -14,7 +14,7 @@
 
 ## Must-Haves Verified
 
-- Entry points: `run_yolo_webcam.py` → `block_detected.apps.webcam.app.main`
+- Entry points: `main.py` → `block_detected.apps.webcam.app.main`
 - Expansion stubs: `io/images/iter_image_paths`, `apps/batch/` doc stub
 - Lightweight `__init__.py` — pure tests import without OpenCV side effects
 
@@ -22,7 +22,7 @@
 
 ```bash
 .venv/bin/python -m pytest tests/ -q   # 9 passed
-python3 -m py_compile run_yolo_webcam.py
+python3 -m py_compile main.py
 ```
 
 ## Verification Complete

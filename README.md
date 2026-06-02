@@ -62,7 +62,7 @@ File `.pt` lớn và đã gitignore — copy sau khi clone.
 ```
 block_detected/
 ├── pyproject.toml
-├── run_yolo_webcam.py
+├── main.py
 ├── AGENTS.md                   # bản đồ chi tiết cho agent
 ├── models/                     # weights YOLO
 └── src/block_detected/
@@ -80,7 +80,7 @@ Chi tiết “sửa ở đâu” và mở rộng sau này (batch, tracking, ONNX
 ## Sử dụng
 
 ```bash
-python run_yolo_webcam.py
+python main.py
 ```
 
 Hoặc sau `pip install -e .`:

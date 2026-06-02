@@ -2,8 +2,9 @@
 
 ## Current Position
 
-**Phase:** 2 complete
-**Status:** Ready for next phase (e.g. batch app, tracking)
+**Phase:** 3 planned (not executed)
+**Plan:** 0/3 complete
+**Status:** Ready to execute phase 3 batch inference plans
 
 ## Accumulated Context
 
@@ -11,6 +12,8 @@
 
 - Phase 1: Package foundation (complete)
 - Phase 2: CV layered folder structure (complete — 3 plans executed)
+- Phase 3 added: Batch image inference app (3 plans: 03-01..03-03)
+- Entry point renamed: `run_yolo_webcam.py` → `main.py`
 
 ## Quick Tasks Completed
 

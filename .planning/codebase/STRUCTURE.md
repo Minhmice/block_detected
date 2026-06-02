@@ -8,7 +8,7 @@
 block_detected/
 ├── pyproject.toml
 ├── requirements.txt
-├── run_yolo_webcam.py          # Entry: adds src/ to path, calls apps.webcam
+├── main.py          # Entry: adds src/ to path, calls apps.webcam
 ├── AGENTS.md                   # Agent change map
 ├── README.md
 ├── tests/                      # pytest (mirrors package layers)
@@ -67,7 +67,7 @@ block_detected/
 ## Key File Locations
 
 **Entry Points:**
-- `run_yolo_webcam.py`: User-facing CLI
+- `main.py`: User-facing CLI
 - `src/block_detected/__main__.py`: `python -m block_detected`
 - `pyproject.toml` → `block-detected-webcam` console script
 
