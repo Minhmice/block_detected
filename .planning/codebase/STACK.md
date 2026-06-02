@@ -5,73 +5,57 @@
 ## Languages
 
 **Primary:**
-- Python 3.10+ (`requires-python` in `pyproject.toml`) — entire application in `src/block_detected/`, `main.py`, `tests/`
-- Development environment observed on Python 3.14.4 (compatible with `>=3.10`)
-
-**Secondary:**
-- Not applicable — no other application languages in repo
+- Python 3.10+ (`pyproject.toml` `requires-python`) — `src/block_detected/`, `main.py`, `tests/`
 
 ## Runtime
 
 **Environment:**
-- CPython (local desktop; webcam + file I/O)
-- No container or server runtime configured
+- CPython desktop (webcam + local files)
+- Optional venv at `.venv/`
 
 **Package Manager:**
-- `pip` with editable install (`pip install -e ".[dev]"`)
-- Lockfile: **missing** — only `requirements.txt` mirrors core deps without pinned versions
+- `pip install -e ".[dev]"`
+- `requirements.txt` mirrors core deps (unpinned)
 
 ## Frameworks
 
 **Core:**
-- **Ultralytics YOLO** `>=8.4.0` — object detection inference (`detection/yolo/loader.py` imports `YOLO`)
-- **OpenCV** (`opencv-python` `>=4.8.0`) — webcam capture, window display, drawing (`io/camera/capture.py`, `vision/drawing/*`, `apps/webcam/app.py`)
+- **Ultralytics YOLO** `>=8.4.0` — `.pt` inference via `detection/yolo/backend.py`
+- **OpenCV** `>=4.8.0` — camera, display, drawing (`io/camera/`, `vision/drawing/`, `apps/webcam/app.py`)
 
 **Testing:**
-- **pytest** `>=8.0` — dev optional dependency in `pyproject.toml`; tests in `tests/`
+- **pytest** `>=8.0` — optional dev extra
 
-**Build/Dev:**
-- **setuptools** `>=61` — build backend (`pyproject.toml` `[build-system]`)
-- No bundler, frontend toolchain, or Docker compose in repo
+**Build:**
+- **setuptools** `>=61` — `src/` layout
 
 ## Key Dependencies
 
 **Critical:**
-- `ultralytics>=8.4.0` — loads `.pt` weights, runs `model(frame, conf=..., verbose=False)` in `apps/webcam/app.py`
-- `opencv-python>=4.8.0` — `cv2.VideoCapture`, `cv2.imshow`, `cv2.waitKeyEx`, drawing primitives
+- `ultralytics` — `YOLO` class, `Results` API
+- `opencv-python` — `VideoCapture`, `imshow`, drawing primitives
+- Transitive: PyTorch (via ultralytics)
 
-**Transitive (via Ultralytics):**
-- **PyTorch** — pulled by Ultralytics; CPU by default from pip; CUDA optional per user environment (documented in `README.md`)
-
-**Infrastructure:**
-- None — no database, queue, or cloud SDK in project dependencies
+**Stdlib (no extra packages):**
+- `dataclasses`, `tomllib` — typed config in `runtime/config_schema.py`, `runtime/config_store.py`
+- `logging` — `runtime/logging_setup.py`
 
 ## Configuration
 
-**Environment:**
-- No `.env` files present in repo
-- Runtime constants live in Python modules under `src/block_detected/config/`:
-  - `config/paths.py` — `PROJECT_ROOT`, `MODELS_DIR`, `IMAGES_DIR`, `IMAGES_OUT_DIR`
-  - `config/camera.py` — resolution, camera index
-  - `config/inference.py` — confidence thresholds, default model filename
-  - `config/ui.py` — window name, button layout, arrow key codes
-- Barrel re-exports: `config/__init__.py`
+**Defaults:** `AppConfig.defaults()` in `runtime/config_schema.py`
 
-**Build:**
-- `pyproject.toml` — package metadata, dependencies, console script `block-detected-webcam`
-- `requirements.txt` — minimal duplicate of runtime deps for non-editable installs
+**Optional file:** `block_detected.toml` at repo root (TOML load/save)
+
+**Legacy modules:** `config/camera.py`, `config/inference.py`, `config/ui.py` — constants still used as defaults source
 
 ## Platform Requirements
 
 **Development:**
-- Python 3.10+
-- Webcam hardware for manual webcam testing
-- YOLO weights in `models/*.pt` (gitignored; copy after clone per `README.md`)
-- macOS/Linux/Windows supported via OpenCV; arrow key codes in `config/ui.py` noted as platform-dependent
+- Webcam, display server for OpenCV window
+- Model files in `models/*.pt` (gitignored)
 
 **Production:**
-- Not applicable — desktop/local CV tool, no deployment target configured
-- No CI/CD pipeline (no `.github/` workflows)
+- Local desktop only; no cloud services
 
 ---
 

@@ -1,122 +1,106 @@
 # Agent guide — CV package layout
 
-Read this before editing. The package uses **layered folders** so new CV features (batch, tracking, ONNX) slot in without flattening everything again.
+Read this before editing. The package uses **layered folders** plus a **runtime** layer for engine/config/metrics (GUI-ready).
 
 ## Layer diagram
 
 ```
-apps/          orchestration (webcam loop, future batch/export)
-  └── webcam/
-config/        constants only — split by domain
-core/          shared types — no OpenCV/YOLO imports
-detection/     models + inference parsing
-  └── yolo/    Ultralytics backend (future: onnx/)
-vision/        draw/geometry on frames — no model imports
-  └── drawing/
+apps/          thin orchestration (webcam loop only)
+runtime/       engine, typed config (TOML), metrics, logging, detector loader
+config/        legacy path constants + module defaults (re-export targets)
+core/          domain types + protocols — no OpenCV/YOLO
+detection/     detector backends + result parsing
+  └── yolo/    Ultralytics YOLO (.pt weights)
+vision/        draw/geometry on frames — no detection imports
 io/            cameras, files, streams
   └── camera/
 ui/            keyboard/mouse callbacks
   └── input/
 ```
 
-**Dependency rule:** `detection` must not import `apps` or `ui`. `vision` must not import `detection`.
+**Dependency rules:**
+- `detection` → no `apps`, no `ui`, no `runtime`
+- `vision` → no `detection`
+- `core` → no OpenCV/YOLO
+- `runtime` → may use `detection`, `vision`, `io`, `core` (not `apps`, not `ui`)
+- `apps` → thin; delegates to `runtime` + `ui`
 
 ## Directory tree
 
 ```
 src/block_detected/
-├── __init__.py
-├── __main__.py                 → python -m block_detected
-├── apps/
-│   ├── webcam/app.py           # main loop ONLY
-│   └── batch/__init__.py       # future batch app (stub)
+├── apps/webcam/app.py          # entry: load config, run engine loop, wire OpenCV window
+├── runtime/
+│   ├── engine.py               # WebcamEngine — read/infer/render/metrics
+│   ├── state.py                # RuntimeState (conf, overlay, eval, history)
+│   ├── metrics.py              # FPS + stage latencies
+│   ├── config_schema.py        # AppConfig dataclasses + validate + hot/restart keys
+│   ├── config_store.py         # load/save TOML (block_detected.toml)
+│   ├── detector_loader.py      # load_detector(path) → YoloDetector
+│   └── logging_setup.py        # logging + ring buffer for future GUI log panel
 ├── config/
-│   ├── paths.py                # PROJECT_ROOT, MODELS_DIR, IMAGES_*
-│   ├── camera.py               # resolution, camera index
-│   ├── inference.py            # conf thresholds, default model name
-│   └── ui.py                   # window name, button layout, key codes
+│   ├── paths.py                # PROJECT_ROOT, MODELS_DIR
+│   ├── camera.py               # legacy constants (defaults mirror AppConfig)
+│   ├── inference.py
+│   └── ui.py
 ├── core/
-│   └── types.py                # Box, future Protocol types
+│   ├── types.py                # Box
+│   ├── domain.py               # Detection, FrameResult, InferenceStats, RuntimeStatus
+│   └── protocols.py            # DetectorBackend Protocol
 ├── detection/
-│   ├── boxes.py                # result.boxes → list[Box]
-│   └── yolo/loader.py          # discover/load .pt
-├── vision/
-│   ├── geometry.py             # point_in_rect, future transforms
-│   └── drawing/
-│       ├── overlays.py         # multi-frame trail
-│       ├── eval.py             # eval-mode labels
-│       └── widgets.py          # status bar, model button
-├── io/
-│   ├── camera/capture.py       # open_camera, switch_camera
-│   └── images/__init__.py      # iter_image_paths (batch input)
-└── ui/
-    └── input/handlers.py       # handle_key, on_mouse
+│   ├── boxes.py                # parse_yolo_result, extract_boxes
+│   └── yolo/
+│       ├── loader.py           # discover_model_paths
+│       └── backend.py          # YoloDetector
+├── vision/drawing/ ...
+├── io/camera/capture.py
+└── ui/input/handlers.py
 ```
 
-Repo root (outside package): `models/*.pt`, `images/`, `main.py`
+Repo root: `main.py`, optional `block_detected.toml`, `models/*.pt`
 
 ## Change map
 
 | Goal | Edit here |
 |------|-----------|
-| Paths to weights, images, output dirs | `config/paths.py` |
-| Camera resolution / default index | `config/camera.py` |
-| Confidence limits, default model filename | `config/inference.py` |
-| Window title, button size, arrow key codes | `config/ui.py` |
-| Re-export config shortcuts | `config/__init__.py` |
-| Shared types (Box, future dataclasses) | `core/types.py` |
-| Parse YOLO boxes | `detection/boxes.py` |
-| Model discovery / load | `detection/yolo/loader.py` |
-| New detector backend (ONNX) | `detection/onnx/` (create) |
-| Overlay trail colors | `vision/drawing/overlays.py` |
-| Eval label style | `vision/drawing/eval.py` |
-| Status bar / model button | `vision/drawing/widgets.py` |
-| Hit-test geometry | `vision/geometry.py` |
-| Webcam open/switch | `io/camera/capture.py` |
-| List images in folder (batch input) | `io/images/__init__.py` → `iter_image_paths()` |
-| Batch read images / video | `io/video/` (create) |
+| Webcam loop / window wiring only | `apps/webcam/app.py` |
+| Frame read → infer → render pipeline | `runtime/engine.py` |
+| FPS / latency metrics | `runtime/metrics.py` |
+| Session state (conf, overlay, eval) | `runtime/state.py` |
+| Typed config schema + validation | `runtime/config_schema.py` |
+| Load/save TOML config | `runtime/config_store.py` |
+| Hot-reload vs restart keys | `runtime/config_schema.py` → `RESTART_*_KEYS` |
+| Logging + GUI log buffer | `runtime/logging_setup.py` |
+| YOLO result → domain types | `detection/boxes.py` |
+| YOLO model load | `detection/yolo/loader.py`, `detection/yolo/backend.py` |
+| Domain types | `core/domain.py`, `core/protocols.py` |
+| Status bar + FPS line | `vision/drawing/widgets.py` |
 | Key bindings | `ui/input/handlers.py` |
-| Webcam main loop flow | `apps/webcam/app.py` |
-| New runnable app (batch) | `apps/batch/app.py` (create) |
-| Webcam CLI entry script | `main.py` |
-| Batch CLI entry | `pyproject.toml` → `block-detected-batch` |
-| Console script name | `pyproject.toml` → `[project.scripts]` |
+| Camera open/switch | `io/camera/capture.py` |
+| Filesystem paths | `config/paths.py` |
 
-## Where to add future CV features
+## Config
 
-| Feature | Location |
-|---------|----------|
-| Batch folder inference | `apps/batch/app.py` + `io/images/iter_image_paths` |
-| RTSP / video file | `io/video/capture.py` |
-| Object tracking | `vision/tracking/` |
-| Square-box annotator (old batch script) | `vision/drawing/annotators/square.py` |
-| Pre/post processing filters | `vision/processing/` |
-| Unit tests | `tests/test_*.py` (e.g. `test_geometry.py`, `test_boxes.py`) |
-
-## Conventions
-
-- **Config:** never hardcode paths outside `config/paths.py`
-- **Apps:** thin loops — call `detection`, `vision`, `io`, `ui`; no inline `cv2.rectangle`
-- **Naming:** avoid package subfolder `models/` (conflicts with repo `models/*.pt`)
-- **Logging:** `print("[INFO|WARN|ERROR] ...")` until logging module added
-- **Imports:** import submodules directly (`from block_detected.vision.geometry import ...`); keep package `__init__.py` empty of OpenCV/YOLO imports
-
-- **Types:** use `Box` from `core.types` for coordinates
+- Defaults: `AppConfig.defaults()` in `runtime/config_schema.py`
+- Optional file: `block_detected.toml` at repo root (auto-loaded)
+- Hot-reload at runtime: confidence, overlay, eval mode (via engine state)
+- Requires restart: camera index/resolution, default model file (switch model in-app via `v`)
 
 ## Run
 
 ```bash
 pip install -e ".[dev]"
 python main.py
+python -m block_detected
 python -m pytest tests/ -q
+block-detected-webcam
 ```
 
-## GSD planning
+## GSD
 
-- Phase 2 complete — see `02-VERIFICATION.md`
-- Phase 3 planned — batch image inference (`03-*-PLAN.md`)
+- Phase 3: runtime engine + typed config (in progress)
 
 ## Do not edit
 
-- `models/*.pt` — binary weights (gitignored)
-- `.planning/codebase/` — refresh with `/gsd-map-codebase` after major structure changes
+- `models/*.pt`
+- `.planning/codebase/` (refresh via `/gsd-map-codebase` only)

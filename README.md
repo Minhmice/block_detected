@@ -75,7 +75,7 @@ block_detected/
     └── ui/input/               # phím + chuột
 ```
 
-Chi tiết “sửa ở đâu” và mở rộng sau này (batch, tracking, ONNX): [AGENTS.md](AGENTS.md).
+Chi tiết “sửa ở đâu” và mở rộng sau này (tracking, video I/O, GUI): [AGENTS.md](AGENTS.md).
 
 ## Sử dụng
 
