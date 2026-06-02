@@ -4,95 +4,79 @@
 
 ## APIs & External Services
 
-**Object detection / ML:**
-- Ultralytics YOLO — Local inference only in this project
-  - SDK/Client: `ultralytics` Python package
-  - Auth: Not applicable — loads local `.pt` weights from `models/`
-  - Remote capability: Ultralytics library can download pretrained weights via HTTP when passed a model name string (e.g. `yolo26n.pt`); project scripts use explicit filesystem paths under `models/` and do not invoke remote download in normal operation
+**Cloud / SaaS:**
+- None — no HTTP clients, API keys, or third-party SaaS SDKs in `src/`
 
-**HTTP (transitive, unused by project scripts):**
-- `requests` — Pulled in by `ultralytics`; not imported directly in `main.py` or `batch_detect_square.py`
-
-**Other external APIs:**
-- Not detected — No REST clients, GraphQL, gRPC, or third-party SaaS integrations in application code
+**ML inference:**
+- **Ultralytics YOLO** (local library, not a remote API)
+  - SDK: `ultralytics` package
+  - Weights: local filesystem `models/*.pt` via `detection/yolo/loader.py`
+  - Auth: not applicable
 
 ## Data Storage
 
 **Databases:**
-- None — No SQL, NoSQL, or embedded database usage
+- None
 
 **File Storage:**
-- Local filesystem only
-  - **Input models:** `models/*.pt` (`.pt`, `.onnx`, `.engine` gitignored per `.gitignore`)
-  - **Batch input:** `images/` — `.jpg`, `.jpeg`, `.png`, `.bmp`, `.webp` (see `batch_detect_square.py` `image_exts`)
-  - **Batch output:** `images_out/` — annotated images written by `cv2.imwrite()`; directory auto-created
-  - **Training artifacts (ignored, not used by inference scripts):** `runs/`, `wandb/` listed in `.gitignore` — typical Ultralytics/W&B training outputs; no training script in repo
+- **Local filesystem only**
+  - Input weights: `models/` (`config/paths.py` → `MODELS_DIR`)
+  - Batch input images (planned): `images/` (`IMAGES_DIR`)
+  - Batch output (planned): `images_out/` (`IMAGES_OUT_DIR`, gitignored)
+  - Ultralytics run artifacts: `runs/`, `wandb/` (gitignored per `.gitignore`)
 
 **Caching:**
-- Ultralytics cache files (`*.cache`) gitignored
-- No application-level cache layer
+- Ultralytics/YOLO may write `*.cache` under project (gitignored)
+- No application-level Redis or disk cache module
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- None — Standalone CLI/desktop scripts with no user accounts or API keys
+- Not applicable — single-user local desktop app with no login
 
 ## Monitoring & Observability
 
 **Error Tracking:**
-- None — No Sentry, Rollbar, or similar
+- None (no Sentry, Datadog, etc.)
 
 **Logs:**
-- stdout/stderr via `print()` with prefixed tags: `[INFO]`, `[WARN]`, `[ERROR]`
-- Log files gitignored (`*.log`) but not written by current scripts
-- No structured logging framework (no `logging` module usage)
+- `print("[INFO|WARN|ERROR] ...")` pattern in `apps/webcam/app.py`, `ui/input/handlers.py`
+- No `logging` module configuration
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Not configured — Local execution on developer machine
+- None — not deployed as a service
 
 **CI Pipeline:**
-- None — No `.github/workflows/`, GitLab CI, or other pipeline configs
+- None — no `.github/workflows/` or other CI config detected
 
 ## Environment Configuration
 
 **Required env vars:**
-- None — Scripts do not read `os.environ` or load dotenv files
+- None — all configuration is code constants in `src/block_detected/config/`
 
 **Secrets location:**
-- `.env` / `.env.*` excluded by `.gitignore` but no secrets consumed by current code
-- No credential files referenced in Python source
-
-## Hardware Integrations
-
-**Webcam:**
-- OpenCV `cv2.VideoCapture(index)` in `main.py`
-  - Default index `0`; cycles `0`–`5` via `c` key or `CAMERA_INDEX` / `MAX_CAMERA_INDEX` constants
-  - Resolution set via `CAP_PROP_FRAME_WIDTH` / `CAP_PROP_FRAME_HEIGHT` (default 1280×720)
-  - No network/IP camera URLs — local device indices only
-
-**GPU (optional):**
-- PyTorch CUDA backend when compatible `torch` is installed (README guidance only; not configured in code)
-- Device selection delegated to Ultralytics/PyTorch defaults (`model()` / `model.predict()` with no explicit `device=` argument)
+- `.env` and `.env.*` are gitignored (`.gitignore`) but no `.env` file exists in repo
+- No secrets required for current feature set
 
 ## Webhooks & Callbacks
 
 **Incoming:**
-- None — No HTTP server or event listeners
+- OpenCV UI callbacks only: `cv2.setMouseCallback` → `ui/input/handlers.py` `on_mouse`
+- Keyboard via `cv2.waitKeyEx` → `handle_key`
 
 **Outgoing:**
-- None — No webhook posts or callback URLs in application code
-- Potential indirect HTTP only through Ultralytics if using remote model names (not used by default paths in this repo)
+- None
 
-## Third-Party Tooling (referenced but not integrated in code)
+## Hardware Integrations
 
-**Weights & Biases (`wandb/`):**
-- Directory name in `.gitignore` suggests optional use during model training elsewhere
-- No `import wandb` or W&B API calls in project Python files
+**Webcam:**
+- OpenCV `cv2.VideoCapture(index)` in `io/camera/capture.py`
+- Camera index cycling `0..MAX_CAMERA_INDEX` via `switch_camera`
 
-**Ultralytics Hub / Docs:**
-- README links to https://docs.ultralytics.com/ for framework documentation only
+**GPU (optional):**
+- PyTorch/CUDA used indirectly through Ultralytics when user installs GPU-enabled PyTorch (documented in `README.md`, not enforced in `pyproject.toml`)
 
 ---
 

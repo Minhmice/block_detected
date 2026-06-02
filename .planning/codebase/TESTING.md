@@ -5,282 +5,162 @@
 ## Test Framework
 
 **Runner:**
-- Not detected — no test files, no `pytest.ini`, `pyproject.toml`, or `tox.ini`
-- `.gitignore` includes `.pytest_cache/`, indicating pytest is anticipated but not set up
+- pytest `>=8.0` (optional dev dependency in `pyproject.toml` `[project.optional-dependencies] dev`)
+- Config: **no** `pytest.ini` or `[tool.pytest.ini_options]` — defaults only
 
 **Assertion Library:**
-- Not applicable (no tests)
+- Plain `assert` statements (stdlib)
 
 **Run Commands:**
 ```bash
-# Not configured — no tests to run today
-pytest                    # Would work after adding pytest to requirements and writing tests
-python -m pytest          # Preferred invocation once pytest is added
-python -m pytest -v       # Verbose
-python -m pytest --cov=.  # Coverage (requires pytest-cov)
-```
-
-**Recommended setup for this project:**
-```bash
-pip install pytest pytest-cov
-# Add to requirements-dev.txt or a [dev] extra:
-# pytest>=8.0
-# pytest-cov>=5.0
+pip install -e ".[dev]"          # Install package + pytest
+python -m pytest tests/ -q       # Run all tests (documented in README.md, AGENTS.md)
+python -m pytest tests/ -v       # Verbose
+python -m pytest tests/test_geometry.py -q   # Single file
 ```
 
 ## Test File Organization
 
 **Location:**
-- No `tests/` directory exists
-- Recommended: top-level `tests/` mirroring script names
+- Separate `tests/` directory at repo root (not co-located with `src/`)
 
 **Naming:**
-- Recommended pattern: `tests/test_main.py`, `tests/test_batch_detect_square.py`
-- Use `test_<function_name>_<scenario>` for test functions: `test_clamp_bounds`, `test_discover_model_paths_empty_dir`
+- `test_<module_or_feature>.py`
+- Test functions: `test_<behavior>_<condition>()` (e.g. `test_point_in_rect_inside`)
 
 **Structure:**
 ```
-block_detected/
-├── main.py
-├── batch_detect_square.py
-├── tests/
-│   ├── __init__.py          # optional; empty is fine
-│   ├── conftest.py          # shared fixtures (mock YOLO, sample images)
-│   ├── test_main.py
-│   └── test_batch_detect_square.py
-└── requirements.txt         # add pytest as dev dependency separately
+tests/
+├── conftest.py           # sys.path → src/
+├── test_geometry.py      # vision.geometry
+├── test_boxes.py         # detection.boxes (fakes)
+├── test_config_paths.py  # config.paths
+└── test_io_images.py     # io.images (tmp_path)
 ```
 
 ## Test Structure
 
 **Suite Organization:**
-- Not present in codebase
-- Recommended pattern once tests are added:
-
 ```python
-# tests/test_batch_detect_square.py
-from pathlib import Path
-
-import pytest
-
-from batch_detect_square import clamp, draw_square_box, parse_args
+# tests/test_geometry.py — typical unit test
+from block_detected.vision.geometry import point_in_rect
 
 
-class TestClamp:
-    def test_clamp_within_bounds(self):
-        assert clamp(5, 0, 10) == 5
-
-    def test_clamp_below_lo(self):
-        assert clamp(-1, 0, 10) == 0
-
-    def test_clamp_above_hi(self):
-        assert clamp(99, 0, 10) == 10
-
-
-def test_parse_args_defaults():
-    args = parse_args()
-    assert args.conf == 0.01
+def test_point_in_rect_inside():
+    assert point_in_rect(5, 5, (0, 0, 10, 10)) is True
 ```
 
 **Patterns:**
-- **Setup:** Use `pytest` fixtures in `tests/conftest.py` for temp directories, fake model paths, and numpy/OpenCV test images
-- **Teardown:** Prefer `tmp_path` fixture for filesystem tests; no manual cleanup needed
-- **Assertion:** Plain `assert` statements (pytest style); no `unittest.TestCase` subclasses required
+- **Setup:** Minimal — no shared fixtures beyond `conftest.py` path hack
+- **Teardown:** None required; `tmp_path` fixture auto-cleaned by pytest
+- **Assertion:** Direct equality on primitives and lists
+
+## Import / Path Setup
+
+**conftest.py pattern:**
+```python
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+```
+
+- Mirrors `main.py` bootstrap so tests run without `pip install -e .` (though editable install is recommended)
+- Import as `from block_detected.<layer>...` not `from src.block_detected...`
 
 ## Mocking
 
-**Framework:**
-- Not used; recommend `unittest.mock` (stdlib) or `pytest-mock` plugin
+**Framework:** None — manual fake classes instead of `unittest.mock`
 
 **Patterns:**
 ```python
-from unittest.mock import MagicMock, patch
+# tests/test_boxes.py — fake Ultralytics result structure
+class _FakeTensor:
+    def __init__(self, values):
+        self._values = values
+    def tolist(self):
+        return self._values
 
-import numpy as np
-
-
-def test_extract_boxes_empty_result():
-    from main import extract_boxes
-
-    result = MagicMock()
-    result.boxes = None
-    assert extract_boxes(result) == []
-
-
-@patch("main.YOLO")
-def test_main_exits_when_no_models(mock_yolo, tmp_path, monkeypatch):
-    monkeypatch.setattr("main.MODELS_DIR", tmp_path / "models")
-    (tmp_path / "models").mkdir()
-
-    from main import main
-
-    assert main() == 1
-    mock_yolo.assert_not_called()
+class _FakeResult:
+    def __init__(self, boxes):
+        self.boxes = boxes
 ```
 
 **What to Mock:**
-- `ultralytics.YOLO` — avoid loading real `.pt` weights in unit tests
-- `cv2.VideoCapture`, `cv2.imshow`, `cv2.waitKeyEx` — no hardware/display in CI
-- `cv2.imread` / `cv2.imwrite` — control image I/O in batch tests
-- Filesystem: use `tmp_path` instead of mocking `Path` when possible
+- Ultralytics `Results` / tensor objects in `detection/boxes` tests
+- Do not import `ultralytics` or `cv2` in unit tests unless testing integration (none today)
 
 **What NOT to Mock:**
-- Pure helpers: `clamp()`, `point_in_rect()`, `extract_boxes()` (with constructed mock result objects)
-- `discover_model_paths()` — test with real temp directories and `.pt` filenames (empty files suffice for discovery logic)
-- `draw_square_box()` geometry — test with real `numpy` arrays from `np.zeros((100, 100, 3), dtype=np.uint8)`
+- Pure functions (`point_in_rect`) — test directly
+- `config.paths` — assert real `PROJECT_ROOT` resolves to repo with `pyproject.toml`
 
 ## Fixtures and Factories
 
 **Test Data:**
-- Not present
-- Recommended locations:
-  - `tests/fixtures/` — small PNG/JPG samples (keep under ~50 KB)
-  - `tests/conftest.py` — factory fixtures
-
-**Example conftest:**
-```python
-# tests/conftest.py
-import numpy as np
-import pytest
-
-
-@pytest.fixture
-def blank_bgr_image():
-    return np.zeros((480, 640, 3), dtype=np.uint8)
-
-
-@pytest.fixture
-def fake_yolo_result():
-    """Minimal stand-in for ultralytics result with one box."""
-    box = MagicMock()
-    box.xyxy = [MagicMock(tolist=lambda: [10.0, 20.0, 50.0, 60.0])]
-    box.cls = [MagicMock(item=lambda: 0)]
-    box.conf = [MagicMock(item=lambda: 0.85)]
-
-    result = MagicMock()
-    result.boxes = [box]
-    result.names = {0: "block"}
-    return result
-```
+- `tmp_path` pytest builtin for filesystem tests (`test_io_images.py`)
+- Write minimal bytes/files: `(tmp_path / "a.png").write_bytes(b"x")`
 
 **Location:**
-- `tests/conftest.py` for shared fixtures
-- `tests/fixtures/` for binary test images (add to git if small; generate in fixture if not)
+- Inline in test files; no `tests/fixtures/` directory
 
 ## Coverage
 
-**Requirements:** None enforced
+**Requirements:** None enforced — no coverage config or CI gate
 
 **View Coverage:**
 ```bash
-pip install pytest-cov
-python -m pytest --cov=main --cov=batch_detect_square --cov-report=term-missing
+pip install pytest-cov   # not in pyproject.toml today
+python -m pytest tests/ --cov=block_detected --cov-report=term-missing
 ```
-
-**Priority coverage targets (no GPU/display needed):**
-| Module | Functions | Rationale |
-|--------|-----------|-----------|
-| `batch_detect_square.py` | `clamp`, `draw_square_box`, `parse_args` | Pure logic, easy unit tests |
-| `main.py` | `discover_model_paths`, `default_model_index`, `extract_boxes`, `point_in_rect` | Pure logic |
-| Both | `main()` early-exit paths | Validate error messages and exit codes with mocks |
-
-**Low priority / integration-only:**
-- Full webcam loop, live inference, `cv2.imshow` preview paths
 
 ## Test Types
 
 **Unit Tests:**
-- Primary approach for this codebase
-- Scope: geometry helpers, path discovery, argument parsing, box extraction, label formatting
-- Run quickly without model weights or camera
+- Scope: `core`, `config.paths`, `vision.geometry`, `detection.boxes`, `io.images`
+- Approach: No GPU, no webcam, no model files required
 
 **Integration Tests:**
-- Optional; run locally with a real small model in `models/` and sample images in `tests/fixtures/`
-- Mark with `@pytest.mark.integration` and skip in CI by default:
-```python
-@pytest.mark.integration
-def test_batch_end_to_end(tmp_path):
-    ...
-```
-- Config in `pyproject.toml`:
-```toml
-[tool.pytest.ini_options]
-markers = ["integration: needs model weights and opencv display"]
-addopts = "-m 'not integration'"
-```
+- Not present — webcam loop (`apps/webcam/app.py`) untested automatically
 
 **E2E Tests:**
-- Not used
-- Manual UAT only: run `python main.py` and `python batch_detect_square.py --show` per `README.md`
-
-## CI/CD
-
-**CI Pipeline:**
-- Not detected — no `.github/workflows/`, GitLab CI, or similar
-
-**Recommended minimal CI (when added):**
-```yaml
-# .github/workflows/test.yml
-- run: pip install -r requirements.txt pytest pytest-cov
-- run: python -m pytest -m "not integration" --cov=. --cov-fail-under=0
-```
+- Not used — manual `python main.py` for full stack
 
 ## Common Patterns
 
+**Filesystem tests:**
+```python
+def test_iter_image_paths_finds_png(tmp_path: Path):
+    (tmp_path / "a.png").write_bytes(b"x")
+    (tmp_path / "skip.txt").write_text("nope")
+    paths = iter_image_paths(tmp_path)
+    assert len(paths) == 1
+```
+
+**Config invariant tests:**
+```python
+def test_project_root_is_repo_root():
+    assert (PROJECT_ROOT / "pyproject.toml").is_file()
+```
+
 **Async Testing:**
-- Not applicable — all code is synchronous
+- Not applicable — synchronous code only
 
 **Error Testing:**
-```python
-def test_main_missing_model(tmp_path, monkeypatch):
-    monkeypatch.setattr("batch_detect_square.parse_args", lambda: argparse.Namespace(
-        model=str(tmp_path / "missing.pt"),
-        input=str(tmp_path),
-        output=str(tmp_path / "out"),
-        conf=0.01,
-        show=False,
-    ))
-    (tmp_path / "img.png").write_bytes(b"")  # won't pass imread but model check runs first
+- Not extensively used — e.g. empty `boxes` via `_FakeResult(None)` in `test_extract_boxes_empty`
 
-    from batch_detect_square import main
-    assert main() == 1
-```
+## Adding Tests (Phase 3 guidance)
 
-**Parametrize geometry edge cases:**
-```python
-@pytest.mark.parametrize("x1,y1,x2,y2,side", [
-    (0, 0, 10, 20, 20),   # taller box → square side = height
-    (0, 0, 30, 10, 30),   # wider box → square side = width
-])
-def test_draw_square_box_side(blank_bgr_image, x1, y1, x2, y2, side):
-    from batch_detect_square import draw_square_box
-    sx1, sy1, sx2, sy2 = draw_square_box(blank_bgr_image, x1, y1, x2, y2)
-    assert sx2 - sx1 == side or sy2 - sy1 == side  # square dimensions
-```
+- Square-box drawing: pure OpenCV geometry tests without model — follow `test_geometry.py` style
+- Batch app: prefer testing `iter_image_paths`, path helpers, and drawing functions in isolation before full YOLO integration
+- If testing loader: use `tmp_path` with dummy `.pt` only if necessary; avoid committing weights
 
-## Test Coverage Gaps
+## Gaps vs AGENTS.md
 
-**Untested areas (entire codebase today):**
-
-| Area | Files | Risk | Priority |
-|------|-------|------|----------|
-| Square box geometry / clamping | `batch_detect_square.py` | Wrong boxes on edge detections | High |
-| Model path discovery | `main.py` | Webcam fails silently if discovery breaks | High |
-| CLI defaults and overrides | `batch_detect_square.py` | Wrong paths/conf in production runs | Medium |
-| Mouse callback / model switch | `main.py` | UI regression | Medium |
-| Inference loops | Both scripts | Runtime errors on bad frames | Low (mock in unit tests) |
-| Camera open/switch | `main.py` | Hardware-dependent | Low (mock only) |
-
-## Manual Verification
-
-**Documented in `README.md`:**
-- Webcam: key bindings (`q`, `v`, `c`, arrows, `m`, `n`) and model button click
-- Batch: default run, `--conf`, `--show`, output in `images_out/`
-
-**Pre-release checklist:**
-1. `python batch_detect_square.py` on `images/` — verify `images_out/` output
-2. `python main.py` — verify model load, detection overlay, quit with `q`
-3. Confirm `models/train-3.pt` exists locally (gitignored; not in CI without fixture model)
+- `AGENTS.md` lists example tests `test_geometry.py`, `test_boxes.py` — both exist
+- Planned: square-box tests referenced in `.planning/ROADMAP.md` Phase 3 — not yet in `tests/`
 
 ---
 

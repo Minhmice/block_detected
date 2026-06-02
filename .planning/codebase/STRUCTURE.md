@@ -5,103 +5,167 @@
 ## Directory Layout
 
 ```
-block_detected/
-├── pyproject.toml
-├── requirements.txt
-├── main.py          # Entry: adds src/ to path, calls apps.webcam
-├── AGENTS.md                   # Agent change map
-├── README.md
-├── tests/                      # pytest (mirrors package layers)
-├── models/                     # YOLO weights (*.pt, gitignored)
-├── images/                     # Sample / batch input images
-└── src/block_detected/
-    ├── __main__.py
-    ├── apps/
-    │   ├── webcam/app.py       # Webcam main loop
-    │   └── batch/__init__.py   # Future batch app (stub)
-    ├── config/
-    │   ├── paths.py
-    │   ├── camera.py
-    │   ├── inference.py
-    │   └── ui.py
-    ├── core/types.py
-    ├── detection/
-    │   ├── boxes.py
-    │   └── yolo/loader.py
-    ├── vision/
-    │   ├── geometry.py
-    │   └── drawing/
-    ├── io/
-    │   ├── camera/capture.py
-    │   └── images/__init__.py  # iter_image_paths (batch stub)
-    └── ui/input/handlers.py
+block_detected/                    # repo root (PROJECT_ROOT)
+├── pyproject.toml               # package metadata, deps, console script
+├── requirements.txt             # runtime deps mirror (unpinned)
+├── main.py                      # webcam CLI entry (sys.path bootstrap)
+├── AGENTS.md                    # agent change map + layer rules
+├── README.md                    # user install/run docs (VI + EN mix)
+├── models/                      # YOLO weights (*.pt gitignored)
+├── images/                      # batch input folder (usage in Phase 3)
+├── images_out/                  # batch output (gitignored)
+├── src/block_detected/          # installable package
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── apps/
+│   │   ├── webcam/app.py
+│   │   └── batch/__init__.py    # stub
+│   ├── config/
+│   ├── core/
+│   ├── detection/
+│   ├── vision/
+│   ├── io/
+│   └── ui/
+├── tests/                       # pytest
+│   ├── conftest.py
+│   └── test_*.py
+└── .planning/                   # GSD roadmap, phases, codebase map
+    └── codebase/                # this documentation set
 ```
 
 ## Directory Purposes
 
 **`src/block_detected/apps/`:**
 - Purpose: Runnable application orchestration
-- Contains: Webcam loop; batch stub for future
+- Contains: `webcam/app.py` (implemented), `batch/__init__.py` (stub)
 - Key files: `apps/webcam/app.py`
 
 **`src/block_detected/config/`:**
-- Purpose: Constants and paths split by domain
-- Key files: `config/paths.py` (single source for PROJECT_ROOT)
+- Purpose: Domain-split constants (no business logic)
+- Contains: `paths.py`, `camera.py`, `inference.py`, `ui.py`, `__init__.py` re-exports
+- Key files: `config/paths.py` for all filesystem roots
+
+**`src/block_detected/core/`:**
+- Purpose: Shared types without OpenCV/YOLO
+- Contains: `types.py` (`Box`)
+- Key files: `core/types.py`
 
 **`src/block_detected/detection/`:**
 - Purpose: Model loading and result parsing
-- Key files: `detection/yolo/loader.py`, `detection/boxes.py`
+- Contains: `boxes.py`, `yolo/loader.py`
+- Key files: `detection/yolo/loader.py`
 
 **`src/block_detected/vision/`:**
-- Purpose: Drawing and geometry without YOLO imports
-- Key files: `vision/drawing/*.py`, `vision/geometry.py`
+- Purpose: Geometry and frame annotation
+- Contains: `geometry.py`, `drawing/overlays.py`, `eval.py`, `widgets.py`
+- Key files: `vision/drawing/widgets.py`
 
 **`src/block_detected/io/`:**
-- Purpose: Camera and filesystem input
-- Key files: `io/camera/capture.py`, `io/images/__init__.py`
+- Purpose: Camera and filesystem inputs
+- Contains: `camera/capture.py`, `images/__init__.py`
+- Key files: `io/images/__init__.py` → `iter_image_paths`
+
+**`src/block_detected/ui/`:**
+- Purpose: OpenCV keyboard/mouse handlers
+- Contains: `input/handlers.py`
+- Key files: `ui/input/handlers.py`
 
 **`tests/`:**
-- Purpose: Unit tests for pure modules
-- Naming: `test_<module>.py` at tests root
+- Purpose: Unit tests for pure/config/io modules
+- Contains: `conftest.py`, `test_geometry.py`, `test_boxes.py`, `test_config_paths.py`, `test_io_images.py`
+- Key files: `tests/conftest.py` (adds `src/` to path)
+
+**`models/`:**
+- Purpose: Local YOLO weight files
+- Generated: user-provided
+- Committed: `.gitkeep` only; `*.pt` gitignored
 
 ## Key File Locations
 
 **Entry Points:**
-- `main.py`: User-facing CLI
+- `main.py`: Run webcam without editable install (path bootstrap)
 - `src/block_detected/__main__.py`: `python -m block_detected`
-- `pyproject.toml` → `block-detected-webcam` console script
+- `src/block_detected/apps/webcam/app.py`: `main()` implementation
 
 **Configuration:**
-- `src/block_detected/config/`: All tunables
+- `pyproject.toml`: Package name, dependencies, `block-detected-webcam` script
+- `src/block_detected/config/paths.py`: `PROJECT_ROOT`, asset directories
+- `src/block_detected/config/inference.py`: `DEFAULT_MODEL_NAME`, confidence constants
+- `src/block_detected/config/camera.py`: Resolution and camera index
+- `src/block_detected/config/ui.py`: Window name, key codes
 
 **Core Logic:**
-- Webcam loop: `src/block_detected/apps/webcam/app.py`
+- `src/block_detected/apps/webcam/app.py`: Webcam main loop
+- `src/block_detected/detection/boxes.py`: YOLO → `list[Box]`
+- `src/block_detected/detection/yolo/loader.py`: Model discovery/load
+
+**Testing:**
+- `tests/conftest.py`: Ensures `src/` on `sys.path`
+- `tests/test_*.py`: Module-specific unit tests
 
 ## Naming Conventions
 
-**Files:** snake_case modules; `app.py` inside each app folder
+**Files:**
+- Snake_case modules: `app.py`, `handlers.py`, `loader.py`
+- Test modules: `test_<module>.py` mirroring package area (`test_geometry.py`, `test_io_images.py`)
 
-**Packages:** Do not create `block_detected/models/` (conflicts with repo `models/`)
+**Directories:**
+- Lowercase layer names: `apps`, `config`, `detection`, `vision`, `io`, `ui`
+- Subpackages by concern: `yolo/`, `drawing/`, `camera/`, `input/`
 
-**Imports:** Import submodules directly; package `__init__.py` files stay lightweight (no OpenCV at import time)
+**Functions:**
+- snake_case verbs: `open_camera`, `extract_boxes`, `iter_image_paths`, `draw_status_bar`
+
+**Types:**
+- `Box` as `TypeAlias` for coordinate tuple in `core/types.py`
 
 ## Where to Add New Code
 
-| Feature | Location |
-|---------|----------|
-| New realtime app | `apps/<name>/app.py` |
-| Batch inference | `apps/batch/app.py` + use `io/images/` |
-| New detector backend | `detection/onnx/` |
-| Tracking | `vision/tracking/` |
-| Tests | `tests/test_<area>.py` |
+**New webcam behavior (keys, UI):**
+- Key handling: `src/block_detected/ui/input/handlers.py`
+- New constants: `src/block_detected/config/ui.py` or `inference.py`
+- Drawing: `src/block_detected/vision/drawing/` (not in `apps/webcam/app.py`)
+
+**Batch image inference (Phase 3):**
+- App loop: create `src/block_detected/apps/batch/app.py`
+- Image listing: extend `src/block_detected/io/images/__init__.py` if needed
+- Square-box drawing: `src/block_detected/vision/drawing/annotators/square.py` (planned)
+- Console script: add `block-detected-batch` in `pyproject.toml` `[project.scripts]`
+- Tests: `tests/test_square.py` or similar
+
+**New detector backend (e.g. ONNX):**
+- Create `src/block_detected/detection/onnx/` parallel to `yolo/`
+- Keep parsing in `detection/boxes.py` or shared parser module
+
+**New config values:**
+- Always add to appropriate `config/*.py`; re-export from `config/__init__.py` if used widely
+- Never hardcode repo paths outside `config/paths.py`
+
+**Unit tests:**
+- `tests/test_<feature>.py` next to existing tests
+- Use fakes for Ultralytics tensors (pattern in `tests/test_boxes.py`)
 
 ## Special Directories
 
-**`models/`:**
-- Committed: `.gitkeep` only; `*.pt` gitignored
-
 **`.planning/`:**
-- GSD planning artifacts; `codebase/` is reference docs
+- Purpose: GSD roadmap, phase plans, verification artifacts
+- Generated: planning workflow output
+- Committed: yes (except transient local state)
+
+**`.planning/codebase/`:**
+- Purpose: Codebase map for planners/executors (`STACK.md`, `ARCHITECTURE.md`, etc.)
+- Generated: `/gsd-map-codebase`
+- Committed: yes
+
+**`.venv/`:**
+- Purpose: Local virtual environment
+- Generated: yes
+- Committed: no (gitignored)
+
+**`images_out/`, `runs/`, `wandb/`:**
+- Purpose: Inference/training output
+- Generated: yes at runtime
+- Committed: no
 
 ---
 
