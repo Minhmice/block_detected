@@ -1,4 +1,4 @@
-# YOLO webcam & batch detection scripts
+# YOLO webcam detection (mirrors pyproject.toml)
 # Python 3.10+ recommended (tested on 3.13)
 
 ultralytics>=8.4.0

@@ -16,7 +16,7 @@
 **Layered CV package (recommended for this project size → medium scale):**
 
 ```
-apps/       → runnable pipelines (webcam, batch, export) — orchestration only
+apps/       → runnable pipelines (webcam, export) — orchestration only
 config/     → paths, thresholds, UI constants — no business logic
 core/       → shared types, protocols, exceptions — no OpenCV/YOLO imports
 detection/  → model load, inference, result parsing — depends on ultralytics
@@ -44,7 +44,7 @@ ui/         → keyboard/mouse/window callbacks — depends on vision + config
 ## Common Pitfalls
 
 - **Flat `config.py` at package root** — grows unbounded; split early by domain
-- **Drawing mixed with inference loop** — hard to add batch/RTSP later; keep `apps/webcam/app.py` thin
+- **Drawing mixed with inference loop** — hard to add RTSP/video later; keep `apps/webcam/app.py` thin
 - **Import cycles** — `ui` importing `detection` for drawing; UI should only call `vision` helpers
 - **`PROJECT_ROOT` depth** — when moving files deeper, update `Path(__file__).resolve().parents[N]` in one place (`config/paths.py` only)
 - **Console script entry** — update `pyproject.toml` `[project.scripts]` when moving `main()`
@@ -69,19 +69,10 @@ def main() -> int:
     ...
 ```
 
-**Future batch app (placeholder):**
-
-```python
-# src/block_detected/apps/batch/app.py  (add later)
-from block_detected.detection.yolo.loader import load_yolo
-from block_detected.io.images import iter_images  # future
-```
-
 ## Expansion Roadmap (folders to add later)
 
 | Future feature | Add under |
 |----------------|-----------|
-| Batch image folder | `apps/batch/` + `io/images/` |
 | Video file / RTSP | `io/video/` |
 | Tracking (ByteTrack, etc.) | `vision/tracking/` |
 | ONNX / TensorRT backend | `detection/onnx/` |

@@ -1,1 +1,1 @@
-"""Input/output — import submodules directly (camera, images, video)."""
+"""Input/output — import submodules directly (camera, video)."""

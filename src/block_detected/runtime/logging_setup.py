@@ -2,6 +2,7 @@
 
 import logging
 import sys
+import threading
 from collections import deque
 from dataclasses import dataclass, field
 from typing import Deque
@@ -12,10 +13,18 @@ class LogBufferHandler(logging.Handler):
 
     def __init__(self, capacity: int = 500) -> None:
         super().__init__()
-        self.records: Deque[str] = deque(maxlen=capacity)
+        self._lock = threading.Lock()
+        self._records: Deque[str] = deque(maxlen=capacity)
 
     def emit(self, record: logging.LogRecord) -> None:
-        self.records.append(self.format(record))
+        line = self.format(record)
+        with self._lock:
+            self._records.append(line)
+
+    def snapshot_lines(self) -> list[str]:
+        """Thread-safe copy of buffered log lines for UI display."""
+        with self._lock:
+            return list(self._records)
 
 
 @dataclass
@@ -47,3 +56,8 @@ def setup_logging(level: str = "INFO") -> LogBufferHandler:
 
 def get_log_buffer() -> LogBufferHandler:
     return _CONTEXT.buffer_handler
+
+
+def get_log_lines() -> list[str]:
+    """Return a thread-safe snapshot of recent log lines."""
+    return _CONTEXT.buffer_handler.snapshot_lines()

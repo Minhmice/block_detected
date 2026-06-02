@@ -2,13 +2,12 @@
 
 ## Overview
 
-Layered computer-vision Python package: webcam detection today; batch, tracking, and alternate backends later.
+Layered computer-vision Python package: webcam detection today; tracking and alternate backends later.
 
 ## Phases
 
 - [x] **Phase 1: Package foundation** - Initial modular refactor (webcam working)
 - [x] **Phase 2: CV layered folder structure** - Scalable folder layout, tests, docs
-- [ ] **Phase 3: Batch image inference app** - Folder batch inference with square boxes
 
 ## Phase Details
 
@@ -46,27 +45,43 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Package foundation | 1/1 | Complete | 2026-06-02 |
 | 2. CV layered structure | 3/3 | Complete | 2026-06-02 |
-| 3. Batch image inference | 0/3 | Planned | — |
 
-### Phase 3: Batch image inference app
+### Phase 3: Runtime engine, typed config, and detector abstraction for GUI prep
 
-**Goal:** Batch-process images in a folder with YOLO, square-box annotations, and CLI/console entry matching the layered package layout.
-
+**Goal:** [To be planned]
+**Requirements**: TBD
 **Depends on:** Phase 2
-
-**Requirements:** REQ-03
-
-**Success Criteria:**
-
-1. `block-detected-batch` (or `apps/batch/app.py`) runs over `images/` with `--model`, `--input`, `--output`, `--conf`, `--show`
-2. Reuses `detection/yolo/loader`, `detection/boxes`, `io/images/iter_image_paths`
-3. Square-box drawing lives in `vision/drawing/` (no inline cv2 in app loop)
-4. `pytest tests/` passes including square-box unit tests
-
-**Plans:** 3 plans
+**Plans:** 0 plans
 
 Plans:
+- [ ] TBD (run /gsd-plan-phase 3 to break down)
 
-- [ ] 03-01: Square-box drawing module + tests
-- [ ] 03-02: Batch app orchestration (`apps/batch/app.py`)
-- [ ] 03-03: Console script + README/AGENTS sync
+### Phase 4: Desktop GUI for webcam runtime control and config
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 3
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 4 to break down)
+
+### Phase 5: GUI and runtime hardening for production UAT
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 4
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 5 to break down)
+
+### Phase 6: Detection post-processing, reject rules, and temporal stability
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 5
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 6 to break down)

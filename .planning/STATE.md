@@ -2,9 +2,9 @@
 
 ## Current Position
 
-**Phase:** 3 planned (not executed)
-**Plan:** 0/3 complete
-**Status:** Ready to execute phase 3 batch inference plans
+**Phase:** 4 in progress (desktop GUI)
+**Plan:** Phase 4 added — PySide6 GUI on WebcamEngine
+**Status:** GUI optional extra + `block-detected-gui`; CLI unchanged
 
 ## Accumulated Context
 
@@ -12,8 +12,9 @@
 
 - Phase 1: Package foundation (complete)
 - Phase 2: CV layered folder structure (complete — 3 plans executed)
-- Phase 3 added: Batch image inference app (3 plans: 03-01..03-03)
 - Entry point renamed: `run_yolo_webcam.py` → `main.py`
+- Phase 3 added: Runtime engine, typed config, detector abstraction for GUI prep
+- Phase 4 added: Desktop GUI for webcam runtime control and config
 
 ## Quick Tasks Completed
 

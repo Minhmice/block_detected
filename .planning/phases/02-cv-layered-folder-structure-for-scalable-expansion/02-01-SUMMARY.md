@@ -9,9 +9,8 @@ status: complete
 ## Completed
 
 - Verified layered package tree (apps/config/core/detection/vision/io/ui)
-- Added `io/images/iter_image_paths` stub
-- Added `apps/batch/` doc stub
 - Entry points unchanged: `main.py`, `block-detected-webcam`
+- Note: temporary expansion stubs were later removed from the tree
 
 ## Self-Check: PASSED
 

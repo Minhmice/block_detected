@@ -11,14 +11,16 @@ from typing import Any
 import cv2
 
 from block_detected.config.paths import MODELS_DIR
-from block_detected.core.domain import RuntimeStatus
+from block_detected.core.domain import FrameResult, RuntimeStatus
 from block_detected.core.protocols import DetectorBackend
 from block_detected.runtime.detector_loader import load_detector
 from block_detected.detection.yolo.loader import default_model_index, discover_model_paths
 from block_detected.io.camera.capture import open_camera, switch_camera
 from block_detected.runtime.config_schema import AppConfig
 from block_detected.runtime.metrics import RuntimeMetrics
+from block_detected.runtime.postprocess import DetectionPostProcessor
 from block_detected.runtime.state import RuntimeState
+from block_detected.vision.drawing.detections import draw_detection_boxes
 from block_detected.vision.drawing.eval import draw_eval_boxes
 from block_detected.vision.drawing.overlays import draw_overlay_history
 from block_detected.vision.drawing.widgets import draw_model_switch_button, draw_status_bar
@@ -50,22 +52,28 @@ class WebcamEngine:
         )
         self.state.reset_overlay_history(config.inference.overlay_history)
         self.metrics = RuntimeMetrics()
+        self._postprocess = DetectionPostProcessor(config.stability)
         self._cap: cv2.VideoCapture | None = None
 
     @classmethod
-    def create(cls, config: AppConfig) -> WebcamEngine | None:
+    def try_create(cls, config: AppConfig) -> tuple[WebcamEngine | None, str | None]:
         model_paths = discover_model_paths()
         if not model_paths:
-            logger.error("No .pt models found in: %s", MODELS_DIR)
-            return None
+            message = (
+                f"No .pt models found in {MODELS_DIR}. "
+                "Add a YOLO weights file (e.g. train-3.pt) and restart."
+            )
+            logger.error(message)
+            return None, message
 
         model_index = default_model_index(model_paths, config.inference.default_model_name)
         model_path = model_paths[model_index]
         try:
             detector = load_detector(model_path)
         except Exception as exc:
-            logger.error("Failed to load model %s: %s", model_path.name, exc)
-            return None
+            message = f"Failed to load model {model_path.name}: {exc}"
+            logger.error(message)
+            return None, message
 
         engine = cls(config, model_paths, detector)
         engine.state.model_index = model_index
@@ -75,25 +83,40 @@ class WebcamEngine:
             len(model_paths),
             model_path.name,
         )
+        return engine, None
+
+    @classmethod
+    def create(cls, config: AppConfig) -> WebcamEngine | None:
+        engine, _error = cls.try_create(config)
         return engine
 
-    def start(self) -> bool:
+    def try_start(self) -> tuple[bool, str | None]:
         cam = self.config.camera
+        index = self.state.camera_index
         self._cap = open_camera(
-            self.state.camera_index,
+            index,
             width=cam.width,
             height=cam.height,
         )
         if self._cap is None:
-            logger.error("Failed to open webcam source: %s", self.state.camera_index)
-            return False
-        logger.info("Opened webcam source: %s", self.state.camera_index)
+            message = (
+                f"Failed to open camera index {index} "
+                f"({cam.width}x{cam.height}). "
+                "Check permissions, USB connection, or another app using the camera."
+            )
+            logger.error(message)
+            return False, message
+        logger.info("Opened webcam source: %s", index)
         logger.info(
             "Available models (%s): %s",
             len(self.model_paths),
             ", ".join(p.name for p in self.model_paths),
         )
-        return True
+        return True, None
+
+    def start(self) -> bool:
+        ok, _error = self.try_start()
+        return ok
 
     @property
     def detector(self) -> DetectorBackend:
@@ -108,6 +131,7 @@ class WebcamEngine:
             self._detector = next_detector
             self.state.model_index = next_index
             self.state.box_history.clear()
+            self._postprocess.reset()
             try:
                 previous_detector.close()
             except Exception as exc:
@@ -159,6 +183,14 @@ class WebcamEngine:
             logger.error("Inference failed: %s", exc)
             return None
 
+        frame_h, frame_w = frame.shape[:2]
+        filtered = self._postprocess.process(
+            frame_result.detections,
+            frame_width=frame_w,
+            frame_height=frame_h,
+        )
+        frame_result = FrameResult(detections=filtered, raw=frame_result.raw)
+
         infer_end = perf_counter()
         annotated = self._render(frame, frame_result)
         render_end = perf_counter()
@@ -186,16 +218,36 @@ class WebcamEngine:
             confidence=self.state.confidence,
             model_name=self._detector.model_name,
             camera_index=self.state.camera_index,
+            stability_enabled=self.config.stability.enabled,
+            detection_count=len(frame_result.detections),
             stats=stats,
         )
         return ProcessedFrame(annotated=annotated, button_rect=button_rect, status=status)
 
-    def _render(self, frame, frame_result) -> Any:
+    def _render(self, frame, frame_result: FrameResult) -> Any:
         inf = self.config.inference
+        stability_on = self.config.stability.enabled
         if self.state.eval_mode:
             annotated = frame.copy()
-            draw_eval_boxes(annotated, frame_result.raw)
+            if stability_on:
+                draw_detection_boxes(
+                    annotated,
+                    frame_result.detections,
+                    color=(0, 220, 255),
+                )
+            else:
+                draw_eval_boxes(annotated, frame_result.raw)
             self.state.box_history.clear()
+        elif stability_on:
+            annotated = frame.copy()
+            draw_detection_boxes(annotated, frame_result.detections)
+            if self.state.overlay_enabled:
+                from block_detected.detection.boxes import boxes_from_detections
+
+                self.state.box_history.append(boxes_from_detections(frame_result.detections))
+                draw_overlay_history(annotated, list(self.state.box_history))
+            else:
+                self.state.box_history.clear()
         else:
             annotated = frame_result.raw.plot()
             if self.state.overlay_enabled:
@@ -221,11 +273,15 @@ class WebcamEngine:
         """Apply fields that do not require camera/detector restart."""
         self.config = config
         self.state.set_overlay_maxlen(config.inference.overlay_history)
+        self._postprocess.update_config(config.stability)
 
-    def shutdown(self) -> None:
+    def shutdown(self, *, destroy_cv_windows: bool = True) -> None:
         if self._cap is not None:
             self._cap.release()
             self._cap = None
         self._detector.close()
-        cv2.destroyAllWindows()
-        logger.info("Camera released and windows destroyed.")
+        if destroy_cv_windows:
+            cv2.destroyAllWindows()
+            logger.info("Camera released and windows destroyed.")
+        else:
+            logger.info("Camera released.")

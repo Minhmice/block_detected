@@ -58,12 +58,15 @@ class ClassicalPipelineConfig:
 
 @dataclass
 class StabilityConfig:
-    """Placeholder for temporal filtering / rejection rules."""
+    """Post-inference filtering and temporal stability."""
 
     enabled: bool = False
     min_confidence: float = 0.0
     min_box_area_px: int = 0
     reject_edge_boxes: bool = False
+    duplicate_merge_iou: float = 0.5
+    temporal_window: int = 5
+    required_stable_votes: int = 3
 
 
 @dataclass
@@ -173,6 +176,15 @@ class AppConfig:
         require_number("stability.min_confidence", self.stability.min_confidence)
         require_int("stability.min_box_area_px", self.stability.min_box_area_px)
         require_bool("stability.reject_edge_boxes", self.stability.reject_edge_boxes)
+        stability_iou_valid = require_number(
+            "stability.duplicate_merge_iou",
+            self.stability.duplicate_merge_iou,
+        )
+        stability_window_valid = require_int("stability.temporal_window", self.stability.temporal_window)
+        stability_votes_valid = require_int(
+            "stability.required_stable_votes",
+            self.stability.required_stable_votes,
+        )
         require_str("ui.window_name", self.ui.window_name)
         require_int("ui.button_margin", self.ui.button_margin)
         require_int("ui.button_height", self.ui.button_height)
@@ -192,6 +204,21 @@ class AppConfig:
             errors.append("camera width/height must be positive")
         if log_level_valid and self.ui.log_level.upper() not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:
             errors.append("ui.log_level must be a valid logging level name")
+        stab = self.stability
+        if stability_iou_valid and not 0 < stab.duplicate_merge_iou <= 1:
+            errors.append("stability.duplicate_merge_iou must be in (0, 1]")
+        if stability_window_valid and stab.temporal_window < 1:
+            errors.append("stability.temporal_window must be >= 1")
+        if stability_votes_valid and stab.required_stable_votes < 1:
+            errors.append("stability.required_stable_votes must be >= 1")
+        if (
+            stability_window_valid
+            and stability_votes_valid
+            and stab.required_stable_votes > stab.temporal_window
+        ):
+            errors.append("stability.required_stable_votes must be <= temporal_window")
+        if stab.min_confidence < 0 or stab.min_confidence > 1:
+            errors.append("stability.min_confidence must be within [0, 1]")
         return errors
 
     @staticmethod
