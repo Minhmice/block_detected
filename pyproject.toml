@@ -1,0 +1,23 @@
+[project]
+name = "block-detected"
+version = "0.1.0"
+description = "YOLO webcam realtime block/object detection"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ultralytics>=8.4.0",
+    "opencv-python>=4.8.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+block-detected-webcam = "block_detected.apps.webcam.app:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
