@@ -33,7 +33,6 @@ class InferenceStats:
 @dataclass(slots=True)
 class RuntimeStatus:
     eval_mode: bool = False
-    overlay_enabled: bool = True
     confidence: float = 0.25
     model_name: str = ""
     camera_index: int = 0

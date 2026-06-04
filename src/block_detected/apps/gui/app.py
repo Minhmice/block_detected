@@ -45,7 +45,6 @@ if QtCore is not None:
             self._stop = threading.Event()
             self._lock = threading.Lock()
             self._pending_conf: float | None = None
-            self._pending_overlay: bool | None = None
             self._pending_eval: bool | None = None
             self._pending_hot_config: AppConfig | None = None
             self._switch_model_requested = False
@@ -80,10 +79,6 @@ if QtCore is not None:
             with self._lock:
                 self._pending_conf = value
 
-        def set_overlay_enabled(self, value: bool) -> None:
-            with self._lock:
-                self._pending_overlay = value
-
         def set_eval_mode(self, value: bool) -> None:
             with self._lock:
                 self._pending_eval = value
@@ -103,25 +98,22 @@ if QtCore is not None:
         def _apply_pending(self, engine: WebcamEngine) -> None:
             with self._lock:
                 conf = self._pending_conf
-                overlay = self._pending_overlay
                 eval_mode = self._pending_eval
                 hot_config = self._pending_hot_config
                 switch_model_requested = self._switch_model_requested
                 switch_camera_requested = self._switch_camera_requested
                 self._pending_conf = None
-                self._pending_overlay = None
                 self._pending_eval = None
                 self._pending_hot_config = None
                 self._switch_model_requested = False
                 self._switch_camera_requested = False
 
-            if hot_config is not None or conf is not None or overlay is not None or eval_mode is not None:
+            if hot_config is not None or conf is not None or eval_mode is not None:
                 apply_hot_runtime_settings(
                     engine,
                     hot_config if hot_config is not None else engine.config,
                     confidence=conf if conf is not None else engine.state.confidence,
                     eval_mode=eval_mode if eval_mode is not None else engine.state.eval_mode,
-                    overlay_enabled=overlay if overlay is not None else engine.state.overlay_enabled,
                 )
             if switch_model_requested:
                 engine.switch_model()
@@ -226,16 +218,9 @@ if QtCore is not None:
             self.conf_spin.setDecimals(3)
             self.conf_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
             self.eval_check = QtWidgets.QCheckBox("Eval mode")
-            self.overlay_check = QtWidgets.QCheckBox("Overlay trail")
-            self.overlay_history_spin = QtWidgets.QSpinBox()
-            self.overlay_history_spin.setRange(1, 120)
-            self.show_fps_check = QtWidgets.QCheckBox("Show FPS in preview")
             inf_layout.addRow("Confidence", self.conf_spin)
             inf_layout.addRow("", self.conf_slider)
             inf_layout.addRow(self.eval_check)
-            inf_layout.addRow(self.overlay_check)
-            inf_layout.addRow("Trail frames", self.overlay_history_spin)
-            inf_layout.addRow(self.show_fps_check)
             layout.addWidget(inference)
 
             stability = QtWidgets.QGroupBox("Stability")
@@ -318,9 +303,6 @@ if QtCore is not None:
             self.conf_spin.valueChanged.connect(self._on_conf_spin_changed)
             self.conf_slider.valueChanged.connect(self._on_conf_slider_changed)
             self.eval_check.toggled.connect(self._on_eval_changed)
-            self.overlay_check.toggled.connect(self._on_overlay_changed)
-            self.show_fps_check.toggled.connect(lambda _checked: self._apply_hot_config())
-            self.overlay_history_spin.valueChanged.connect(lambda _value: self._apply_hot_config())
             self.stability_enabled_check.toggled.connect(lambda _checked: self._apply_hot_config())
             self.stability_min_conf_spin.valueChanged.connect(lambda _value: self._apply_hot_config())
             self.stability_min_area_spin.valueChanged.connect(lambda _value: self._apply_hot_config())
@@ -344,9 +326,6 @@ if QtCore is not None:
             self.conf_slider.setRange(int(inf.conf_min * 1000), int(inf.conf_max * 1000))
             self.conf_slider.setValue(int(inf.default_conf * 1000))
             self.eval_check.setChecked(False)
-            self.overlay_check.setChecked(True)
-            self.overlay_history_spin.setValue(inf.overlay_history)
-            self.show_fps_check.setChecked(config.ui.show_fps_in_status)
             self.camera_index_spin.setValue(config.camera.index)
             self.camera_max_spin.setValue(config.camera.max_index)
             self.width_spin.setValue(config.camera.width)
@@ -382,9 +361,7 @@ if QtCore is not None:
             config.camera.width = self.width_spin.value()
             config.camera.height = self.height_spin.value()
             config.inference.default_conf = self.conf_spin.value()
-            config.inference.overlay_history = self.overlay_history_spin.value()
             config.inference.default_model_name = self.model_name_edit.text().strip()
-            config.ui.show_fps_in_status = self.show_fps_check.isChecked()
             config.ui.log_level = self.log_level_combo.currentText()
             self._apply_stability_from_controls(config)
             return config
@@ -493,7 +470,6 @@ if QtCore is not None:
             self.status_label.setText(
                 f"model {status.model_name} | cam {status.camera_index} | "
                 f"conf {status.confidence:.3f} | eval {'on' if status.eval_mode else 'off'} | "
-                f"overlay {'on' if status.overlay_enabled else 'off'} | "
                 f"stab {'on' if status.stability_enabled else 'off'} | "
                 f"dets {status.detection_count} | "
                 f"fps {stats.fps:.1f} | read {stats.frame_read_ms:.1f}ms | "
@@ -533,14 +509,8 @@ if QtCore is not None:
             if self.frame_thread is not None:
                 self.frame_thread.set_eval_mode(checked)
 
-        def _on_overlay_changed(self, checked: bool) -> None:
-            if self.frame_thread is not None:
-                self.frame_thread.set_overlay_enabled(checked)
-
         def _hot_config_from_controls(self) -> AppConfig:
             config = copy.deepcopy(self.config)
-            config.inference.overlay_history = self.overlay_history_spin.value()
-            config.ui.show_fps_in_status = self.show_fps_check.isChecked()
             self._apply_stability_from_controls(config)
             return config
 
@@ -550,17 +520,12 @@ if QtCore is not None:
             if errors:
                 self._show_errors(errors)
                 return
-            self.config.inference.overlay_history = config.inference.overlay_history
-            self.config.ui.show_fps_in_status = config.ui.show_fps_in_status
             self.config.stability = copy.deepcopy(config.stability)
             if self.frame_thread is not None:
                 self.frame_thread.apply_hot_config(config)
                 self.frame_thread.set_confidence(self.conf_spin.value())
                 self.frame_thread.set_eval_mode(self.eval_check.isChecked())
-                self.frame_thread.set_overlay_enabled(self.overlay_check.isChecked())
-            logger.info(
-                "Applied hot config (confidence, eval, overlay, trail, FPS, stability)."
-            )
+            logger.info("Applied hot config (confidence, eval, stability).")
 
         def _save_config(self) -> None:
             config = self._config_from_controls()
@@ -706,7 +671,7 @@ def _stylesheet() -> str:
 
 def _print_missing_qt() -> int:
     print("[ERROR] PySide6 is not installed.")
-    print('[INFO] Install GUI dependencies with: pip install -e ".[gui]"')
+    print("[INFO] Install dependencies with: pip install -e .")
     return 1
 
 

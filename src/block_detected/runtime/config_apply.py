@@ -63,10 +63,8 @@ def apply_hot_runtime_settings(
     *,
     confidence: float,
     eval_mode: bool,
-    overlay_enabled: bool,
 ) -> None:
     """Sync AppConfig and runtime state fields that do not require camera restart."""
     engine.apply_hot_config(config)
     engine.state.confidence = confidence
     engine.state.eval_mode = eval_mode
-    engine.state.overlay_enabled = overlay_enabled

@@ -26,7 +26,6 @@ class _FakeDetector:
 
 def test_apply_hot_runtime_settings_updates_state_and_config():
     config = AppConfig.defaults()
-    config.inference.overlay_history = 7
     engine = WebcamEngine(config, [], _FakeDetector())
 
     apply_hot_runtime_settings(
@@ -34,14 +33,10 @@ def test_apply_hot_runtime_settings_updates_state_and_config():
         config,
         confidence=0.42,
         eval_mode=True,
-        overlay_enabled=False,
     )
 
-    assert engine.config.inference.overlay_history == 7
     assert engine.state.confidence == 0.42
     assert engine.state.eval_mode is True
-    assert engine.state.overlay_enabled is False
-    assert engine.state.box_history.maxlen == 7
 
 
 def test_needs_runtime_restart_for_camera_and_model():

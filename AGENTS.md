@@ -5,7 +5,7 @@ Read this before editing. The package uses **layered folders** plus a **runtime*
 ## Layer diagram
 
 ```
-apps/          thin orchestration (webcam loop, optional GUI)
+apps/          thin orchestration (GUI entry)
 runtime/       engine, typed config (TOML), metrics, logging, detector loader
 config/        legacy path constants + module defaults (re-export targets)
 core/          domain types + protocols — no OpenCV/YOLO
@@ -29,11 +29,10 @@ ui/            keyboard/mouse callbacks
 
 ```
 src/block_detected/
-├── apps/webcam/app.py          # entry: load config, run engine loop, wire OpenCV window
-├── apps/gui/app.py             # optional PySide6 GUI, lazy import, no hard runtime dependency
+├── apps/gui/app.py             # PySide6 GUI — primary entry (main.py)
 ├── runtime/
 │   ├── engine.py               # WebcamEngine — read/infer/render/metrics
-│   ├── state.py                # RuntimeState (conf, overlay, eval, history)
+│   ├── state.py                # RuntimeState (conf, eval)
 │   ├── metrics.py              # FPS + stage latencies
 │   ├── config_schema.py        # AppConfig dataclasses + validate + hot/restart keys
 │   ├── config_store.py         # load/save TOML (block_detected.toml)
@@ -65,12 +64,11 @@ Repo root: `main.py`, optional `block_detected.toml`, `models/*.pt`
 
 | Goal | Edit here |
 |------|-----------|
-| Webcam loop / window wiring only | `apps/webcam/app.py` |
 | Desktop GUI controls / preview | `apps/gui/app.py` |
 | Frame read → infer → render pipeline | `runtime/engine.py` |
 | Post-inference filters / stability | `runtime/postprocess.py`, `vision/geometry.py` |
 | FPS / latency metrics | `runtime/metrics.py` |
-| Session state (conf, overlay, eval) | `runtime/state.py` |
+| Session state (conf, eval) | `runtime/state.py` |
 | Typed config schema + validation | `runtime/config_schema.py` |
 | Load/save TOML config | `runtime/config_store.py` |
 | Hot-reload vs restart keys | `runtime/config_schema.py` → `RESTART_*_KEYS` |
@@ -82,20 +80,21 @@ Repo root: `main.py`, optional `block_detected.toml`, `models/*.pt`
 | Key bindings | `ui/input/handlers.py` |
 | Camera open/switch | `io/camera/capture.py` |
 | Filesystem paths | `config/paths.py` |
-| GUI console script / optional deps | `pyproject.toml` → `[project.optional-dependencies]`, `[project.scripts]` |
+| Console script / dependencies | `pyproject.toml` → `[project.dependencies]`, `[project.scripts]` |
 
 ## Config
 
 - Defaults: `AppConfig.defaults()` in `runtime/config_schema.py`
 - Optional file: `block_detected.toml` at repo root (auto-loaded)
-- Hot-reload at runtime: confidence, overlay, eval mode, overlay history, status FPS flag, `stability.*`
+- Hot-reload at runtime: confidence, eval mode, `stability.*`
 - Requires restart: camera index/resolution, default model file (switch model in-app via `v`)
 
 ## GUI
 
-- PySide6 is optional: install with `pip install -e ".[gui]"` or `pip install -e ".[dev,gui]"`.
-- Keep PySide6 imports lazy/contained in `apps/gui/app.py` so tests and CLI webcam work without GUI deps.
-- GUI should talk to `runtime.WebcamEngine`; do not duplicate YOLO/camera logic in UI code.
+- Primary entry: `python main.py` → `apps/gui/app.py`.
+- PySide6 is a required dependency (`pip install -e .`).
+- Keep PySide6 imports lazy in `apps/gui/app.py` for import-time safety in tests.
+- GUI talks to `runtime.WebcamEngine`; do not duplicate YOLO/camera logic in UI code.
 - **Log buffer:** GUI reads logs via `get_log_lines()` (thread-safe snapshot). Do **not** read `LogBufferHandler._records` or any `.records` attribute from UI code.
 - **Worker shutdown:** Do not set `frame_thread = None` until the `QThread` has finished (`finished` signal or successful `wait()`). If `wait()` times out, keep Start disabled and show stop-pending status. Use run generation guards so stale `frame_ready` / `error` signals do not update the window.
 - **OpenCV windows:** GUI worker calls `engine.shutdown(destroy_cv_windows=False)` — never `cv2.destroyAllWindows()` from GUI code.
@@ -104,18 +103,16 @@ Repo root: `main.py`, optional `block_detected.toml`, `models/*.pt`
 
 ```bash
 pip install -e ".[dev]"
-pip install -e ".[dev,gui]"  # optional GUI
 python main.py
 python -m block_detected
+block-detected
 python -m pytest tests/ -q
-block-detected-webcam
-block-detected-gui
 ```
 
 ## GSD
 
 - Phase 3: runtime engine + typed config (implemented)
-- Phase 4: optional PySide6 GUI (implemented)
+- Phase 4: PySide6 GUI (implemented; default entry)
 - Phase 5: GUI/runtime hardening (implemented)
 - Phase 6: detection post-processing + temporal stability (in progress)
 

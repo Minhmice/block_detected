@@ -1,5 +1,6 @@
-# YOLO webcam detection (mirrors pyproject.toml)
-# Python 3.10+ recommended (tested on 3.13)
+# Mirrors pyproject.toml — prefer: pip install -e .
+# Python 3.10+
 
 ultralytics>=8.4.0
 opencv-python>=4.8.0
+PySide6>=6.7

@@ -13,7 +13,6 @@ from block_detected.config.inference import (
     DEFAULT_CONF,
     DEFAULT_MODEL_NAME,
     EVAL_CONF,
-    OVERLAY_HISTORY,
 )
 from block_detected.config.paths import MODELS_DIR, PROJECT_ROOT
 from block_detected.config.ui import (
@@ -38,7 +37,6 @@ __all__ = [
     "CONF_MAX",
     "CONF_STEP",
     "DEFAULT_CONF",
-    "OVERLAY_HISTORY",
     "EVAL_CONF",
     "BUTTON_MARGIN",
     "BUTTON_HEIGHT",

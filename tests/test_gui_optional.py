@@ -1,7 +1,7 @@
-"""GUI package should stay optional for CLI/test users."""
+"""GUI entry should be importable (PySide6 required at runtime)."""
 
 
-def test_gui_module_imports_without_requiring_pyside():
+def test_gui_main_is_callable():
     from block_detected.apps.gui import app
 
     assert callable(app.main)

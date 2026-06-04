@@ -10,7 +10,6 @@ from block_detected.config.inference import (
     DEFAULT_CONF,
     DEFAULT_MODEL_NAME,
     EVAL_CONF,
-    OVERLAY_HISTORY,
 )
 from block_detected.config.ui import (
     BUTTON_HEIGHT,
@@ -43,7 +42,6 @@ class InferenceConfig:
     conf_step: float = CONF_STEP
     default_conf: float = DEFAULT_CONF
     eval_conf: float = EVAL_CONF
-    overlay_history: int = OVERLAY_HISTORY
 
 
 @dataclass
@@ -78,7 +76,6 @@ class UiDebugConfig:
     key_arrow_up: int = KEY_ARROW_UP
     key_arrow_down: int = KEY_ARROW_DOWN
     log_level: str = "INFO"
-    show_fps_in_status: bool = True
 
 
 @dataclass
@@ -156,7 +153,6 @@ class AppConfig:
                 require_number("inference.eval_conf", inf.eval_conf),
             )
         )
-        require_int("inference.overlay_history", inf.overlay_history)
         require_str("inference.default_model_name", inf.default_model_name)
 
         camera_fields_valid = all(
@@ -192,14 +188,11 @@ class AppConfig:
         require_int("ui.key_arrow_up", self.ui.key_arrow_up)
         require_int("ui.key_arrow_down", self.ui.key_arrow_down)
         log_level_valid = require_str("ui.log_level", self.ui.log_level)
-        require_bool("ui.show_fps_in_status", self.ui.show_fps_in_status)
 
         if conf_fields_valid and not inf.conf_min <= inf.default_conf <= inf.conf_max:
             errors.append("inference.default_conf must be within [conf_min, conf_max]")
         if conf_fields_valid and (inf.eval_conf < inf.conf_min or inf.eval_conf > inf.conf_max):
             errors.append("inference.eval_conf must be within [conf_min, conf_max]")
-        if isinstance(inf.overlay_history, int) and not isinstance(inf.overlay_history, bool) and inf.overlay_history < 1:
-            errors.append("inference.overlay_history must be >= 1")
         if camera_fields_valid and (self.camera.width < 1 or self.camera.height < 1):
             errors.append("camera width/height must be positive")
         if log_level_valid and self.ui.log_level.upper() not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:

@@ -1,13 +1,8 @@
 """On-screen UI widgets (status bar, buttons)."""
 
-from typing import TYPE_CHECKING
-
 import cv2
 
 from block_detected.config.ui import BUTTON_HEIGHT, BUTTON_MARGIN, BUTTON_PAD_X
-
-if TYPE_CHECKING:
-    from block_detected.core.domain import InferenceStats
 
 
 def draw_model_switch_button(
@@ -47,24 +42,12 @@ def draw_status_bar(
     eval_mode: bool,
     conf: float,
     eval_conf: float,
-    overlay_enabled: bool,
     model_name: str,
-    stats: "InferenceStats | None" = None,
 ) -> None:
     if eval_mode:
         status = f"mode: eval | conf: {eval_conf:.3f} | model: {model_name}"
     else:
-        status = (
-            f"mode: normal | conf: {conf:.3f} | overlay: {'on' if overlay_enabled else 'off'}"
-            f" | model: {model_name}"
-        )
-    if stats is not None:
-        status += (
-            f" | fps: {stats.fps:.1f}"
-            f" | read: {stats.frame_read_ms:.1f}ms"
-            f" | infer: {stats.inference_ms:.1f}ms"
-            f" | render: {stats.render_ms:.1f}ms"
-        )
+        status = f"mode: normal | conf: {conf:.3f} | model: {model_name}"
     cv2.putText(
         frame,
         status,

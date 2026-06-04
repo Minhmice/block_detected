@@ -22,7 +22,6 @@ from block_detected.runtime.postprocess import DetectionPostProcessor
 from block_detected.runtime.state import RuntimeState
 from block_detected.vision.drawing.detections import draw_detection_boxes
 from block_detected.vision.drawing.eval import draw_eval_boxes
-from block_detected.vision.drawing.overlays import draw_overlay_history
 from block_detected.vision.drawing.widgets import draw_model_switch_button, draw_status_bar
 
 logger = logging.getLogger(__name__)
@@ -50,7 +49,6 @@ class WebcamEngine:
             camera_index=config.camera.index,
             model_index=default_model_index(model_paths, config.inference.default_model_name),
         )
-        self.state.reset_overlay_history(config.inference.overlay_history)
         self.metrics = RuntimeMetrics()
         self._postprocess = DetectionPostProcessor(config.stability)
         self._cap: cv2.VideoCapture | None = None
@@ -130,7 +128,6 @@ class WebcamEngine:
             previous_detector = self._detector
             self._detector = next_detector
             self.state.model_index = next_index
-            self.state.box_history.clear()
             self._postprocess.reset()
             try:
                 previous_detector.close()
@@ -214,7 +211,6 @@ class WebcamEngine:
         )
         status = RuntimeStatus(
             eval_mode=self.state.eval_mode,
-            overlay_enabled=self.state.overlay_enabled,
             confidence=self.state.confidence,
             model_name=self._detector.model_name,
             camera_index=self.state.camera_index,
@@ -237,42 +233,24 @@ class WebcamEngine:
                 )
             else:
                 draw_eval_boxes(annotated, frame_result.raw)
-            self.state.box_history.clear()
         elif stability_on:
             annotated = frame.copy()
             draw_detection_boxes(annotated, frame_result.detections)
-            if self.state.overlay_enabled:
-                from block_detected.detection.boxes import boxes_from_detections
-
-                self.state.box_history.append(boxes_from_detections(frame_result.detections))
-                draw_overlay_history(annotated, list(self.state.box_history))
-            else:
-                self.state.box_history.clear()
         else:
             annotated = frame_result.raw.plot()
-            if self.state.overlay_enabled:
-                from block_detected.detection.boxes import boxes_from_detections
-
-                self.state.box_history.append(boxes_from_detections(frame_result.detections))
-                draw_overlay_history(annotated, list(self.state.box_history))
-            else:
-                self.state.box_history.clear()
 
         draw_status_bar(
             annotated,
             eval_mode=self.state.eval_mode,
             conf=self.state.confidence,
             eval_conf=inf.eval_conf,
-            overlay_enabled=self.state.overlay_enabled,
             model_name=self._detector.model_name,
-            stats=self.metrics.last_stats if self.config.ui.show_fps_in_status else None,
         )
         return annotated
 
     def apply_hot_config(self, config: AppConfig) -> None:
         """Apply fields that do not require camera/detector restart."""
         self.config = config
-        self.state.set_overlay_maxlen(config.inference.overlay_history)
         self._postprocess.update_config(config.stability)
 
     def shutdown(self, *, destroy_cv_windows: bool = True) -> None:

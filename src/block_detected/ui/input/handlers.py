@@ -60,11 +60,6 @@ def handle_key(
             logger.info("Confidence decreased to: %.3f", runtime_state.confidence)
         return True
 
-    if key == ord("m"):
-        runtime_state.overlay_enabled = not runtime_state.overlay_enabled
-        logger.info("Multi-overlay: %s", "ON" if runtime_state.overlay_enabled else "OFF")
-        return True
-
     if key == ord("q"):
         logger.info("Quit requested by user (q key).")
         return False
