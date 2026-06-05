@@ -341,7 +341,7 @@
             </div>
           </div>
           <!-- Bottom Telemetry Panel -->
-          <div class="h-48 grid grid-cols-2 gap-unit shrink-0">
+          <div class="h-48 grid grid-cols-3 gap-unit shrink-0">
             <!-- Classification Card -->
             <div
               class="glass-panel rounded p-container-padding flex flex-col justify-between"
@@ -416,6 +416,27 @@
                   <div class="text-on-surface-variant">pose_mm:</div>
                   <div class="text-on-surface text-right z-offset">-12.5</div>
                 </div>
+              </div>
+            </div>
+            <!-- System Log -->
+            <div
+              class="glass-panel rounded p-container-padding flex flex-col overflow-hidden"
+            >
+              <div
+                class="font-label-caps text-label-caps text-on-surface-variant mb-2 flex justify-between"
+              >
+                <span>SYSTEM LOG</span>
+                <span class="text-on-surface-variant flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                  LIVE
+                </span>
+              </div>
+              <div class="flex-1 overflow-y-auto font-mono text-[10px] text-on-surface-variant space-y-1 flex flex-col">
+                <div class="text-on-surface-variant">[14:31:59.998] System start...</div>
+                <div class="text-secondary">[14:32:00.100] Camera 0 acquired.</div>
+                <div class="text-primary">[14:32:00.850] Initializing primary detection...</div>
+                <div class="text-on-surface">[14:32:01.005] Model loaded successfully.</div>
+                <div class="text-on-surface">[14:32:05.120] Found BLOCK_01 (conf: 0.98)</div>
               </div>
             </div>
           </div>
@@ -805,52 +826,121 @@
                   >expand_more</span
                 >
               </summary>
-              <div class="p-3 bg-surface-container-lowest">
-                <div class="grid grid-cols-4 gap-2">
+              <div class="p-3 bg-surface-container-lowest space-y-3">
+                <!-- Visual Map & Presets -->
+                <div class="flex gap-3 items-center">
+                  <!-- Mini Preview Box -->
+                  <div class="w-32 h-[72px] bg-surface-dim border border-outline-variant rounded relative flex-shrink-0 overflow-hidden">
+                    <!-- Full Frame Grid lines (subtle) -->
+                    <div class="absolute inset-0 grid grid-cols-3 grid-rows-3 opacity-10 pointer-events-none">
+                      <div class="border-b border-r border-outline"></div>
+                      <div class="border-b border-r border-outline"></div>
+                      <div class="border-b border-outline"></div>
+                      <div class="border-b border-r border-outline"></div>
+                      <div class="border-b border-r border-outline"></div>
+                      <div class="border-b border-outline"></div>
+                      <div class="border-r border-outline"></div>
+                      <div class="border-r border-outline"></div>
+                      <div></div>
+                    </div>
+                    <!-- ROI Highlight Box -->
+                    <div id="roi-preview-box" class="absolute bg-primary/20 border border-primary transition-all duration-150 ease-out" style="left: 0%; top: 0%; width: 100%; height: 100%;">
+                      <div class="absolute -top-0.5 -left-0.5 w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <div class="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-primary rounded-full"></div>
+                    </div>
+                  </div>
+                  
+                  <!-- Quick Presets -->
+                  <div class="flex-1 grid grid-cols-2 gap-1.5 text-[9px] font-label-caps font-bold">
+                    <button type="button" onclick="setROIPreset('full')" class="bg-surface-variant hover:bg-surface-bright text-on-surface border border-outline-variant hover:border-primary rounded py-1 transition-all">FULL FRAME</button>
+                    <button type="button" onclick="setROIPreset('center')" class="bg-surface-variant hover:bg-surface-bright text-on-surface border border-outline-variant hover:border-primary rounded py-1 transition-all">CENTER 50%</button>
+                    <button type="button" onclick="setROIPreset('top')" class="bg-surface-variant hover:bg-surface-bright text-on-surface border border-outline-variant hover:border-primary rounded py-1 transition-all">TOP HALF</button>
+                    <button type="button" onclick="setROIPreset('bottom')" class="bg-surface-variant hover:bg-surface-bright text-on-surface border border-outline-variant hover:border-primary rounded py-1 transition-all">BOTTOM HALF</button>
+                  </div>
+                </div>
+
+                <!-- Sliders -->
+                <div class="space-y-2">
                   <!-- X -->
-                  <div class="flex flex-col gap-1">
-                    <label
-                      class="font-label-caps text-[10px] text-on-surface-variant text-center"
-                      >X</label
-                    >
+                  <div class="flex items-center gap-3">
+                    <span class="font-label-caps text-[10px] text-on-surface-variant w-4">X</span>
                     <input
-                      class="w-full bg-surface-dim border border-outline-variant rounded px-1 py-1 text-center font-data-md text-data-md text-primary focus:border-primary focus:outline-none"
+                      id="roi-x-slider"
+                      class="flex-1 h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary"
+                      max="1280"
+                      min="0"
+                      step="10"
+                      type="range"
+                      value="0"
+                    />
+                    <input
+                      id="roi-x-num"
+                      class="w-16 bg-surface-dim border border-outline-variant rounded px-1 py-0.5 text-right font-data-md text-data-md text-primary focus:border-primary focus:outline-none"
+                      max="1280"
+                      min="0"
                       type="number"
                       value="0"
                     />
                   </div>
                   <!-- Y -->
-                  <div class="flex flex-col gap-1">
-                    <label
-                      class="font-label-caps text-[10px] text-on-surface-variant text-center"
-                      >Y</label
-                    >
+                  <div class="flex items-center gap-3">
+                    <span class="font-label-caps text-[10px] text-on-surface-variant w-4">Y</span>
                     <input
-                      class="w-full bg-surface-dim border border-outline-variant rounded px-1 py-1 text-center font-data-md text-data-md text-primary focus:border-primary focus:outline-none"
+                      id="roi-y-slider"
+                      class="flex-1 h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary"
+                      max="720"
+                      min="0"
+                      step="10"
+                      type="range"
+                      value="0"
+                    />
+                    <input
+                      id="roi-y-num"
+                      class="w-16 bg-surface-dim border border-outline-variant rounded px-1 py-0.5 text-right font-data-md text-data-md text-primary focus:border-primary focus:outline-none"
+                      max="720"
+                      min="0"
                       type="number"
                       value="0"
                     />
                   </div>
-                  <!-- W -->
-                  <div class="flex flex-col gap-1">
-                    <label
-                      class="font-label-caps text-[10px] text-on-surface-variant text-center"
-                      >WIDTH</label
-                    >
+                  <!-- Width -->
+                  <div class="flex items-center gap-3">
+                    <span class="font-label-caps text-[10px] text-on-surface-variant w-4">W</span>
                     <input
-                      class="w-full bg-surface-dim border border-outline-variant rounded px-1 py-1 text-center font-data-md text-data-md text-primary focus:border-primary focus:outline-none"
+                      id="roi-w-slider"
+                      class="flex-1 h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary"
+                      max="1280"
+                      min="10"
+                      step="10"
+                      type="range"
+                      value="1280"
+                    />
+                    <input
+                      id="roi-w-num"
+                      class="w-16 bg-surface-dim border border-outline-variant rounded px-1 py-0.5 text-right font-data-md text-data-md text-primary focus:border-primary focus:outline-none"
+                      max="1280"
+                      min="10"
                       type="number"
                       value="1280"
                     />
                   </div>
-                  <!-- H -->
-                  <div class="flex flex-col gap-1">
-                    <label
-                      class="font-label-caps text-[10px] text-on-surface-variant text-center"
-                      >HEIGHT</label
-                    >
+                  <!-- Height -->
+                  <div class="flex items-center gap-3">
+                    <span class="font-label-caps text-[10px] text-on-surface-variant w-4">H</span>
                     <input
-                      class="w-full bg-surface-dim border border-outline-variant rounded px-1 py-1 text-center font-data-md text-data-md text-primary focus:border-primary focus:outline-none"
+                      id="roi-h-slider"
+                      class="flex-1 h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary"
+                      max="720"
+                      min="10"
+                      step="10"
+                      type="range"
+                      value="720"
+                    />
+                    <input
+                      id="roi-h-num"
+                      class="w-16 bg-surface-dim border border-outline-variant rounded px-1 py-0.5 text-right font-data-md text-data-md text-primary focus:border-primary focus:outline-none"
+                      max="720"
+                      min="10"
                       type="number"
                       value="720"
                     />
@@ -863,15 +953,56 @@
           <div
             class="p-3 border-t border-outline-variant bg-surface-container-lowest shrink-0 flex flex-col gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.2)]"
           >
-            <div class="relative">
+            <div class="relative" id="config-dropdown-container">
+              <!-- Custom Trigger Button -->
+              <button
+                id="config-dropdown-btn"
+                type="button"
+                class="w-full bg-surface-dim border border-outline-variant hover:border-primary/60 rounded px-3 py-2 text-on-surface font-label-caps text-[11px] font-bold flex justify-between items-center focus:outline-none transition-all duration-200 cursor-pointer select-none"
+              >
+                <span id="config-dropdown-selected">DEFAULT CONFIG</span>
+                <span id="config-dropdown-arrow" class="material-symbols-outlined text-outline text-[18px] transition-transform duration-200 pointer-events-none">expand_more</span>
+              </button>
+
+              <!-- Hidden Select for compatibility -->
               <select
-                class="w-full bg-surface-dim border border-outline-variant rounded px-3 py-2 text-on-surface font-label-caps text-[11px] font-bold appearance-none focus:outline-none focus:border-primary cursor-pointer"
+                id="config-select-hidden"
+                class="hidden"
               >
                 <option value="default">DEFAULT CONFIG</option>
                 <option value="high_contrast">HIGH CONTRAST</option>
                 <option value="low_light">LOW LIGHT</option>
               </select>
-              <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">expand_more</span>
+
+              <!-- Custom Dropdown Menu -->
+              <div
+                id="config-dropdown-menu"
+                class="absolute z-50 left-0 right-0 bottom-full mb-1 bg-surface-container border border-outline-variant rounded shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.5),_0_0_15px_rgba(76,215,246,0.05)] opacity-0 scale-95 pointer-events-none transition-all duration-200 ease-out origin-bottom overflow-hidden"
+              >
+                <div class="py-1">
+                  <div
+                    data-value="default"
+                    class="config-dropdown-item px-3 py-2 text-on-surface font-label-caps text-[11px] font-bold hover:bg-surface-variant hover:text-primary cursor-pointer transition-colors duration-150 flex items-center justify-between"
+                  >
+                    <span>DEFAULT CONFIG</span>
+                    <span class="material-symbols-outlined text-primary text-[14px] check-mark">check</span>
+                  </div>
+                  <div
+                    data-value="high_contrast"
+                    class="config-dropdown-item px-3 py-2 text-on-surface font-label-caps text-[11px] font-bold hover:bg-surface-variant hover:text-primary cursor-pointer transition-colors duration-150 flex items-center justify-between"
+                  >
+                    <span>HIGH CONTRAST</span>
+                    <span class="material-symbols-outlined text-primary text-[14px] check-mark hidden">check</span>
+                  </div>
+                  <div
+                    data-value="low_light"
+                    class="config-dropdown-item px-3 py-2 text-on-surface font-label-caps text-[11px] font-bold hover:bg-surface-variant hover:text-primary cursor-pointer transition-colors duration-150 flex items-center justify-between"
+                  >
+                    <span>LOW LIGHT</span>
+                    <span class="material-symbols-outlined text-primary text-[14px] check-mark hidden">check</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <button
               class="w-full bg-primary text-on-primary py-2 rounded font-label-caps text-label-caps font-bold hover:bg-opacity-90 transition-colors shadow-[0_0_10px_rgba(76,215,246,0.1)]"
@@ -901,6 +1032,142 @@
         document.getElementById('btn-stop').classList.toggle('translate-y-full');
         document.getElementById('btn-stop').classList.toggle('opacity-0');
       }
+
+      // Custom Config Dropdown Logic
+      const dropdownBtn = document.getElementById('config-dropdown-btn');
+      const dropdownMenu = document.getElementById('config-dropdown-menu');
+      const dropdownArrow = document.getElementById('config-dropdown-arrow');
+      const dropdownSelected = document.getElementById('config-dropdown-selected');
+      const hiddenSelect = document.getElementById('config-select-hidden');
+      const dropdownItems = document.querySelectorAll('.config-dropdown-item');
+
+      dropdownBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = !dropdownMenu.classList.contains('opacity-0');
+        if (isOpen) {
+          closeDropdown();
+        } else {
+          openDropdown();
+        }
+      });
+
+      function openDropdown() {
+        dropdownMenu.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        dropdownMenu.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
+        dropdownArrow.classList.add('rotate-180');
+        dropdownBtn.classList.add('border-primary');
+        dropdownBtn.classList.add('shadow-[0_0_12px_rgba(76,215,246,0.15)]');
+      }
+
+      function closeDropdown() {
+        dropdownMenu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        dropdownMenu.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
+        dropdownArrow.classList.remove('rotate-180');
+        dropdownBtn.classList.remove('border-primary');
+        dropdownBtn.classList.remove('shadow-[0_0_12px_rgba(76,215,246,0.15)]');
+      }
+
+      document.addEventListener('click', function(e) {
+        if (!dropdownMenu.contains(e.target) && e.target !== dropdownBtn) {
+          closeDropdown();
+        }
+      });
+
+      dropdownItems.forEach(item => {
+        item.addEventListener('click', function() {
+          const val = this.getAttribute('data-value');
+          const text = this.querySelector('span').textContent;
+          
+          // Update selected text
+          dropdownSelected.textContent = text;
+          
+          // Update hidden select
+          hiddenSelect.value = val;
+          hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          
+          // Update checkmarks
+          dropdownItems.forEach(i => {
+            const check = i.querySelector('.check-mark');
+            if (i === item) {
+              check.classList.remove('hidden');
+            } else {
+              check.classList.add('hidden');
+            }
+          });
+          
+          closeDropdown();
+        });
+      });
+
+      // ROI Selection Logic
+      function updateROIPreview() {
+        const xVal = parseFloat(document.getElementById('roi-x-num').value) || 0;
+        const yVal = parseFloat(document.getElementById('roi-y-num').value) || 0;
+        const wVal = parseFloat(document.getElementById('roi-w-num').value) || 1280;
+        const hVal = parseFloat(document.getElementById('roi-h-num').value) || 720;
+
+        const previewBox = document.getElementById('roi-preview-box');
+        if (previewBox) {
+          const leftPct = (xVal / 1280) * 100;
+          const topPct = (yVal / 720) * 100;
+          const widthPct = (wVal / 1280) * 100;
+          const heightPct = (hVal / 720) * 100;
+
+          previewBox.style.left = `${leftPct}%`;
+          previewBox.style.top = `${topPct}%`;
+          previewBox.style.width = `${widthPct}%`;
+          previewBox.style.height = `${heightPct}%`;
+        }
+      }
+
+      // Hook inputs to update preview on input/change
+      const roiInputs = ['roi-x-slider', 'roi-x-num', 'roi-y-slider', 'roi-y-num', 'roi-w-slider', 'roi-w-num', 'roi-h-slider', 'roi-h-num'];
+      roiInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', updateROIPreview);
+        }
+      });
+
+      // Quick presets handler
+      function setROIPreset(type) {
+        const xSlider = document.getElementById('roi-x-slider');
+        const xNum = document.getElementById('roi-x-num');
+        const ySlider = document.getElementById('roi-y-slider');
+        const yNum = document.getElementById('roi-y-num');
+        const wSlider = document.getElementById('roi-w-slider');
+        const wNum = document.getElementById('roi-w-num');
+        const hSlider = document.getElementById('roi-h-slider');
+        const hNum = document.getElementById('roi-h-num');
+
+        if (type === 'full') {
+          xNum.value = xSlider.value = 0;
+          yNum.value = ySlider.value = 0;
+          wNum.value = wSlider.value = 1280;
+          hNum.value = hSlider.value = 720;
+        } else if (type === 'center') {
+          xNum.value = xSlider.value = 320;
+          yNum.value = ySlider.value = 180;
+          wNum.value = wSlider.value = 640;
+          hNum.value = hSlider.value = 360;
+        } else if (type === 'top') {
+          xNum.value = xSlider.value = 0;
+          yNum.value = ySlider.value = 0;
+          wNum.value = wSlider.value = 1280;
+          hNum.value = hSlider.value = 360;
+        } else if (type === 'bottom') {
+          xNum.value = xSlider.value = 0;
+          yNum.value = ySlider.value = 360;
+          wNum.value = wSlider.value = 1280;
+          hNum.value = hSlider.value = 360;
+        }
+
+        updateROIPreview();
+      }
+
+      // Initialize preview on load
+      document.addEventListener('DOMContentLoaded', updateROIPreview);
+      updateROIPreview();
 
       // Sync range and number inputs
       document.addEventListener('input', function(e) {
