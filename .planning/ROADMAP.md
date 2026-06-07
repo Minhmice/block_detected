@@ -8,7 +8,7 @@ Layered computer-vision Python package: webcam detection today; tracking and alt
 
 - [x] **Phase 1: Package foundation** - Initial modular refactor (webcam working)
 - [x] **Phase 2: CV layered folder structure** - Scalable folder layout, tests, docs
-- [ ] **Phase 3–6:** Runtime, PySide6 GUI, hardening, postprocess (implemented — plan/verify)
+- [x] **Phase 3–6:** Runtime, PySide6 GUI, hardening, postprocess (verified — 76 tests)
 - [ ] **Phase 7: Web telemetry API** - MJPEG/WS stream + metrics + log tail (unblock Stitch UI)
 - [ ] **Phase 8: YOLO inference params** - imgsz, IoU, max_det, device + hot-reload API
 - [ ] **Phase 9: Stability/reject spec** - margin, unknown class, HTML-aligned defaults
@@ -55,9 +55,9 @@ Plans:
 | 1. Package foundation | 1/1 | Complete | 2026-06-02 |
 | 2. CV layered structure | 3/3 | Complete | 2026-06-02 |
 | 3. Runtime engine + config | 2/2 | Complete | 2026-06-07 |
-| 4. Desktop GUI | 0/2 | Planned | — |
-| 5. GUI hardening / UAT | 0/2 | Planned | — |
-| 6. Postprocess + stability | 0/2 | Planned | — |
+| 4. Desktop GUI | 2/2 | Complete | 2026-06-07 |
+| 5. GUI hardening / UAT | 2/2 | Complete | 2026-06-07 |
+| 6. Postprocess + stability | 2/2 | Complete | 2026-06-07 |
 
 ### Phase 3: Runtime engine, typed config, and detector abstraction for GUI prep
 
@@ -91,8 +91,8 @@ Plans:
 **Plans:** 2 plans (retroactive verify + close gaps)
 
 Plans:
-- [ ] 04-01-PLAN.md — GUI control wiring, entry point, and log panel tests
-- [ ] 04-02-PLAN.md — 04-VERIFICATION.md + manual preview smoke checkpoint
+- [x] 04-01-PLAN.md — GUI control wiring, entry point, and log panel tests
+- [x] 04-02-PLAN.md — 04-VERIFICATION.md + manual preview smoke checkpoint
 
 ### Phase 5: GUI and runtime hardening for production UAT
 
@@ -108,8 +108,8 @@ Plans:
 **Plans:** 2 plans (retroactive verify + close gaps)
 
 Plans:
-- [ ] 05-01-PLAN.md — test_gui_hardening: generation guards, stop-pending, restart hints
-- [ ] 05-02-PLAN.md — 05-VERIFICATION.md, UAT doc alignment, production UAT checkpoint
+- [x] 05-01-PLAN.md — test_gui_hardening: generation guards, stop-pending, restart hints
+- [x] 05-02-PLAN.md — 05-VERIFICATION.md, UAT doc alignment, production UAT checkpoint
 
 ### Phase 6: Detection post-processing, reject rules, and temporal stability
 
@@ -125,8 +125,8 @@ Plans:
 **Plans:** 2 plans (retroactive verify + close gaps)
 
 Plans:
-- [ ] 06-01-PLAN.md — update_config + engine postprocess integration tests
-- [ ] 06-02-PLAN.md — 06-VERIFICATION.md finalize + optional manual stability UAT
+- [x] 06-01-PLAN.md — update_config + engine postprocess integration tests
+- [x] 06-02-PLAN.md — 06-VERIFICATION.md finalize + optional manual stability UAT
 
 ### Phase 7: Web telemetry API and frame streaming for Stitch console
 
