@@ -8,6 +8,15 @@ Layered computer-vision Python package: webcam detection today; tracking and alt
 
 - [x] **Phase 1: Package foundation** - Initial modular refactor (webcam working)
 - [x] **Phase 2: CV layered folder structure** - Scalable folder layout, tests, docs
+- [ ] **Phase 3–6:** Runtime, PySide6 GUI, hardening, postprocess (implemented — plan/verify)
+- [ ] **Phase 7: Web telemetry API** - MJPEG/WS stream + metrics + log tail (unblock Stitch UI)
+- [ ] **Phase 8: YOLO inference params** - imgsz, IoU, max_det, device + hot-reload API
+- [ ] **Phase 9: Stability/reject spec** - margin, unknown class, HTML-aligned defaults
+- [ ] **Phase 10: Camera & viewport** - source enum, fps/exposure/WB, coordDebug mapping
+- [ ] **Phase 11: ROI & preprocess controls** - ROI crop stage + contrast/brightness/saturation
+- [ ] **Phase 12: Classical CV pipeline** - blur/canny/contours/warp + overlay toggles
+- [ ] **Phase 13: Primary target telemetry** - tracker FSM + kinematics JSON for bottom panel
+- [ ] **Phase 14: Config profiles** - named profile CRUD + web config API
 
 ## Phase Details
 
@@ -45,16 +54,25 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Package foundation | 1/1 | Complete | 2026-06-02 |
 | 2. CV layered structure | 3/3 | Complete | 2026-06-02 |
+| 3. Runtime engine + config | 0/2 | Planned | — |
 
 ### Phase 3: Runtime engine, typed config, and detector abstraction for GUI prep
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Deliver `WebcamEngine` runtime loop (read → infer → postprocess → render → metrics), typed `AppConfig` with TOML load/save/validate, `DetectorBackend` protocol with YOLO loader, and hot-reload vs restart key classification — no GUI code; Phase 4 consumes engine only.
+
+**Requirements**: REQ-02, REQ-04
 **Depends on:** Phase 2
-**Plans:** 0 plans
+**Success Criteria:**
+  1. `WebcamEngine.process_frame()` runs full loop; mocked tests pass without camera or `.pt` weights
+  2. `AppConfig` defaults, TOML round-trip, validation, and `RESTART_CAMERA_KEYS` / `RESTART_DETECTOR_KEYS` classification tested
+  3. `core/protocols.DetectorBackend` has no OpenCV/YOLO imports; engine uses `load_detector()` not direct Ultralytics
+  4. Hot config (`apply_hot_config`, `config_apply`) updates stability without camera/detector restart
+  5. `runtime/` modules (`engine`, `config_schema`, `config_store`, `metrics`, `state`) importable; pytest subset for Phase 3 passes
+**Plans:** 2 plans (retroactive verify + close gaps)
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 3 to break down)
+- [ ] 03-01-PLAN.md — Config schema, store, and hot-reload test gaps + REQ-04
+- [ ] 03-02-PLAN.md — Engine process_frame, detector abstraction tests + phase verification
 
 ### Phase 4: Desktop GUI for webcam runtime control and config
 
@@ -85,3 +103,123 @@ Plans:
 
 Plans:
 - [ ] TBD (run /gsd-plan-phase 6 to break down)
+
+### Phase 7: Web telemetry API and frame streaming for Stitch console
+
+**Goal:** HTTP/WebSocket backend exposing `WebcamEngine` to Stitch `code.html` — frame stream, engine control, metrics, log tail.
+**Ref:** `BACKEND_GAP_ANALYSIS.md` §4.2, §4.4, mapping "Top nav / Viewport / Main feed"
+**Depends on:** Phase 6
+**Success Criteria:**
+  1. MJPEG or WebSocket frame endpoint replaces Qt-only preview for web `<img>` feed
+  2. REST/WS: START/STOP, NEXT CAMERA, NEXT MODEL (wrap existing engine methods)
+  3. Telemetry JSON: FPS, aggregate latency_ms, render_ms + log tail from `get_log_lines()`
+  4. `apps/web/` or `runtime/api/` layer — no detection logic duplicated from engine
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 7 to break down)
+
+### Phase 8: YOLO inference params expansion and hot-reload API
+
+**Goal:** Extend `InferenceConfig` + `YoloDetector.predict()` for full sidebar §5.2 params; expose via web API.
+**Ref:** `BACKEND_GAP_ANALYSIS.md` §2.1–2.3
+**Depends on:** Phase 7
+**Success Criteria:**
+  1. Config: `imgsz`, `iou`, `max_det`, `device`, optional `class_names` override
+  2. `YoloDetector.predict()` passes Ultralytics params; tests with mock backend
+  3. Hot-reload conf + IoU via API (reuse `RESTART_*` / hot keys pattern)
+  4. (Optional stub) ONNX backend placeholder in `detection/onnx/`
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 8 to break down)
+
+### Phase 9: Stability and reject rules spec alignment
+
+**Goal:** Align postprocess defaults with HTML spec; add margin/unknown reject rules.
+**Ref:** `BACKEND_GAP_ANALYSIS.md` §4.1
+**Depends on:** Phase 8
+**Success Criteria:**
+  1. `RejectConfig` or extend `StabilityConfig`: `top1_top2_margin`, `unknown_if_low_margin`
+  2. Defaults: temporal_window=7, required_stable_votes=5, min_confidence=0.70
+  3. UNKNOWN class emitted when margin too low; tests in `tests/test_postprocess.py`
+  4. Web API exposes stability toggles (temporal smoothing checkbox ↔ `stability.enabled`)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 9 to break down)
+
+### Phase 10: Camera source types viewport and coordinate mapping
+
+**Goal:** Camera adapter enum + viewport/coord model for web overlay alignment.
+**Ref:** `BACKEND_GAP_ANALYSIS.md` §1.1–1.2
+**Depends on:** Phase 9
+**Success Criteria:**
+  1. `cameraSource` enum: USB index, OBS virtual, Pi/libcamera adapter stub
+  2. `fpsTarget`, `exposureLock`, `whiteBalanceLock` via OpenCV/platform props
+  3. ViewportConfig: frame vs viewport dims, `objectFit`, `coordDebug` (scale, offsetX/Y)
+  4. Coordinate map helpers in `vision/geometry.py` for frame ↔ viewport
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 10 to break down)
+
+### Phase 11: ROI crop stage and preprocessing controls
+
+**Goal:** ROI crop before infer + sidebar §5.1 color adjustments wired to engine.
+**Ref:** `BACKEND_GAP_ANALYSIS.md` §1.3 item 4, §3.2 pre-processing sliders
+**Depends on:** Phase 10
+**Success Criteria:**
+  1. `RoiConfig` (x, y, width, height) + crop stage in engine loop
+  2. Contrast/brightness/saturation applied pre-infer (OpenCV or numpy)
+  3. Web sidebar binds ROI + preprocess sliders; hot-reload where safe
+  4. Default resolution option 640×480 aligned with spec
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 11 to break down)
+
+### Phase 12: Classical CV pipeline and overlay layers
+
+**Goal:** Implement `ClassicalPipelineConfig` stages + viewport overlay toggles (Contours/Corners/Warped Face).
+**Ref:** `BACKEND_GAP_ANALYSIS.md` §3.1–3.3 (largest gap)
+**Depends on:** Phase 11
+**Success Criteria:**
+  1. `vision/preprocess/` or `runtime/classical.py`: blur → canny/adaptive/hsv → morphology
+  2. Contour find + filter (area, aspect, convex, approx) → candidate boxes
+  3. Perspective warp + face patch (`warpSize`); reject internal contours
+  4. Overlay render layers toggled by API flags; Canny/blur sidebar §5.3–5.4 wired
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 12 to break down)
+
+### Phase 13: Primary target kinematics and tracker state machine
+
+**Goal:** Domain types + tracker FSM for bottom telemetry panel (§4.1–4.2).
+**Ref:** `BACKEND_GAP_ANALYSIS.md` §4.3
+**Depends on:** Phase 12
+**Success Criteria:**
+  1. `PrimaryTarget` / `Kinematics` in `core/domain.py` emitted each frame
+  2. Tracker FSM: acquired → tracking → lost
+  3. Centroid, angle, pose fields populated for highest-confidence stable detection
+  4. WebSocket telemetry payload includes primary detect + confidence bar data
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 13 to break down)
+
+### Phase 14: Named config profiles and web config API
+
+**Goal:** Multi-profile persistence + footer §6 controls for Stitch console.
+**Ref:** `BACKEND_GAP_ANALYSIS.md` §4.4, mapping "Footer profiles"
+**Depends on:** Phase 13
+**Success Criteria:**
+  1. Profile store: load/save/delete named TOML/JSON under `profiles/` or config dir
+  2. API: list profiles, select active, SAVE CONFIG, DELETE profile
+  3. Profile switch applies hot vs restart keys correctly
+  4. Stitch `code.html` can bind dropdown + footer buttons to API (integration smoke test)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 14 to break down)
