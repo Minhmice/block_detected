@@ -11,7 +11,7 @@ from typing import Any
 import cv2
 
 from block_detected.config.paths import MODELS_DIR
-from block_detected.core.domain import FrameResult, RuntimeStatus
+from block_detected.core.domain import Detection, FrameResult, RuntimeStatus
 from block_detected.core.protocols import DetectorBackend
 from block_detected.runtime.detector_loader import load_detector
 from block_detected.detection.yolo.loader import default_model_index, discover_model_paths
@@ -32,6 +32,7 @@ class ProcessedFrame:
     annotated: Any
     button_rect: tuple[int, int, int, int]
     status: RuntimeStatus
+    detections: list[Detection]
 
 
 class WebcamEngine:
@@ -218,7 +219,12 @@ class WebcamEngine:
             detection_count=len(frame_result.detections),
             stats=stats,
         )
-        return ProcessedFrame(annotated=annotated, button_rect=button_rect, status=status)
+        return ProcessedFrame(
+            annotated=annotated,
+            button_rect=button_rect,
+            status=status,
+            detections=list(frame_result.detections),
+        )
 
     def _render(self, frame, frame_result: FrameResult) -> Any:
         inf = self.config.inference

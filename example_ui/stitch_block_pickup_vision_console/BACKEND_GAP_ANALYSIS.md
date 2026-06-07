@@ -237,3 +237,4 @@ Nhóm này gom **reject/stability config**, **performance telemetry**, và **pri
 | Metrics | `src/block_detected/runtime/metrics.py` |
 | PySide6 GUI (sẽ thay) | `src/block_detected/apps/gui/app.py` |
 | Tests (stability) | `tests/test_postprocess.py`, `tests/test_metrics.py` |
+ 

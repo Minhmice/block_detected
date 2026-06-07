@@ -1,0 +1,2 @@
+"""Terminal UI entrypoint package."""
+

@@ -2,12 +2,9 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from starlette.requests import Request
 
 from block_detected.runtime.api.service import EngineService
-
-if TYPE_CHECKING:
-    from fastapi import Request
 
 
 def get_engine_service(request: Request) -> EngineService:

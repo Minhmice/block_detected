@@ -58,7 +58,7 @@ Plans:
 | 4. Desktop GUI | 2/2 | Complete | 2026-06-07 |
 | 5. GUI hardening / UAT | 2/2 | Complete | 2026-06-07 |
 | 6. Postprocess + stability | 2/2 | Complete | 2026-06-07 |
-| 7. Web telemetry API | 2/3 | In Progress | — |
+| 7. Web telemetry API | 3/3 | Complete | 2026-06-07 |
 
 ### Phase 3: Runtime engine, typed config, and detector abstraction for GUI prep
 

@@ -6,10 +6,10 @@
     {
       "label": "__main__.py",
       "file_type": "code",
-      "source_file": "src\\block_detected\\__main__.py",
+      "source_file": "src\\block_detected\\apps\\web\\__main__.py",
       "source_location": "L1",
       "id": "main",
-      "community": 32
+      "community": 28
     },
     {
       "label": "stream_server.py",
@@ -17,7 +17,7 @@
       "source_file": "stream_server.py",
       "source_location": "L1",
       "id": "stream_server",
-      "community": 9
+      "community": 15
     },
     {
       "label": "send_json_line()",
@@ -25,7 +25,7 @@
       "source_file": "stream_server.py",
       "source_location": "L22",
       "id": "stream_server_send_json_line",
-      "community": 9
+      "community": 15
     },
     {
       "label": "recv_json_line()",
@@ -33,7 +33,7 @@
       "source_file": "stream_server.py",
       "source_location": "L26",
       "id": "stream_server_recv_json_line",
-      "community": 9
+      "community": 15
     },
     {
       "label": "require_int()",
@@ -41,7 +41,7 @@
       "source_file": "stream_server.py",
       "source_location": "L41",
       "id": "stream_server_require_int",
-      "community": 9
+      "community": 15
     },
     {
       "label": "read_actual()",
@@ -49,7 +49,7 @@
       "source_file": "stream_server.py",
       "source_location": "L51",
       "id": "stream_server_read_actual",
-      "community": 9
+      "community": 15
     },
     {
       "label": "get_local_ipv4_addresses()",
@@ -57,7 +57,7 @@
       "source_file": "stream_server.py",
       "source_location": "L58",
       "id": "stream_server_get_local_ipv4_addresses",
-      "community": 9
+      "community": 15
     },
     {
       "label": "discovery_response()",
@@ -65,7 +65,7 @@
       "source_file": "stream_server.py",
       "source_location": "L93",
       "id": "stream_server_discovery_response",
-      "community": 9
+      "community": 15
     },
     {
       "label": "open_camera()",
@@ -73,7 +73,7 @@
       "source_file": "stream_server.py",
       "source_location": "L103",
       "id": "stream_server_open_camera",
-      "community": 9
+      "community": 15
     },
     {
       "label": "discovery_loop()",
@@ -81,7 +81,7 @@
       "source_file": "stream_server.py",
       "source_location": "L120",
       "id": "stream_server_discovery_loop",
-      "community": 9
+      "community": 15
     },
     {
       "label": "read_config()",
@@ -89,7 +89,7 @@
       "source_file": "stream_server.py",
       "source_location": "L155",
       "id": "stream_server_read_config",
-      "community": 9
+      "community": 15
     },
     {
       "label": "handle_client()",
@@ -97,7 +97,7 @@
       "source_file": "stream_server.py",
       "source_location": "L167",
       "id": "stream_server_handle_client",
-      "community": 9
+      "community": 15
     },
     {
       "label": "main()",
@@ -105,7 +105,7 @@
       "source_file": "stream_server.py",
       "source_location": "L232",
       "id": "stream_server_main",
-      "community": 9
+      "community": 15
     },
     {
       "label": "view_client.py",
@@ -113,7 +113,7 @@
       "source_file": "view_client.py",
       "source_location": "L1",
       "id": "view_client",
-      "community": 3
+      "community": 4
     },
     {
       "label": "NetworkInterface",
@@ -121,7 +121,7 @@
       "source_file": "view_client.py",
       "source_location": "L39",
       "id": "view_client_networkinterface",
-      "community": 3
+      "community": 4
     },
     {
       "label": "DiscoveryCandidate",
@@ -129,7 +129,7 @@
       "source_file": "view_client.py",
       "source_location": "L47",
       "id": "view_client_discoverycandidate",
-      "community": 3
+      "community": 4
     },
     {
       "label": "DiscoveryError",
@@ -137,7 +137,7 @@
       "source_file": "view_client.py",
       "source_location": "L54",
       "id": "view_client_discoveryerror",
-      "community": 3
+      "community": 4
     },
     {
       "label": "TimeoutError",
@@ -145,7 +145,7 @@
       "source_file": "",
       "source_location": "",
       "id": "timeouterror",
-      "community": 3
+      "community": 4
     },
     {
       "label": ".__init__()",
@@ -153,7 +153,7 @@
       "source_file": "view_client.py",
       "source_location": "L55",
       "id": "view_client_discoveryerror_init",
-      "community": 3
+      "community": 4
     },
     {
       "label": "recvall()",
@@ -161,7 +161,7 @@
       "source_file": "view_client.py",
       "source_location": "L60",
       "id": "view_client_recvall",
-      "community": 3
+      "community": 4
     },
     {
       "label": "send_json_line()",
@@ -169,7 +169,7 @@
       "source_file": "view_client.py",
       "source_location": "L73",
       "id": "view_client_send_json_line",
-      "community": 3
+      "community": 4
     },
     {
       "label": "recv_json_line()",
@@ -177,7 +177,7 @@
       "source_file": "view_client.py",
       "source_location": "L77",
       "id": "view_client_recv_json_line",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_is_usable_network()",
@@ -185,7 +185,7 @@
       "source_file": "view_client.py",
       "source_location": "L92",
       "id": "view_client_is_usable_network",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_interface_priority()",
@@ -193,7 +193,7 @@
       "source_file": "view_client.py",
       "source_location": "L103",
       "id": "view_client_interface_priority",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_interfaces_from_ipconfig()",
@@ -201,7 +201,7 @@
       "source_file": "view_client.py",
       "source_location": "L114",
       "id": "view_client_interfaces_from_ipconfig",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_interfaces_from_ip_command()",
@@ -209,7 +209,7 @@
       "source_file": "view_client.py",
       "source_location": "L169",
       "id": "view_client_interfaces_from_ip_command",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_interfaces_from_socket_route()",
@@ -217,7 +217,7 @@
       "source_file": "view_client.py",
       "source_location": "L200",
       "id": "view_client_interfaces_from_socket_route",
-      "community": 3
+      "community": 4
     },
     {
       "label": "get_network_interfaces()",
@@ -225,7 +225,7 @@
       "source_file": "view_client.py",
       "source_location": "L222",
       "id": "view_client_get_network_interfaces",
-      "community": 3
+      "community": 4
     },
     {
       "label": "load_cached_host()",
@@ -233,7 +233,7 @@
       "source_file": "view_client.py",
       "source_location": "L244",
       "id": "view_client_load_cached_host",
-      "community": 3
+      "community": 4
     },
     {
       "label": "save_cached_host()",
@@ -241,7 +241,7 @@
       "source_file": "view_client.py",
       "source_location": "L257",
       "id": "view_client_save_cached_host",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_valid_discovery_response()",
@@ -249,7 +249,7 @@
       "source_file": "view_client.py",
       "source_location": "L269",
       "id": "view_client_valid_discovery_response",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_receive_discovery()",
@@ -257,7 +257,7 @@
       "source_file": "view_client.py",
       "source_location": "L278",
       "id": "view_client_receive_discovery",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_probe_targets()",
@@ -265,7 +265,7 @@
       "source_file": "view_client.py",
       "source_location": "L296",
       "id": "view_client_probe_targets",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_scan_interface()",
@@ -273,7 +273,7 @@
       "source_file": "view_client.py",
       "source_location": "L315",
       "id": "view_client_scan_interface",
-      "community": 3
+      "community": 4
     },
     {
       "label": "_candidate_score()",
@@ -281,7 +281,7 @@
       "source_file": "view_client.py",
       "source_location": "L325",
       "id": "view_client_candidate_score",
-      "community": 3
+      "community": 4
     },
     {
       "label": "discover_server()",
@@ -289,7 +289,7 @@
       "source_file": "view_client.py",
       "source_location": "L347",
       "id": "view_client_discover_server",
-      "community": 3
+      "community": 4
     },
     {
       "label": "StreamViewer",
@@ -297,7 +297,7 @@
       "source_file": "view_client.py",
       "source_location": "L389",
       "id": "view_client_streamviewer",
-      "community": 3
+      "community": 4
     },
     {
       "label": ".__init__()",
@@ -305,7 +305,7 @@
       "source_file": "view_client.py",
       "source_location": "L390",
       "id": "view_client_streamviewer_init",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._build_ui()",
@@ -313,7 +313,7 @@
       "source_file": "view_client.py",
       "source_location": "L411",
       "id": "view_client_streamviewer_build_ui",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._quality_changed()",
@@ -321,7 +321,7 @@
       "source_file": "view_client.py",
       "source_location": "L462",
       "id": "view_client_streamviewer_quality_changed",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._show_manual_ip()",
@@ -329,7 +329,7 @@
       "source_file": "view_client.py",
       "source_location": "L465",
       "id": "view_client_streamviewer_show_manual_ip",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._config()",
@@ -337,7 +337,7 @@
       "source_file": "view_client.py",
       "source_location": "L472",
       "id": "view_client_streamviewer_config",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._connect_clicked()",
@@ -345,7 +345,7 @@
       "source_file": "view_client.py",
       "source_location": "L482",
       "id": "view_client_streamviewer_connect_clicked",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._disconnect()",
@@ -353,7 +353,7 @@
       "source_file": "view_client.py",
       "source_location": "L500",
       "id": "view_client_streamviewer_disconnect",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._stream_worker()",
@@ -361,7 +361,7 @@
       "source_file": "view_client.py",
       "source_location": "L513",
       "id": "view_client_streamviewer_stream_worker",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._drain_messages()",
@@ -369,7 +369,7 @@
       "source_file": "view_client.py",
       "source_location": "L605",
       "id": "view_client_streamviewer_drain_messages",
-      "community": 3
+      "community": 4
     },
     {
       "label": "._close()",
@@ -377,7 +377,7 @@
       "source_file": "view_client.py",
       "source_location": "L627",
       "id": "view_client_streamviewer_close",
-      "community": 3
+      "community": 4
     },
     {
       "label": "main()",
@@ -385,7 +385,7 @@
       "source_file": "view_client.py",
       "source_location": "L632",
       "id": "view_client_main",
-      "community": 3
+      "community": 4
     },
     {
       "label": "__init__.py",
@@ -406,10 +406,10 @@
     {
       "label": "app.py",
       "file_type": "code",
-      "source_file": "src\\block_detected\\apps\\gui\\app.py",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
       "source_location": "L1",
       "id": "app",
-      "community": 2
+      "community": 5
     },
     {
       "label": "_frame_to_qimage()",
@@ -745,7 +745,7 @@
       "source_file": "src\\block_detected\\apps\\gui\\app.py",
       "source_location": "L581",
       "id": "app_stylesheet",
-      "community": 2
+      "community": 5
     },
     {
       "label": "_print_missing_qt()",
@@ -753,23 +753,271 @@
       "source_file": "src\\block_detected\\apps\\gui\\app.py",
       "source_location": "L672",
       "id": "app_print_missing_qt",
-      "community": 2
+      "community": 5
     },
     {
       "label": "main()",
       "file_type": "code",
-      "source_file": "src\\block_detected\\apps\\gui\\app.py",
-      "source_location": "L678",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L335",
       "id": "app_main",
-      "community": 2
+      "community": 5
     },
     {
-      "label": "PySide6 desktop GUI for webcam runtime tuning.",
+      "label": "Curses terminal UI for Raspberry Pi detection runtime.",
       "file_type": "rationale",
-      "source_file": "src\\block_detected\\apps\\gui\\app.py",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
       "source_location": "L1",
       "id": "app_rationale_1",
-      "community": 2
+      "community": 5
+    },
+    {
+      "label": "CliArgs",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L29",
+      "id": "app_cliargs",
+      "community": 5
+    },
+    {
+      "label": "DetectionTransition",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L36",
+      "id": "app_detectiontransition",
+      "community": 0
+    },
+    {
+      "label": "label()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L42",
+      "id": "app_label",
+      "community": 5
+    },
+    {
+      "label": "DetectionStateTracker",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L46",
+      "id": "app_detectionstatetracker",
+      "community": 0
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L49",
+      "id": "app_detectionstatetracker_init",
+      "community": 0
+    },
+    {
+      "label": ".update()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L52",
+      "id": "app_detectionstatetracker_update",
+      "community": 0
+    },
+    {
+      "label": ".reset()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L67",
+      "id": "app_detectionstatetracker_reset",
+      "community": 0
+    },
+    {
+      "label": "TuiRuntime",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L71",
+      "id": "app_tuiruntime",
+      "community": 5
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L74",
+      "id": "app_tuiruntime_init",
+      "community": 5
+    },
+    {
+      "label": ".start()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L82",
+      "id": "app_tuiruntime_start",
+      "community": 5
+    },
+    {
+      "label": ".stop()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L103",
+      "id": "app_tuiruntime_stop",
+      "community": 5
+    },
+    {
+      "label": ".toggle()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L111",
+      "id": "app_tuiruntime_toggle",
+      "community": 5
+    },
+    {
+      "label": ".process_once()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L117",
+      "id": "app_tuiruntime_process_once",
+      "community": 5
+    },
+    {
+      "label": "build_parser()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L131",
+      "id": "app_build_parser",
+      "community": 5
+    },
+    {
+      "label": "parse_args()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L157",
+      "id": "app_parse_args",
+      "community": 5
+    },
+    {
+      "label": "config_from_args()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L162",
+      "id": "app_config_from_args",
+      "community": 5
+    },
+    {
+      "label": "status_label()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L171",
+      "id": "app_status_label",
+      "community": 5
+    },
+    {
+      "label": "format_status_lines()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L179",
+      "id": "app_format_status_lines",
+      "community": 5
+    },
+    {
+      "label": "log_transition()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L228",
+      "id": "app_log_transition",
+      "community": 5
+    },
+    {
+      "label": "_import_curses()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L238",
+      "id": "app_import_curses",
+      "community": 5
+    },
+    {
+      "label": "_write_line()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L249",
+      "id": "app_write_line",
+      "community": 5
+    },
+    {
+      "label": "_draw()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L256",
+      "id": "app_draw",
+      "community": 5
+    },
+    {
+      "label": "_run_screen()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L278",
+      "id": "app_run_screen",
+      "community": 5
+    },
+    {
+      "label": "run_curses()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L330",
+      "id": "app_run_curses",
+      "community": 5
+    },
+    {
+      "label": "Tracks DETECTED/CLEAR transitions without logging every frame.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L47",
+      "id": "app_rationale_47",
+      "community": 0
+    },
+    {
+      "label": "Owns a WebcamEngine instance for the single-threaded TUI loop.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L72",
+      "id": "app_rationale_72",
+      "community": 5
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L1",
+      "id": "server",
+      "community": 3
+    },
+    {
+      "label": "create_app()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L27",
+      "id": "server_create_app",
+      "community": 3
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L68",
+      "id": "server_main",
+      "community": 3
+    },
+    {
+      "label": "FastAPI app factory and uvicorn entry for the Stitch web console.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L1",
+      "id": "server_rationale_1",
+      "community": 3
+    },
+    {
+      "label": "``python -m block_detected.apps.web`` entry point.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\apps\\web\\__main__.py",
+      "source_location": "L1",
+      "id": "main_rationale_1",
+      "community": 28
     },
     {
       "label": "camera.py",
@@ -777,7 +1025,7 @@
       "source_file": "src\\block_detected\\config\\camera.py",
       "source_location": "L1",
       "id": "camera",
-      "community": 26
+      "community": 29
     },
     {
       "label": "Webcam capture settings.",
@@ -785,7 +1033,7 @@
       "source_file": "src\\block_detected\\config\\camera.py",
       "source_location": "L1",
       "id": "camera_rationale_1",
-      "community": 26
+      "community": 29
     },
     {
       "label": "inference.py",
@@ -793,7 +1041,7 @@
       "source_file": "src\\block_detected\\config\\inference.py",
       "source_location": "L1",
       "id": "inference",
-      "community": 27
+      "community": 30
     },
     {
       "label": "Detection and inference thresholds.",
@@ -801,7 +1049,7 @@
       "source_file": "src\\block_detected\\config\\inference.py",
       "source_location": "L1",
       "id": "inference_rationale_1",
-      "community": 27
+      "community": 30
     },
     {
       "label": "paths.py",
@@ -809,7 +1057,7 @@
       "source_file": "src\\block_detected\\config\\paths.py",
       "source_location": "L1",
       "id": "paths",
-      "community": 28
+      "community": 31
     },
     {
       "label": "Filesystem paths for project assets.",
@@ -817,7 +1065,7 @@
       "source_file": "src\\block_detected\\config\\paths.py",
       "source_location": "L1",
       "id": "paths_rationale_1",
-      "community": 28
+      "community": 31
     },
     {
       "label": "ui.py",
@@ -825,7 +1073,7 @@
       "source_file": "src\\block_detected\\config\\ui.py",
       "source_location": "L1",
       "id": "ui",
-      "community": 29
+      "community": 32
     },
     {
       "label": "UI window, widget, and keyboard constants.",
@@ -833,7 +1081,7 @@
       "source_file": "src\\block_detected\\config\\ui.py",
       "source_location": "L1",
       "id": "ui_rationale_1",
-      "community": 29
+      "community": 32
     },
     {
       "label": "domain.py",
@@ -873,7 +1121,7 @@
       "source_file": "src\\block_detected\\core\\domain.py",
       "source_location": "L34",
       "id": "domain_runtimestatus",
-      "community": 0
+      "community": 3
     },
     {
       "label": "Domain types for detection and runtime (no OpenCV/YOLO imports).",
@@ -953,7 +1201,7 @@
       "source_file": "src\\block_detected\\core\\types.py",
       "source_location": "L1",
       "id": "types",
-      "community": 30
+      "community": 8
     },
     {
       "label": "Shared primitive types (no third-party imports).",
@@ -961,7 +1209,7 @@
       "source_file": "src\\block_detected\\core\\types.py",
       "source_location": "L1",
       "id": "types_rationale_1",
-      "community": 30
+      "community": 8
     },
     {
       "label": "boxes.py",
@@ -1073,7 +1321,7 @@
       "source_file": "src\\block_detected\\detection\\yolo\\loader.py",
       "source_location": "L1",
       "id": "loader",
-      "community": 19
+      "community": 21
     },
     {
       "label": "discover_model_paths()",
@@ -1081,7 +1329,7 @@
       "source_file": "src\\block_detected\\detection\\yolo\\loader.py",
       "source_location": "L11",
       "id": "loader_discover_model_paths",
-      "community": 19
+      "community": 21
     },
     {
       "label": "default_model_index()",
@@ -1089,7 +1337,7 @@
       "source_file": "src\\block_detected\\detection\\yolo\\loader.py",
       "source_location": "L17",
       "id": "loader_default_model_index",
-      "community": 19
+      "community": 21
     },
     {
       "label": "load_yolo()",
@@ -1097,7 +1345,7 @@
       "source_file": "src\\block_detected\\detection\\yolo\\loader.py",
       "source_location": "L24",
       "id": "loader_load_yolo",
-      "community": 19
+      "community": 21
     },
     {
       "label": "YOLO model discovery and loading.",
@@ -1105,7 +1353,7 @@
       "source_file": "src\\block_detected\\detection\\yolo\\loader.py",
       "source_location": "L1",
       "id": "loader_rationale_1",
-      "community": 19
+      "community": 21
     },
     {
       "label": "capture.py",
@@ -1113,7 +1361,7 @@
       "source_file": "src\\block_detected\\io\\camera\\capture.py",
       "source_location": "L1",
       "id": "capture",
-      "community": 20
+      "community": 22
     },
     {
       "label": "open_camera()",
@@ -1121,7 +1369,7 @@
       "source_file": "src\\block_detected\\io\\camera\\capture.py",
       "source_location": "L6",
       "id": "capture_open_camera",
-      "community": 20
+      "community": 22
     },
     {
       "label": "switch_camera()",
@@ -1129,7 +1377,7 @@
       "source_file": "src\\block_detected\\io\\camera\\capture.py",
       "source_location": "L21",
       "id": "capture_switch_camera",
-      "community": 20
+      "community": 22
     },
     {
       "label": "Webcam capture and source switching.",
@@ -1137,7 +1385,7 @@
       "source_file": "src\\block_detected\\io\\camera\\capture.py",
       "source_location": "L1",
       "id": "capture_rationale_1",
-      "community": 20
+      "community": 22
     },
     {
       "label": "Try the next available camera index. Returns (cap, new_index, switched).",
@@ -1145,7 +1393,7 @@
       "source_file": "src\\block_detected\\io\\camera\\capture.py",
       "source_location": "L29",
       "id": "capture_rationale_29",
-      "community": 20
+      "community": 22
     },
     {
       "label": "config_apply.py",
@@ -1209,7 +1457,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L1",
       "id": "config_schema",
-      "community": 0
+      "community": 9
     },
     {
       "label": "CameraConfig",
@@ -1217,7 +1465,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L30",
       "id": "config_schema_cameraconfig",
-      "community": 0
+      "community": 9
     },
     {
       "label": "InferenceConfig",
@@ -1225,7 +1473,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L38",
       "id": "config_schema_inferenceconfig",
-      "community": 0
+      "community": 9
     },
     {
       "label": "ClassicalPipelineConfig",
@@ -1233,7 +1481,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L48",
       "id": "config_schema_classicalpipelineconfig",
-      "community": 0
+      "community": 9
     },
     {
       "label": "StabilityConfig",
@@ -1241,7 +1489,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L58",
       "id": "config_schema_stabilityconfig",
-      "community": 4
+      "community": 7
     },
     {
       "label": "UiDebugConfig",
@@ -1249,7 +1497,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L71",
       "id": "config_schema_uidebugconfig",
-      "community": 0
+      "community": 9
     },
     {
       "label": "AppConfig",
@@ -1265,7 +1513,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L90",
       "id": "config_schema_defaults",
-      "community": 0
+      "community": 9
     },
     {
       "label": "from_dict()",
@@ -1273,7 +1521,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L94",
       "id": "config_schema_from_dict",
-      "community": 0
+      "community": 9
     },
     {
       "label": ".to_dict()",
@@ -1297,7 +1545,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L218",
       "id": "config_schema_needs_camera_restart",
-      "community": 0
+      "community": 9
     },
     {
       "label": "needs_detector_restart()",
@@ -1305,7 +1553,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L222",
       "id": "config_schema_needs_detector_restart",
-      "community": 0
+      "community": 9
     },
     {
       "label": "Typed application configuration (dataclasses + TOML-friendly dicts).",
@@ -1313,7 +1561,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L1",
       "id": "config_schema_rationale_1",
-      "community": 0
+      "community": 9
     },
     {
       "label": "Placeholder for future classical CV stages (blur, threshold, etc.).",
@@ -1321,7 +1569,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L49",
       "id": "config_schema_rationale_49",
-      "community": 0
+      "community": 9
     },
     {
       "label": "Post-inference filtering and temporal stability.",
@@ -1329,7 +1577,7 @@
       "source_file": "src\\block_detected\\runtime\\config_schema.py",
       "source_location": "L59",
       "id": "config_schema_rationale_59",
-      "community": 4
+      "community": 7
     },
     {
       "label": "config_store.py",
@@ -1337,7 +1585,7 @@
       "source_file": "src\\block_detected\\runtime\\config_store.py",
       "source_location": "L1",
       "id": "config_store",
-      "community": 16
+      "community": 6
     },
     {
       "label": "_toml_value()",
@@ -1345,7 +1593,7 @@
       "source_file": "src\\block_detected\\runtime\\config_store.py",
       "source_location": "L12",
       "id": "config_store_toml_value",
-      "community": 16
+      "community": 6
     },
     {
       "label": "_dict_to_toml()",
@@ -1353,7 +1601,7 @@
       "source_file": "src\\block_detected\\runtime\\config_store.py",
       "source_location": "L20",
       "id": "config_store_dict_to_toml",
-      "community": 16
+      "community": 6
     },
     {
       "label": "load_config()",
@@ -1361,7 +1609,7 @@
       "source_file": "src\\block_detected\\runtime\\config_store.py",
       "source_location": "L31",
       "id": "config_store_load_config",
-      "community": 16
+      "community": 6
     },
     {
       "label": "save_config()",
@@ -1369,7 +1617,7 @@
       "source_file": "src\\block_detected\\runtime\\config_store.py",
       "source_location": "L43",
       "id": "config_store_save_config",
-      "community": 16
+      "community": 6
     },
     {
       "label": "validate_config()",
@@ -1377,7 +1625,7 @@
       "source_file": "src\\block_detected\\runtime\\config_store.py",
       "source_location": "L48",
       "id": "config_store_validate_config",
-      "community": 16
+      "community": 6
     },
     {
       "label": "Load, save, and validate AppConfig (TOML via stdlib tomllib).",
@@ -1385,7 +1633,7 @@
       "source_file": "src\\block_detected\\runtime\\config_store.py",
       "source_location": "L1",
       "id": "config_store_rationale_1",
-      "community": 16
+      "community": 6
     },
     {
       "label": "detector_loader.py",
@@ -1561,7 +1809,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L1",
       "id": "logging_setup",
-      "community": 5
+      "community": 10
     },
     {
       "label": "LogBufferHandler",
@@ -1569,7 +1817,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L11",
       "id": "logging_setup_logbufferhandler",
-      "community": 5
+      "community": 10
     },
     {
       "label": ".__init__()",
@@ -1577,7 +1825,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L14",
       "id": "logging_setup_logbufferhandler_init",
-      "community": 5
+      "community": 10
     },
     {
       "label": ".emit()",
@@ -1585,7 +1833,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L19",
       "id": "logging_setup_logbufferhandler_emit",
-      "community": 5
+      "community": 10
     },
     {
       "label": ".snapshot_lines()",
@@ -1593,7 +1841,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L24",
       "id": "logging_setup_logbufferhandler_snapshot_lines",
-      "community": 5
+      "community": 10
     },
     {
       "label": "LoggingContext",
@@ -1601,7 +1849,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L31",
       "id": "logging_setup_loggingcontext",
-      "community": 5
+      "community": 10
     },
     {
       "label": "setup_logging()",
@@ -1609,7 +1857,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L38",
       "id": "logging_setup_setup_logging",
-      "community": 5
+      "community": 10
     },
     {
       "label": "get_log_buffer()",
@@ -1617,7 +1865,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L57",
       "id": "logging_setup_get_log_buffer",
-      "community": 5
+      "community": 10
     },
     {
       "label": "get_log_lines()",
@@ -1625,7 +1873,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L61",
       "id": "logging_setup_get_log_lines",
-      "community": 5
+      "community": 10
     },
     {
       "label": "Central logging setup for CLI and future GUI log panel.",
@@ -1633,7 +1881,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L1",
       "id": "logging_setup_rationale_1",
-      "community": 5
+      "community": 10
     },
     {
       "label": "Ring buffer of recent log records for GUI consumption.",
@@ -1641,7 +1889,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L12",
       "id": "logging_setup_rationale_12",
-      "community": 5
+      "community": 10
     },
     {
       "label": "Thread-safe copy of buffered log lines for UI display.",
@@ -1649,7 +1897,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L25",
       "id": "logging_setup_rationale_25",
-      "community": 5
+      "community": 10
     },
     {
       "label": "Return a thread-safe snapshot of recent log lines.",
@@ -1657,7 +1905,7 @@
       "source_file": "src\\block_detected\\runtime\\logging_setup.py",
       "source_location": "L62",
       "id": "logging_setup_rationale_62",
-      "community": 5
+      "community": 10
     },
     {
       "label": "metrics.py",
@@ -1665,7 +1913,7 @@
       "source_file": "src\\block_detected\\runtime\\metrics.py",
       "source_location": "L1",
       "id": "metrics",
-      "community": 1
+      "community": 0
     },
     {
       "label": "RuntimeMetrics",
@@ -1697,7 +1945,7 @@
       "source_file": "src\\block_detected\\runtime\\metrics.py",
       "source_location": "L1",
       "id": "metrics_rationale_1",
-      "community": 1
+      "community": 0
     },
     {
       "label": "postprocess.py",
@@ -1705,7 +1953,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L1",
       "id": "postprocess",
-      "community": 4
+      "community": 7
     },
     {
       "label": "filter_min_confidence()",
@@ -1713,7 +1961,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L16",
       "id": "postprocess_filter_min_confidence",
-      "community": 4
+      "community": 7
     },
     {
       "label": "filter_min_area()",
@@ -1721,7 +1969,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L22",
       "id": "postprocess_filter_min_area",
-      "community": 4
+      "community": 7
     },
     {
       "label": "filter_edge_boxes()",
@@ -1729,7 +1977,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L28",
       "id": "postprocess_filter_edge_boxes",
-      "community": 4
+      "community": 7
     },
     {
       "label": "merge_duplicate_detections()",
@@ -1737,7 +1985,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L51",
       "id": "postprocess_merge_duplicate_detections",
-      "community": 4
+      "community": 7
     },
     {
       "label": "_detection_matches()",
@@ -1745,7 +1993,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L72",
       "id": "postprocess_detection_matches",
-      "community": 4
+      "community": 7
     },
     {
       "label": "TemporalStabilityTracker",
@@ -1753,7 +2001,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L77",
       "id": "postprocess_temporalstabilitytracker",
-      "community": 4
+      "community": 7
     },
     {
       "label": ".__post_init__()",
@@ -1761,7 +2009,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L85",
       "id": "postprocess_temporalstabilitytracker_post_init",
-      "community": 4
+      "community": 7
     },
     {
       "label": ".reset()",
@@ -1769,7 +2017,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L88",
       "id": "postprocess_temporalstabilitytracker_reset",
-      "community": 4
+      "community": 7
     },
     {
       "label": ".update()",
@@ -1777,7 +2025,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L92",
       "id": "postprocess_temporalstabilitytracker_update",
-      "community": 4
+      "community": 7
     },
     {
       "label": "DetectionPostProcessor",
@@ -1785,7 +2033,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L110",
       "id": "postprocess_detectionpostprocessor",
-      "community": 4
+      "community": 7
     },
     {
       "label": ".__init__()",
@@ -1793,7 +2041,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L113",
       "id": "postprocess_detectionpostprocessor_init",
-      "community": 4
+      "community": 7
     },
     {
       "label": "._build_tracker()",
@@ -1801,7 +2049,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L117",
       "id": "postprocess_detectionpostprocessor_build_tracker",
-      "community": 4
+      "community": 7
     },
     {
       "label": ".update_config()",
@@ -1809,7 +2057,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L124",
       "id": "postprocess_detectionpostprocessor_update_config",
-      "community": 4
+      "community": 7
     },
     {
       "label": ".reset()",
@@ -1817,7 +2065,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L141",
       "id": "postprocess_detectionpostprocessor_reset",
-      "community": 4
+      "community": 7
     },
     {
       "label": ".process()",
@@ -1825,7 +2073,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L144",
       "id": "postprocess_detectionpostprocessor_process",
-      "community": 4
+      "community": 7
     },
     {
       "label": "Detection post-processing: spatial filters, duplicate merge, temporal stability.",
@@ -1833,7 +2081,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L1",
       "id": "postprocess_rationale_1",
-      "community": 4
+      "community": 7
     },
     {
       "label": "Keep detections that appear in enough recent frames (vote over a sliding window)",
@@ -1841,7 +2089,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L78",
       "id": "postprocess_rationale_78",
-      "community": 4
+      "community": 7
     },
     {
       "label": "Apply stability config to per-frame detections.",
@@ -1849,7 +2097,7 @@
       "source_file": "src\\block_detected\\runtime\\postprocess.py",
       "source_location": "L111",
       "id": "postprocess_rationale_111",
-      "community": 4
+      "community": 7
     },
     {
       "label": "state.py",
@@ -1857,7 +2105,7 @@
       "source_file": "src\\block_detected\\runtime\\state.py",
       "source_location": "L1",
       "id": "state",
-      "community": 0
+      "community": 9
     },
     {
       "label": "RuntimeState",
@@ -1865,7 +2113,7 @@
       "source_file": "src\\block_detected\\runtime\\state.py",
       "source_location": "L7",
       "id": "state_runtimestate",
-      "community": 0
+      "community": 9
     },
     {
       "label": "Mutable runtime session state (hot-reload friendly fields).",
@@ -1873,7 +2121,303 @@
       "source_file": "src\\block_detected\\runtime\\state.py",
       "source_location": "L1",
       "id": "state_rationale_1",
-      "community": 0
+      "community": 9
+    },
+    {
+      "label": "deps.py",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\deps.py",
+      "source_location": "L1",
+      "id": "deps",
+      "community": 3
+    },
+    {
+      "label": "get_engine_service()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\deps.py",
+      "source_location": "L10",
+      "id": "deps_get_engine_service",
+      "community": 3
+    },
+    {
+      "label": "FastAPI dependencies for runtime API routes.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\runtime\\api\\deps.py",
+      "source_location": "L1",
+      "id": "deps_rationale_1",
+      "community": 3
+    },
+    {
+      "label": "schemas.py",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L1",
+      "id": "schemas",
+      "community": 3
+    },
+    {
+      "label": "TelemetryResponse",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L10",
+      "id": "schemas_telemetryresponse",
+      "community": 3
+    },
+    {
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "basemodel",
+      "community": 3
+    },
+    {
+      "label": "LogsResponse",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L28",
+      "id": "schemas_logsresponse",
+      "community": 3
+    },
+    {
+      "label": "ControlResponse",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L33",
+      "id": "schemas_controlresponse",
+      "community": 3
+    },
+    {
+      "label": "EngineStateResponse",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L38",
+      "id": "schemas_enginestateresponse",
+      "community": 3
+    },
+    {
+      "label": "telemetry_from_status()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L45",
+      "id": "schemas_telemetry_from_status",
+      "community": 3
+    },
+    {
+      "label": "Pydantic response models for web API (no OpenCV imports).",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L1",
+      "id": "schemas_rationale_1",
+      "community": 3
+    },
+    {
+      "label": "Viewport toolbar metrics.      ``latency_ms`` is the aggregate of frame read and",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L11",
+      "id": "schemas_rationale_11",
+      "community": 3
+    },
+    {
+      "label": "service.py",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L1",
+      "id": "service",
+      "community": 3
+    },
+    {
+      "label": "EngineService",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L23",
+      "id": "service_engineservice",
+      "community": 3
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L26",
+      "id": "service_engineservice_init",
+      "community": 3
+    },
+    {
+      "label": "is_running()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L42",
+      "id": "service_is_running",
+      "community": 3
+    },
+    {
+      "label": "last_error()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L46",
+      "id": "service_last_error",
+      "community": 3
+    },
+    {
+      "label": ".get_latest_jpeg()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L49",
+      "id": "service_engineservice_get_latest_jpeg",
+      "community": 3
+    },
+    {
+      "label": ".get_status()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L53",
+      "id": "service_engineservice_get_status",
+      "community": 3
+    },
+    {
+      "label": ".start()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L57",
+      "id": "service_engineservice_start",
+      "community": 3
+    },
+    {
+      "label": ".stop()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L83",
+      "id": "service_engineservice_stop",
+      "community": 3
+    },
+    {
+      "label": ".switch_model()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L107",
+      "id": "service_engineservice_switch_model",
+      "community": 3
+    },
+    {
+      "label": ".switch_camera()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L111",
+      "id": "service_engineservice_switch_camera",
+      "community": 3
+    },
+    {
+      "label": "._apply_pending()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L123",
+      "id": "service_engineservice_apply_pending",
+      "community": 3
+    },
+    {
+      "label": "._loop()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L138",
+      "id": "service_engineservice_loop",
+      "community": 3
+    },
+    {
+      "label": "Thread-safe wrapper around WebcamEngine for HTTP handlers.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L1",
+      "id": "service_rationale_1",
+      "community": 3
+    },
+    {
+      "label": "Owns a single WebcamEngine and background frame loop (mirrors GUI FrameThread).",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L24",
+      "id": "service_rationale_24",
+      "community": 3
+    },
+    {
+      "label": "control.py",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\control.py",
+      "source_location": "L1",
+      "id": "control",
+      "community": 3
+    },
+    {
+      "label": "_get_router()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\control.py",
+      "source_location": "L16",
+      "id": "control_get_router",
+      "community": 3
+    },
+    {
+      "label": "Engine control REST endpoints.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\control.py",
+      "source_location": "L1",
+      "id": "control_rationale_1",
+      "community": 3
+    },
+    {
+      "label": "stream.py",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\stream.py",
+      "source_location": "L1",
+      "id": "stream",
+      "community": 3
+    },
+    {
+      "label": "mjpeg_frames()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\stream.py",
+      "source_location": "L15",
+      "id": "stream_mjpeg_frames",
+      "community": 3
+    },
+    {
+      "label": "_get_router()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\stream.py",
+      "source_location": "L34",
+      "id": "stream_get_router",
+      "community": 3
+    },
+    {
+      "label": "MJPEG frame streaming endpoint.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\stream.py",
+      "source_location": "L1",
+      "id": "stream_rationale_1",
+      "community": 3
+    },
+    {
+      "label": "telemetry.py",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\telemetry.py",
+      "source_location": "L1",
+      "id": "telemetry",
+      "community": 3
+    },
+    {
+      "label": "_get_router()",
+      "file_type": "code",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\telemetry.py",
+      "source_location": "L13",
+      "id": "telemetry_get_router",
+      "community": 3
+    },
+    {
+      "label": "Telemetry and log tail endpoints.",
+      "file_type": "rationale",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\telemetry.py",
+      "source_location": "L1",
+      "id": "telemetry_rationale_1",
+      "community": 3
     },
     {
       "label": "handlers.py",
@@ -1881,7 +2425,7 @@
       "source_file": "src\\block_detected\\ui\\input\\handlers.py",
       "source_location": "L1",
       "id": "handlers",
-      "community": 0
+      "community": 9
     },
     {
       "label": "on_mouse()",
@@ -1889,7 +2433,7 @@
       "source_file": "src\\block_detected\\ui\\input\\handlers.py",
       "source_location": "L14",
       "id": "handlers_on_mouse",
-      "community": 0
+      "community": 9
     },
     {
       "label": "handle_key()",
@@ -1897,7 +2441,7 @@
       "source_file": "src\\block_detected\\ui\\input\\handlers.py",
       "source_location": "L22",
       "id": "handlers_handle_key",
-      "community": 0
+      "community": 9
     },
     {
       "label": "Keyboard and mouse input for the webcam UI.",
@@ -1905,7 +2449,7 @@
       "source_file": "src\\block_detected\\ui\\input\\handlers.py",
       "source_location": "L1",
       "id": "handlers_rationale_1",
-      "community": 0
+      "community": 9
     },
     {
       "label": "Process a key press from waitKeyEx.\r \r     Returns True to continue the loop, Fa",
@@ -1913,7 +2457,7 @@
       "source_file": "src\\block_detected\\ui\\input\\handlers.py",
       "source_location": "L30",
       "id": "handlers_rationale_30",
-      "community": 0
+      "community": 9
     },
     {
       "label": "geometry.py",
@@ -1921,7 +2465,7 @@
       "source_file": "src\\block_detected\\vision\\geometry.py",
       "source_location": "L1",
       "id": "geometry",
-      "community": 17
+      "community": 19
     },
     {
       "label": "point_in_rect()",
@@ -1929,7 +2473,7 @@
       "source_file": "src\\block_detected\\vision\\geometry.py",
       "source_location": "L6",
       "id": "geometry_point_in_rect",
-      "community": 17
+      "community": 19
     },
     {
       "label": "box_area()",
@@ -1937,7 +2481,7 @@
       "source_file": "src\\block_detected\\vision\\geometry.py",
       "source_location": "L11",
       "id": "geometry_box_area",
-      "community": 17
+      "community": 19
     },
     {
       "label": "intersection_area()",
@@ -1945,7 +2489,7 @@
       "source_file": "src\\block_detected\\vision\\geometry.py",
       "source_location": "L18",
       "id": "geometry_intersection_area",
-      "community": 17
+      "community": 19
     },
     {
       "label": "iou()",
@@ -1953,7 +2497,7 @@
       "source_file": "src\\block_detected\\vision\\geometry.py",
       "source_location": "L30",
       "id": "geometry_iou",
-      "community": 17
+      "community": 19
     },
     {
       "label": "Pure geometry helpers (no model dependencies).",
@@ -1961,7 +2505,7 @@
       "source_file": "src\\block_detected\\vision\\geometry.py",
       "source_location": "L1",
       "id": "geometry_rationale_1",
-      "community": 17
+      "community": 19
     },
     {
       "label": "detections.py",
@@ -1993,7 +2537,7 @@
       "source_file": "src\\block_detected\\vision\\drawing\\eval.py",
       "source_location": "L1",
       "id": "eval",
-      "community": 24
+      "community": 26
     },
     {
       "label": "draw_eval_boxes()",
@@ -2001,7 +2545,7 @@
       "source_file": "src\\block_detected\\vision\\drawing\\eval.py",
       "source_location": "L6",
       "id": "eval_draw_eval_boxes",
-      "community": 24
+      "community": 26
     },
     {
       "label": "Evaluation-mode label drawing.",
@@ -2009,7 +2553,7 @@
       "source_file": "src\\block_detected\\vision\\drawing\\eval.py",
       "source_location": "L1",
       "id": "eval_rationale_1",
-      "community": 24
+      "community": 26
     },
     {
       "label": "widgets.py",
@@ -2017,7 +2561,7 @@
       "source_file": "src\\block_detected\\vision\\drawing\\widgets.py",
       "source_location": "L1",
       "id": "widgets",
-      "community": 21
+      "community": 23
     },
     {
       "label": "draw_model_switch_button()",
@@ -2025,7 +2569,7 @@
       "source_file": "src\\block_detected\\vision\\drawing\\widgets.py",
       "source_location": "L8",
       "id": "widgets_draw_model_switch_button",
-      "community": 21
+      "community": 23
     },
     {
       "label": "draw_status_bar()",
@@ -2033,7 +2577,7 @@
       "source_file": "src\\block_detected\\vision\\drawing\\widgets.py",
       "source_location": "L39",
       "id": "widgets_draw_status_bar",
-      "community": 21
+      "community": 23
     },
     {
       "label": "On-screen UI widgets (status bar, buttons).",
@@ -2041,7 +2585,7 @@
       "source_file": "src\\block_detected\\vision\\drawing\\widgets.py",
       "source_location": "L1",
       "id": "widgets_rationale_1",
-      "community": 21
+      "community": 23
     },
     {
       "label": "Draw clickable button; returns (x1, y1, x2, y2).",
@@ -2049,7 +2593,7 @@
       "source_file": "src\\block_detected\\vision\\drawing\\widgets.py",
       "source_location": "L16",
       "id": "widgets_rationale_16",
-      "community": 21
+      "community": 23
     },
     {
       "label": "conftest.py",
@@ -2057,7 +2601,7 @@
       "source_file": "tests\\conftest.py",
       "source_location": "L1",
       "id": "conftest",
-      "community": 31
+      "community": 33
     },
     {
       "label": "Pytest configuration \u2014 ensure src/ is importable without pip install -e .",
@@ -2065,7 +2609,7 @@
       "source_file": "tests\\conftest.py",
       "source_location": "L1",
       "id": "conftest_rationale_1",
-      "community": 31
+      "community": 33
     },
     {
       "label": "test_boxes.py",
@@ -2073,7 +2617,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L1",
       "id": "test_boxes",
-      "community": 7
+      "community": 12
     },
     {
       "label": "_FakeTensor",
@@ -2081,7 +2625,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L6",
       "id": "test_boxes_faketensor",
-      "community": 7
+      "community": 12
     },
     {
       "label": ".__init__()",
@@ -2089,7 +2633,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L7",
       "id": "test_boxes_faketensor_init",
-      "community": 7
+      "community": 12
     },
     {
       "label": ".tolist()",
@@ -2097,7 +2641,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L10",
       "id": "test_boxes_faketensor_tolist",
-      "community": 7
+      "community": 12
     },
     {
       "label": ".item()",
@@ -2105,7 +2649,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L13",
       "id": "test_boxes_faketensor_item",
-      "community": 7
+      "community": 12
     },
     {
       "label": "_FakeBox",
@@ -2113,7 +2657,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L17",
       "id": "test_boxes_fakebox",
-      "community": 7
+      "community": 12
     },
     {
       "label": ".__init__()",
@@ -2121,7 +2665,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L18",
       "id": "test_boxes_fakebox_init",
-      "community": 7
+      "community": 12
     },
     {
       "label": "_FakeBoxes",
@@ -2129,7 +2673,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L24",
       "id": "test_boxes_fakeboxes",
-      "community": 7
+      "community": 12
     },
     {
       "label": ".__init__()",
@@ -2137,7 +2681,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L25",
       "id": "test_boxes_fakeboxes_init",
-      "community": 7
+      "community": 12
     },
     {
       "label": ".__iter__()",
@@ -2145,7 +2689,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L28",
       "id": "test_boxes_fakeboxes_iter",
-      "community": 7
+      "community": 12
     },
     {
       "label": "_FakeResult",
@@ -2153,7 +2697,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L32",
       "id": "test_boxes_fakeresult",
-      "community": 7
+      "community": 12
     },
     {
       "label": ".__init__()",
@@ -2161,7 +2705,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L33",
       "id": "test_boxes_fakeresult_init",
-      "community": 7
+      "community": 12
     },
     {
       "label": "test_parse_yolo_result_empty()",
@@ -2169,7 +2713,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L38",
       "id": "test_boxes_test_parse_yolo_result_empty",
-      "community": 7
+      "community": 12
     },
     {
       "label": "test_parse_yolo_result_detection_fields()",
@@ -2177,7 +2721,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L43",
       "id": "test_boxes_test_parse_yolo_result_detection_fields",
-      "community": 7
+      "community": 12
     },
     {
       "label": "test_extract_boxes_one()",
@@ -2185,7 +2729,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L54",
       "id": "test_boxes_test_extract_boxes_one",
-      "community": 7
+      "community": 12
     },
     {
       "label": "Tests for detection parse helpers.",
@@ -2193,7 +2737,7 @@
       "source_file": "tests\\test_boxes.py",
       "source_location": "L1",
       "id": "test_boxes_rationale_1",
-      "community": 7
+      "community": 12
     },
     {
       "label": "test_config_apply.py",
@@ -2201,7 +2745,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L1",
       "id": "test_config_apply",
-      "community": 10
+      "community": 16
     },
     {
       "label": "_FakeDetector",
@@ -2209,7 +2753,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L12",
       "id": "test_config_apply_fakedetector",
-      "community": 10
+      "community": 16
     },
     {
       "label": ".__init__()",
@@ -2217,7 +2761,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L13",
       "id": "test_config_apply_fakedetector_init",
-      "community": 10
+      "community": 16
     },
     {
       "label": "model_name()",
@@ -2225,7 +2769,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L17",
       "id": "test_config_apply_model_name",
-      "community": 10
+      "community": 16
     },
     {
       "label": ".predict()",
@@ -2233,7 +2777,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L20",
       "id": "test_config_apply_fakedetector_predict",
-      "community": 10
+      "community": 16
     },
     {
       "label": ".close()",
@@ -2241,7 +2785,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L23",
       "id": "test_config_apply_fakedetector_close",
-      "community": 10
+      "community": 16
     },
     {
       "label": "test_apply_hot_runtime_settings_updates_state_and_config()",
@@ -2249,7 +2793,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L27",
       "id": "test_config_apply_test_apply_hot_runtime_settings_updates_state_and_config",
-      "community": 10
+      "community": 16
     },
     {
       "label": "test_needs_runtime_restart_for_camera_and_model()",
@@ -2257,7 +2801,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L42",
       "id": "test_config_apply_test_needs_runtime_restart_for_camera_and_model",
-      "community": 10
+      "community": 16
     },
     {
       "label": "test_config_changed_keys_detects_each_stability_field()",
@@ -2265,7 +2809,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L57",
       "id": "test_config_apply_test_config_changed_keys_detects_each_stability_field",
-      "community": 10
+      "community": 16
     },
     {
       "label": "test_needs_runtime_restart_false_for_stability_only_changes()",
@@ -2273,7 +2817,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L75",
       "id": "test_config_apply_test_needs_runtime_restart_false_for_stability_only_changes",
-      "community": 10
+      "community": 16
     },
     {
       "label": "test_apply_hot_runtime_settings_updates_stability_config()",
@@ -2281,7 +2825,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L85",
       "id": "test_config_apply_test_apply_hot_runtime_settings_updates_stability_config",
-      "community": 10
+      "community": 16
     },
     {
       "label": "Tests for hot config application helper.",
@@ -2289,7 +2833,7 @@
       "source_file": "tests\\test_config_apply.py",
       "source_location": "L1",
       "id": "test_config_apply_rationale_1",
-      "community": 10
+      "community": 16
     },
     {
       "label": "test_config_paths.py",
@@ -2297,7 +2841,7 @@
       "source_file": "tests\\test_config_paths.py",
       "source_location": "L1",
       "id": "test_config_paths",
-      "community": 23
+      "community": 25
     },
     {
       "label": "test_project_root_is_repo_root()",
@@ -2305,7 +2849,7 @@
       "source_file": "tests\\test_config_paths.py",
       "source_location": "L6",
       "id": "test_config_paths_test_project_root_is_repo_root",
-      "community": 23
+      "community": 25
     },
     {
       "label": "test_models_dir_under_project_root()",
@@ -2313,7 +2857,7 @@
       "source_file": "tests\\test_config_paths.py",
       "source_location": "L10",
       "id": "test_config_paths_test_models_dir_under_project_root",
-      "community": 23
+      "community": 25
     },
     {
       "label": "Tests for config.paths.",
@@ -2321,7 +2865,7 @@
       "source_file": "tests\\test_config_paths.py",
       "source_location": "L1",
       "id": "test_config_paths_rationale_1",
-      "community": 23
+      "community": 25
     },
     {
       "label": "test_config_schema.py",
@@ -2329,7 +2873,7 @@
       "source_file": "tests\\test_config_schema.py",
       "source_location": "L1",
       "id": "test_config_schema",
-      "community": 14
+      "community": 6
     },
     {
       "label": "test_from_dict_partial_camera_section_keeps_other_defaults()",
@@ -2337,7 +2881,7 @@
       "source_file": "tests\\test_config_schema.py",
       "source_location": "L6",
       "id": "test_config_schema_test_from_dict_partial_camera_section_keeps_other_defaults",
-      "community": 14
+      "community": 6
     },
     {
       "label": "test_from_dict_ignores_unknown_keys_inside_sections()",
@@ -2345,7 +2889,7 @@
       "source_file": "tests\\test_config_schema.py",
       "source_location": "L16",
       "id": "test_config_schema_test_from_dict_ignores_unknown_keys_inside_sections",
-      "community": 14
+      "community": 6
     },
     {
       "label": "test_validate_errors_when_required_stable_votes_exceeds_temporal_window()",
@@ -2353,7 +2897,7 @@
       "source_file": "tests\\test_config_schema.py",
       "source_location": "L25",
       "id": "test_config_schema_test_validate_errors_when_required_stable_votes_exceeds_temporal_window",
-      "community": 14
+      "community": 6
     },
     {
       "label": "test_validate_errors_when_duplicate_merge_iou_out_of_range()",
@@ -2361,7 +2905,7 @@
       "source_file": "tests\\test_config_schema.py",
       "source_location": "L35",
       "id": "test_config_schema_test_validate_errors_when_duplicate_merge_iou_out_of_range",
-      "community": 14
+      "community": 6
     },
     {
       "label": "test_needs_detector_restart_for_model_name_change()",
@@ -2369,7 +2913,7 @@
       "source_file": "tests\\test_config_schema.py",
       "source_location": "L47",
       "id": "test_config_schema_test_needs_detector_restart_for_model_name_change",
-      "community": 14
+      "community": 6
     },
     {
       "label": "test_needs_detector_restart_false_for_stability_keys()",
@@ -2377,7 +2921,7 @@
       "source_file": "tests\\test_config_schema.py",
       "source_location": "L51",
       "id": "test_config_schema_test_needs_detector_restart_false_for_stability_keys",
-      "community": 14
+      "community": 6
     },
     {
       "label": "Unit tests for AppConfig schema, validation, and restart key classification.",
@@ -2385,7 +2929,7 @@
       "source_file": "tests\\test_config_schema.py",
       "source_location": "L1",
       "id": "test_config_schema_rationale_1",
-      "community": 14
+      "community": 6
     },
     {
       "label": "test_config_store.py",
@@ -2393,7 +2937,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L1",
       "id": "test_config_store",
-      "community": 12
+      "community": 6
     },
     {
       "label": "test_defaults_validate()",
@@ -2401,7 +2945,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L9",
       "id": "test_config_store_test_defaults_validate",
-      "community": 12
+      "community": 6
     },
     {
       "label": "test_invalid_conf_range()",
@@ -2409,7 +2953,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L14",
       "id": "test_config_store_test_invalid_conf_range",
-      "community": 12
+      "community": 6
     },
     {
       "label": "test_round_trip_toml()",
@@ -2417,7 +2961,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L21",
       "id": "test_config_store_test_round_trip_toml",
-      "community": 12
+      "community": 6
     },
     {
       "label": "test_missing_file_uses_defaults()",
@@ -2425,7 +2969,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L30",
       "id": "test_config_store_test_missing_file_uses_defaults",
-      "community": 12
+      "community": 6
     },
     {
       "label": "test_restart_key_classification()",
@@ -2433,7 +2977,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L35",
       "id": "test_config_store_test_restart_key_classification",
-      "community": 12
+      "community": 6
     },
     {
       "label": "test_invalid_toml_types_return_validation_errors()",
@@ -2441,7 +2985,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L40",
       "id": "test_config_store_test_invalid_toml_types_return_validation_errors",
-      "community": 12
+      "community": 6
     },
     {
       "label": "test_load_config_ignores_extra_toml_sections()",
@@ -2449,7 +2993,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L65",
       "id": "test_config_store_test_load_config_ignores_extra_toml_sections",
-      "community": 12
+      "community": 6
     },
     {
       "label": "Tests for runtime config load/validate/save.",
@@ -2457,7 +3001,7 @@
       "source_file": "tests\\test_config_store.py",
       "source_location": "L1",
       "id": "test_config_store_rationale_1",
-      "community": 12
+      "community": 6
     },
     {
       "label": "test_detector_loader.py",
@@ -2625,7 +3169,7 @@
       "source_file": "tests\\test_engine_create.py",
       "source_location": "L1",
       "id": "test_engine_create",
-      "community": 13
+      "community": 0
     },
     {
       "label": "_FakeDetector",
@@ -2633,7 +3177,7 @@
       "source_file": "tests\\test_engine_create.py",
       "source_location": "L9",
       "id": "test_engine_create_fakedetector",
-      "community": 13
+      "community": 0
     },
     {
       "label": "model_name()",
@@ -2641,7 +3185,7 @@
       "source_file": "tests\\test_engine_create.py",
       "source_location": "L11",
       "id": "test_engine_create_model_name",
-      "community": 13
+      "community": 0
     },
     {
       "label": ".predict()",
@@ -2649,7 +3193,7 @@
       "source_file": "tests\\test_engine_create.py",
       "source_location": "L14",
       "id": "test_engine_create_fakedetector_predict",
-      "community": 13
+      "community": 0
     },
     {
       "label": ".close()",
@@ -2657,7 +3201,7 @@
       "source_file": "tests\\test_engine_create.py",
       "source_location": "L17",
       "id": "test_engine_create_fakedetector_close",
-      "community": 13
+      "community": 0
     },
     {
       "label": "test_try_create_reports_missing_models_dir()",
@@ -2665,7 +3209,7 @@
       "source_file": "tests\\test_engine_create.py",
       "source_location": "L21",
       "id": "test_engine_create_test_try_create_reports_missing_models_dir",
-      "community": 13
+      "community": 0
     },
     {
       "label": "test_try_start_reports_camera_index()",
@@ -2673,7 +3217,7 @@
       "source_file": "tests\\test_engine_create.py",
       "source_location": "L33",
       "id": "test_engine_create_test_try_start_reports_camera_index",
-      "community": 13
+      "community": 0
     },
     {
       "label": "Engine create/start error messages without camera or weights.",
@@ -2681,7 +3225,7 @@
       "source_file": "tests\\test_engine_create.py",
       "source_location": "L1",
       "id": "test_engine_create_rationale_1",
-      "community": 13
+      "community": 0
     },
     {
       "label": "test_engine_process.py",
@@ -2689,7 +3233,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L1",
       "id": "test_engine_process",
-      "community": 6
+      "community": 11
     },
     {
       "label": "_FakeCap",
@@ -2697,7 +3241,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L12",
       "id": "test_engine_process_fakecap",
-      "community": 6
+      "community": 11
     },
     {
       "label": ".__init__()",
@@ -2705,7 +3249,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L13",
       "id": "test_engine_process_fakecap_init",
-      "community": 6
+      "community": 11
     },
     {
       "label": ".read()",
@@ -2713,7 +3257,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L17",
       "id": "test_engine_process_fakecap_read",
-      "community": 6
+      "community": 11
     },
     {
       "label": "_FakeDetector",
@@ -2721,7 +3265,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L23",
       "id": "test_engine_process_fakedetector",
-      "community": 6
+      "community": 11
     },
     {
       "label": ".__init__()",
@@ -2729,7 +3273,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L24",
       "id": "test_engine_process_fakedetector_init",
-      "community": 6
+      "community": 11
     },
     {
       "label": "model_name()",
@@ -2737,7 +3281,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L37",
       "id": "test_engine_process_model_name",
-      "community": 6
+      "community": 11
     },
     {
       "label": ".predict()",
@@ -2745,7 +3289,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L40",
       "id": "test_engine_process_fakedetector_predict",
-      "community": 6
+      "community": 11
     },
     {
       "label": ".close()",
@@ -2753,7 +3297,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L45",
       "id": "test_engine_process_fakedetector_close",
-      "community": 6
+      "community": 11
     },
     {
       "label": "_sample_detections()",
@@ -2761,7 +3305,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L49",
       "id": "test_engine_process_sample_detections",
-      "community": 6
+      "community": 11
     },
     {
       "label": "_engine_with_cap()",
@@ -2769,7 +3313,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L56",
       "id": "test_engine_process_engine_with_cap",
-      "community": 6
+      "community": 11
     },
     {
       "label": "test_process_frame_returns_processed_frame_with_stats()",
@@ -2777,7 +3321,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L77",
       "id": "test_engine_process_test_process_frame_returns_processed_frame_with_stats",
-      "community": 6
+      "community": 11
     },
     {
       "label": "test_process_frame_applies_postprocess_min_confidence()",
@@ -2785,7 +3329,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L87",
       "id": "test_engine_process_test_process_frame_applies_postprocess_min_confidence",
-      "community": 6
+      "community": 11
     },
     {
       "label": "test_process_frame_returns_none_on_read_failure()",
@@ -2793,7 +3337,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L96",
       "id": "test_engine_process_test_process_frame_returns_none_on_read_failure",
-      "community": 6
+      "community": 11
     },
     {
       "label": "test_process_frame_returns_none_on_inference_exception()",
@@ -2801,7 +3345,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L102",
       "id": "test_engine_process_test_process_frame_returns_none_on_inference_exception",
-      "community": 6
+      "community": 11
     },
     {
       "label": "test_apply_hot_config_updates_stability_without_touching_cap()",
@@ -2809,7 +3353,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L108",
       "id": "test_engine_process_test_apply_hot_config_updates_stability_without_touching_cap",
-      "community": 6
+      "community": 11
     },
     {
       "label": "test_apply_hot_config_min_confidence_filters_more_detections()",
@@ -2817,7 +3361,7 @@
       "source_file": "tests\\test_engine_process.py",
       "source_location": "L123",
       "id": "test_engine_process_test_apply_hot_config_min_confidence_filters_more_detections",
-      "community": 6
+      "community": 11
     },
     {
       "label": "Tests for WebcamEngine.process_frame and apply_hot_config without real hardware.",
@@ -2833,7 +3377,7 @@
       "source_file": "tests\\test_geometry.py",
       "source_location": "L1",
       "id": "test_geometry",
-      "community": 22
+      "community": 24
     },
     {
       "label": "test_point_in_rect_inside()",
@@ -2841,7 +3385,7 @@
       "source_file": "tests\\test_geometry.py",
       "source_location": "L6",
       "id": "test_geometry_test_point_in_rect_inside",
-      "community": 22
+      "community": 24
     },
     {
       "label": "test_point_in_rect_outside()",
@@ -2849,7 +3393,7 @@
       "source_file": "tests\\test_geometry.py",
       "source_location": "L10",
       "id": "test_geometry_test_point_in_rect_outside",
-      "community": 22
+      "community": 24
     },
     {
       "label": "test_point_in_rect_on_edge()",
@@ -2857,7 +3401,7 @@
       "source_file": "tests\\test_geometry.py",
       "source_location": "L14",
       "id": "test_geometry_test_point_in_rect_on_edge",
-      "community": 22
+      "community": 24
     },
     {
       "label": "Tests for vision.geometry.",
@@ -2865,7 +3409,7 @@
       "source_file": "tests\\test_geometry.py",
       "source_location": "L1",
       "id": "test_geometry_rationale_1",
-      "community": 22
+      "community": 24
     },
     {
       "label": "test_gui_controls.py",
@@ -2873,7 +3417,7 @@
       "source_file": "tests\\test_gui_controls.py",
       "source_location": "L1",
       "id": "test_gui_controls",
-      "community": 15
+      "community": 18
     },
     {
       "label": "_qapp()",
@@ -2881,7 +3425,7 @@
       "source_file": "tests\\test_gui_controls.py",
       "source_location": "L11",
       "id": "test_gui_controls_qapp",
-      "community": 15
+      "community": 18
     },
     {
       "label": "_mainwindow()",
@@ -2889,7 +3433,7 @@
       "source_file": "tests\\test_gui_controls.py",
       "source_location": "L22",
       "id": "test_gui_controls_mainwindow",
-      "community": 15
+      "community": 18
     },
     {
       "label": "test_mainwindow_defaults_idle_offscreen()",
@@ -2897,7 +3441,7 @@
       "source_file": "tests\\test_gui_controls.py",
       "source_location": "L28",
       "id": "test_gui_controls_test_mainwindow_defaults_idle_offscreen",
-      "community": 15
+      "community": 18
     },
     {
       "label": "test_config_from_controls_round_trip()",
@@ -2905,7 +3449,7 @@
       "source_file": "tests\\test_gui_controls.py",
       "source_location": "L36",
       "id": "test_gui_controls_test_config_from_controls_round_trip",
-      "community": 15
+      "community": 18
     },
     {
       "label": "test_hot_config_from_controls_stability_only()",
@@ -2913,7 +3457,7 @@
       "source_file": "tests\\test_gui_controls.py",
       "source_location": "L61",
       "id": "test_gui_controls_test_hot_config_from_controls_stability_only",
-      "community": 15
+      "community": 18
     },
     {
       "label": "test_restart_widgets_include_camera_model_log_level()",
@@ -2921,7 +3465,7 @@
       "source_file": "tests\\test_gui_controls.py",
       "source_location": "L77",
       "id": "test_gui_controls_test_restart_widgets_include_camera_model_log_level",
-      "community": 15
+      "community": 18
     },
     {
       "label": "Offscreen GUI control wiring tests (PySide6 required at runtime).",
@@ -2929,7 +3473,7 @@
       "source_file": "tests\\test_gui_controls.py",
       "source_location": "L1",
       "id": "test_gui_controls_rationale_1",
-      "community": 15
+      "community": 18
     },
     {
       "label": "test_gui_hardening.py",
@@ -2937,7 +3481,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L1",
       "id": "test_gui_hardening",
-      "community": 11
+      "community": 17
     },
     {
       "label": "_qapp()",
@@ -2945,7 +3489,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L12",
       "id": "test_gui_hardening_qapp",
-      "community": 11
+      "community": 17
     },
     {
       "label": "_mainwindow()",
@@ -2953,7 +3497,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L23",
       "id": "test_gui_hardening_mainwindow",
-      "community": 11
+      "community": 17
     },
     {
       "label": "test_stale_frame_ready_ignored()",
@@ -2961,7 +3505,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L29",
       "id": "test_gui_hardening_test_stale_frame_ready_ignored",
-      "community": 11
+      "community": 17
     },
     {
       "label": "test_stale_worker_error_does_not_show_dialog()",
@@ -2969,7 +3513,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L52",
       "id": "test_gui_hardening_test_stale_worker_error_does_not_show_dialog",
-      "community": 11
+      "community": 17
     },
     {
       "label": "test_stop_pending_disables_start()",
@@ -2977,7 +3521,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L64",
       "id": "test_gui_hardening_test_stop_pending_disables_start",
-      "community": 11
+      "community": 17
     },
     {
       "label": "test_finalize_worker_stop_clears_thread_and_status()",
@@ -2985,7 +3529,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L74",
       "id": "test_gui_hardening_test_finalize_worker_stop_clears_thread_and_status",
-      "community": 11
+      "community": 17
     },
     {
       "label": "test_finalize_worker_stop_ignores_non_current_thread()",
@@ -2993,7 +3537,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L87",
       "id": "test_gui_hardening_test_finalize_worker_stop_ignores_non_current_thread",
-      "community": 11
+      "community": 17
     },
     {
       "label": "test_restart_hint_when_camera_index_differs_while_running()",
@@ -3001,7 +3545,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L98",
       "id": "test_gui_hardening_test_restart_hint_when_camera_index_differs_while_running",
-      "community": 11
+      "community": 17
     },
     {
       "label": "test_frame_thread_shutdown_uses_destroy_cv_windows_false()",
@@ -3009,7 +3553,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L109",
       "id": "test_gui_hardening_test_frame_thread_shutdown_uses_destroy_cv_windows_false",
-      "community": 11
+      "community": 17
     },
     {
       "label": "GUI worker lifecycle, generation guards, and restart-hint tests.",
@@ -3017,7 +3561,7 @@
       "source_file": "tests\\test_gui_hardening.py",
       "source_location": "L1",
       "id": "test_gui_hardening_rationale_1",
-      "community": 11
+      "community": 17
     },
     {
       "label": "test_gui_optional.py",
@@ -3025,7 +3569,7 @@
       "source_file": "tests\\test_gui_optional.py",
       "source_location": "L1",
       "id": "test_gui_optional",
-      "community": 18
+      "community": 20
     },
     {
       "label": "test_gui_main_is_callable()",
@@ -3033,7 +3577,7 @@
       "source_file": "tests\\test_gui_optional.py",
       "source_location": "L7",
       "id": "test_gui_optional_test_gui_main_is_callable",
-      "community": 18
+      "community": 20
     },
     {
       "label": "test_main_py_delegates_to_gui_main()",
@@ -3041,7 +3585,7 @@
       "source_file": "tests\\test_gui_optional.py",
       "source_location": "L13",
       "id": "test_gui_optional_test_main_py_delegates_to_gui_main",
-      "community": 18
+      "community": 20
     },
     {
       "label": "test_console_script_target_matches_gui_main()",
@@ -3049,7 +3593,7 @@
       "source_file": "tests\\test_gui_optional.py",
       "source_location": "L24",
       "id": "test_gui_optional_test_console_script_target_matches_gui_main",
-      "community": 18
+      "community": 20
     },
     {
       "label": "test_print_missing_qt_returns_nonzero()",
@@ -3057,7 +3601,7 @@
       "source_file": "tests\\test_gui_optional.py",
       "source_location": "L32",
       "id": "test_gui_optional_test_print_missing_qt_returns_nonzero",
-      "community": 18
+      "community": 20
     },
     {
       "label": "GUI entry should be importable (PySide6 required at runtime).",
@@ -3065,7 +3609,7 @@
       "source_file": "tests\\test_gui_optional.py",
       "source_location": "L1",
       "id": "test_gui_optional_rationale_1",
-      "community": 18
+      "community": 20
     },
     {
       "label": "test_gui_smoke.py",
@@ -3073,7 +3617,7 @@
       "source_file": "tests\\test_gui_smoke.py",
       "source_location": "L1",
       "id": "test_gui_smoke",
-      "community": 0
+      "community": 2
     },
     {
       "label": "test_mainwindow_instantiates_offscreen_when_pyside_available()",
@@ -3081,7 +3625,7 @@
       "source_file": "tests\\test_gui_smoke.py",
       "source_location": "L10",
       "id": "test_gui_smoke_test_mainwindow_instantiates_offscreen_when_pyside_available",
-      "community": 0
+      "community": 2
     },
     {
       "label": "test_refresh_logs_updates_log_view_from_get_log_lines()",
@@ -3089,7 +3633,7 @@
       "source_file": "tests\\test_gui_smoke.py",
       "source_location": "L28",
       "id": "test_gui_smoke_test_refresh_logs_updates_log_view_from_get_log_lines",
-      "community": 0
+      "community": 2
     },
     {
       "label": "Optional offscreen GUI smoke test when PySide6 is installed.",
@@ -3097,7 +3641,7 @@
       "source_file": "tests\\test_gui_smoke.py",
       "source_location": "L1",
       "id": "test_gui_smoke_rationale_1",
-      "community": 0
+      "community": 2
     },
     {
       "label": "test_log_buffer.py",
@@ -3105,7 +3649,7 @@
       "source_file": "tests\\test_log_buffer.py",
       "source_location": "L1",
       "id": "test_log_buffer",
-      "community": 5
+      "community": 10
     },
     {
       "label": "test_snapshot_lines_returns_copy()",
@@ -3113,7 +3657,7 @@
       "source_file": "tests\\test_log_buffer.py",
       "source_location": "L9",
       "id": "test_log_buffer_test_snapshot_lines_returns_copy",
-      "community": 5
+      "community": 10
     },
     {
       "label": "test_get_log_lines_uses_global_buffer()",
@@ -3121,7 +3665,7 @@
       "source_file": "tests\\test_log_buffer.py",
       "source_location": "L21",
       "id": "test_log_buffer_test_get_log_lines_uses_global_buffer",
-      "community": 5
+      "community": 10
     },
     {
       "label": "test_concurrent_emit_and_snapshot()",
@@ -3129,7 +3673,7 @@
       "source_file": "tests\\test_log_buffer.py",
       "source_location": "L30",
       "id": "test_log_buffer_test_concurrent_emit_and_snapshot",
-      "community": 5
+      "community": 10
     },
     {
       "label": "Thread-safe log buffer snapshot API.",
@@ -3137,7 +3681,7 @@
       "source_file": "tests\\test_log_buffer.py",
       "source_location": "L1",
       "id": "test_log_buffer_rationale_1",
-      "community": 5
+      "community": 10
     },
     {
       "label": "test_metrics.py",
@@ -3169,7 +3713,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L1",
       "id": "test_postprocess",
-      "community": 8
+      "community": 13
     },
     {
       "label": "_det()",
@@ -3177,7 +3721,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L16",
       "id": "test_postprocess_det",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_iou_identical_boxes()",
@@ -3185,7 +3729,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L31",
       "id": "test_postprocess_test_iou_identical_boxes",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_iou_disjoint_boxes()",
@@ -3193,7 +3737,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L36",
       "id": "test_postprocess_test_iou_disjoint_boxes",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_box_area()",
@@ -3201,7 +3745,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L40",
       "id": "test_postprocess_test_box_area",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_filter_min_confidence_rejects_low_scores()",
@@ -3209,7 +3753,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L44",
       "id": "test_postprocess_test_filter_min_confidence_rejects_low_scores",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_filter_min_area_rejects_small_boxes()",
@@ -3217,7 +3761,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L51",
       "id": "test_postprocess_test_filter_min_area_rejects_small_boxes",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_filter_edge_boxes_rejects_partial_detections()",
@@ -3225,7 +3769,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L58",
       "id": "test_postprocess_test_filter_edge_boxes_rejects_partial_detections",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_merge_duplicate_detections_keeps_highest_confidence()",
@@ -3233,7 +3777,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L68",
       "id": "test_postprocess_test_merge_duplicate_detections_keeps_highest_confidence",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_temporal_stability_requires_votes_across_window()",
@@ -3241,7 +3785,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L79",
       "id": "test_postprocess_test_temporal_stability_requires_votes_across_window",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_detection_post_processor_disabled_passthrough()",
@@ -3249,7 +3793,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L96",
       "id": "test_postprocess_test_detection_post_processor_disabled_passthrough",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_detection_post_processor_full_pipeline()",
@@ -3257,7 +3801,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L102",
       "id": "test_postprocess_test_detection_post_processor_full_pipeline",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_update_config_rebuilds_tracker_on_temporal_change()",
@@ -3265,7 +3809,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L130",
       "id": "test_postprocess_test_update_config_rebuilds_tracker_on_temporal_change",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_update_config_disable_resets_history()",
@@ -3273,7 +3817,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L157",
       "id": "test_postprocess_test_update_config_disable_resets_history",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_update_config_min_confidence_only_preserves_tracker()",
@@ -3281,7 +3825,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L189",
       "id": "test_postprocess_test_update_config_min_confidence_only_preserves_tracker",
-      "community": 8
+      "community": 13
     },
     {
       "label": "test_filter_min_confidence_empty_input()",
@@ -3289,7 +3833,7 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L216",
       "id": "test_postprocess_test_filter_min_confidence_empty_input",
-      "community": 8
+      "community": 13
     },
     {
       "label": "Post-processing and temporal stability (no camera/model).",
@@ -3297,7 +3841,263 @@
       "source_file": "tests\\test_postprocess.py",
       "source_location": "L1",
       "id": "test_postprocess_rationale_1",
-      "community": 4
+      "community": 7
+    },
+    {
+      "label": "test_tui_app.py",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L1",
+      "id": "test_tui_app",
+      "community": 8
+    },
+    {
+      "label": "_status()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L11",
+      "id": "test_tui_app_status",
+      "community": 8
+    },
+    {
+      "label": "test_tui_app_import_smoke()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L27",
+      "id": "test_tui_app_test_tui_app_import_smoke",
+      "community": 8
+    },
+    {
+      "label": "test_console_script_target_matches_tui_main()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L32",
+      "id": "test_tui_app_test_console_script_target_matches_tui_main",
+      "community": 8
+    },
+    {
+      "label": "test_config_from_args_applies_camera_and_conf_overrides()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L41",
+      "id": "test_tui_app_test_config_from_args_applies_camera_and_conf_overrides",
+      "community": 8
+    },
+    {
+      "label": "test_parse_args_accepts_config_camera_and_conf()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L57",
+      "id": "test_tui_app_test_parse_args_accepts_config_camera_and_conf",
+      "community": 8
+    },
+    {
+      "label": "test_detection_tracker_only_reports_transitions()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L65",
+      "id": "test_tui_app_test_detection_tracker_only_reports_transitions",
+      "community": 8
+    },
+    {
+      "label": "test_format_status_lines_reports_detected_and_metrics()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L82",
+      "id": "test_tui_app_test_format_status_lines_reports_detected_and_metrics",
+      "community": 8
+    },
+    {
+      "label": "test_format_status_lines_reports_idle_and_error()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L96",
+      "id": "test_tui_app_test_format_status_lines_reports_idle_and_error",
+      "community": 8
+    },
+    {
+      "label": "_FakeEngine",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L104",
+      "id": "test_tui_app_fakeengine",
+      "community": 8
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L107",
+      "id": "test_tui_app_fakeengine_init",
+      "community": 8
+    },
+    {
+      "label": "try_create()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L113",
+      "id": "test_tui_app_try_create",
+      "community": 8
+    },
+    {
+      "label": ".try_start()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L117",
+      "id": "test_tui_app_fakeengine_try_start",
+      "community": 8
+    },
+    {
+      "label": ".process_frame()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L122",
+      "id": "test_tui_app_fakeengine_process_frame",
+      "community": 8
+    },
+    {
+      "label": ".shutdown()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L127",
+      "id": "test_tui_app_fakeengine_shutdown",
+      "community": 8
+    },
+    {
+      "label": "test_tui_runtime_start_process_and_stop_without_real_camera()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L131",
+      "id": "test_tui_app_test_tui_runtime_start_process_and_stop_without_real_camera",
+      "community": 8
+    },
+    {
+      "label": "test_tui_runtime_returns_error_when_start_fails()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L146",
+      "id": "test_tui_app_test_tui_runtime_returns_error_when_start_fails",
+      "community": 8
+    },
+    {
+      "label": "test_tui_runtime_sets_error_when_frame_loop_ends()",
+      "file_type": "code",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L156",
+      "id": "test_tui_app_test_tui_runtime_sets_error_when_frame_loop_ends",
+      "community": 8
+    },
+    {
+      "label": "Tests for the curses-free parts of the TUI app.",
+      "file_type": "rationale",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L1",
+      "id": "test_tui_app_rationale_1",
+      "community": 8
+    },
+    {
+      "label": "test_web_api.py",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L1",
+      "id": "test_web_api",
+      "community": 14
+    },
+    {
+      "label": "mock_service()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L19",
+      "id": "test_web_api_mock_service",
+      "community": 14
+    },
+    {
+      "label": "client()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L30",
+      "id": "test_web_api_client",
+      "community": 14
+    },
+    {
+      "label": "test_health_returns_ok()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L37",
+      "id": "test_web_api_test_health_returns_ok",
+      "community": 14
+    },
+    {
+      "label": "test_telemetry_json_shape()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L44",
+      "id": "test_web_api_test_telemetry_json_shape",
+      "community": 14
+    },
+    {
+      "label": "test_telemetry_idle()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L62",
+      "id": "test_web_api_test_telemetry_idle",
+      "community": 14
+    },
+    {
+      "label": "test_logs_tail()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L75",
+      "id": "test_web_api_test_logs_tail",
+      "community": 14
+    },
+    {
+      "label": "test_control_start_stop()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L89",
+      "id": "test_web_api_test_control_start_stop",
+      "community": 14
+    },
+    {
+      "label": "test_control_start_already_running()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L104",
+      "id": "test_web_api_test_control_start_already_running",
+      "community": 14
+    },
+    {
+      "label": "test_stream_route_registered()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L114",
+      "id": "test_web_api_test_stream_route_registered",
+      "community": 14
+    },
+    {
+      "label": "test_camera_next_requires_running()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L124",
+      "id": "test_web_api_test_camera_next_requires_running",
+      "community": 14
+    },
+    {
+      "label": "test_engine_state()",
+      "file_type": "code",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L135",
+      "id": "test_web_api_test_engine_state",
+      "community": 14
+    },
+    {
+      "label": "FastAPI TestClient coverage for the web API (no camera hardware).",
+      "file_type": "rationale",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L1",
+      "id": "test_web_api_rationale_1",
+      "community": 14
     },
     {
       "label": "test_widgets.py",
@@ -3305,7 +4105,7 @@
       "source_file": "tests\\test_widgets.py",
       "source_location": "L1",
       "id": "test_widgets",
-      "community": 25
+      "community": 27
     },
     {
       "label": "test_model_button_uses_passed_layout_values()",
@@ -3313,7 +4113,7 @@
       "source_file": "tests\\test_widgets.py",
       "source_location": "L8",
       "id": "test_widgets_test_model_button_uses_passed_layout_values",
-      "community": 25
+      "community": 27
     },
     {
       "label": "Tests for OpenCV drawing widget layout.",
@@ -3321,10 +4121,22 @@
       "source_file": "tests\\test_widgets.py",
       "source_location": "L1",
       "id": "test_widgets_rationale_1",
-      "community": 25
+      "community": 27
     }
   ],
   "links": [
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\web\\__main__.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "main_rationale_1",
+      "_tgt": "main",
+      "source": "main",
+      "target": "main_rationale_1",
+      "confidence_score": 1.0
+    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -4382,6 +5194,18 @@
       "confidence_score": 0.5
     },
     {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\__init__.py",
+      "source_location": "L3",
+      "weight": 0.8,
+      "_src": "init_rationale_1",
+      "_tgt": "service_engineservice",
+      "source": "init_rationale_1",
+      "target": "service_engineservice",
+      "confidence_score": 0.5
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\block_detected\\apps\\gui\\app.py",
@@ -4444,8 +5268,8 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src\\block_detected\\apps\\gui\\app.py",
-      "source_location": "L678",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L335",
       "weight": 1.0,
       "_src": "app",
       "_tgt": "app_main",
@@ -4456,13 +5280,205 @@
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
-      "source_file": "src\\block_detected\\apps\\gui\\app.py",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
       "source_location": "L1",
       "weight": 1.0,
       "_src": "app_rationale_1",
       "_tgt": "app",
       "source": "app",
       "target": "app_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_cliargs",
+      "source": "app",
+      "target": "app_cliargs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_detectiontransition",
+      "source": "app",
+      "target": "app_detectiontransition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_label",
+      "source": "app",
+      "target": "app_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_detectionstatetracker",
+      "source": "app",
+      "target": "app_detectionstatetracker",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_tuiruntime",
+      "source": "app",
+      "target": "app_tuiruntime",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L131",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_build_parser",
+      "source": "app",
+      "target": "app_build_parser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L157",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_parse_args",
+      "source": "app",
+      "target": "app_parse_args",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L162",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_config_from_args",
+      "source": "app",
+      "target": "app_config_from_args",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L171",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_status_label",
+      "source": "app",
+      "target": "app_status_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L179",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_format_status_lines",
+      "source": "app",
+      "target": "app_format_status_lines",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L228",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_log_transition",
+      "source": "app",
+      "target": "app_log_transition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L238",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_import_curses",
+      "source": "app",
+      "target": "app_import_curses",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L249",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_write_line",
+      "source": "app",
+      "target": "app_write_line",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L256",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_draw",
+      "source": "app",
+      "target": "app_draw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L278",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_run_screen",
+      "source": "app",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L330",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_run_curses",
+      "source": "app",
+      "target": "app_run_curses",
       "confidence_score": 1.0
     },
     {
@@ -5546,10 +6562,46 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L336",
+      "weight": 1.0,
+      "_src": "app_main",
+      "_tgt": "app_parse_args",
+      "source": "app_main",
+      "target": "app_parse_args",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L337",
+      "weight": 1.0,
+      "_src": "app_main",
+      "_tgt": "app_config_from_args",
+      "source": "app_main",
+      "target": "app_config_from_args",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L346",
+      "weight": 1.0,
+      "_src": "app_main",
+      "_tgt": "app_run_curses",
+      "source": "app_main",
+      "target": "app_run_curses",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "uses",
       "confidence": "INFERRED",
-      "source_file": "src\\block_detected\\apps\\gui\\app.py",
-      "source_location": "L15",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L14",
       "weight": 0.8,
       "_src": "app_rationale_1",
       "_tgt": "config_schema_appconfig",
@@ -5560,13 +6612,697 @@
     {
       "relation": "uses",
       "confidence": "INFERRED",
-      "source_file": "src\\block_detected\\apps\\gui\\app.py",
-      "source_location": "L17",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L16",
       "weight": 0.8,
       "_src": "app_rationale_1",
       "_tgt": "engine_webcamengine",
       "source": "app_rationale_1",
       "target": "engine_webcamengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "app_rationale_1",
+      "_tgt": "domain_runtimestatus",
+      "source": "app_rationale_1",
+      "target": "domain_runtimestatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L159",
+      "weight": 1.0,
+      "_src": "app_parse_args",
+      "_tgt": "app_cliargs",
+      "source": "app_cliargs",
+      "target": "app_parse_args",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "app_cliargs",
+      "_tgt": "domain_runtimestatus",
+      "source": "app_cliargs",
+      "target": "domain_runtimestatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "app_cliargs",
+      "_tgt": "config_schema_appconfig",
+      "source": "app_cliargs",
+      "target": "config_schema_appconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L16",
+      "weight": 0.8,
+      "_src": "app_cliargs",
+      "_tgt": "engine_webcamengine",
+      "source": "app_cliargs",
+      "target": "engine_webcamengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_src": "app_detectionstatetracker_update",
+      "_tgt": "app_detectiontransition",
+      "source": "app_detectiontransition",
+      "target": "app_detectionstatetracker_update",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "app_detectiontransition",
+      "_tgt": "domain_runtimestatus",
+      "source": "app_detectiontransition",
+      "target": "domain_runtimestatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "app_detectiontransition",
+      "_tgt": "config_schema_appconfig",
+      "source": "app_detectiontransition",
+      "target": "config_schema_appconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L16",
+      "weight": 0.8,
+      "_src": "app_detectiontransition",
+      "_tgt": "engine_webcamengine",
+      "source": "app_detectiontransition",
+      "target": "engine_webcamengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_src": "app_detectionstatetracker",
+      "_tgt": "app_detectionstatetracker_init",
+      "source": "app_detectionstatetracker",
+      "target": "app_detectionstatetracker_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_src": "app_detectionstatetracker",
+      "_tgt": "app_detectionstatetracker_update",
+      "source": "app_detectionstatetracker",
+      "target": "app_detectionstatetracker_update",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_src": "app_detectionstatetracker",
+      "_tgt": "app_detectionstatetracker_reset",
+      "source": "app_detectionstatetracker",
+      "target": "app_detectionstatetracker_reset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L288",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_detectionstatetracker",
+      "source": "app_detectionstatetracker",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_src": "app_rationale_47",
+      "_tgt": "app_detectionstatetracker",
+      "source": "app_detectionstatetracker",
+      "target": "app_rationale_47",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "app_detectionstatetracker",
+      "_tgt": "domain_runtimestatus",
+      "source": "app_detectionstatetracker",
+      "target": "domain_runtimestatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "app_detectionstatetracker",
+      "_tgt": "config_schema_appconfig",
+      "source": "app_detectionstatetracker",
+      "target": "config_schema_appconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L16",
+      "weight": 0.8,
+      "_src": "app_detectionstatetracker",
+      "_tgt": "engine_webcamengine",
+      "source": "app_detectionstatetracker",
+      "target": "engine_webcamengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L316",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_detectionstatetracker_update",
+      "source": "app_detectionstatetracker_update",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L303",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_detectionstatetracker_reset",
+      "source": "app_detectionstatetracker_reset",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_src": "app_tuiruntime",
+      "_tgt": "app_tuiruntime_init",
+      "source": "app_tuiruntime",
+      "target": "app_tuiruntime_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_src": "app_tuiruntime",
+      "_tgt": "app_tuiruntime_start",
+      "source": "app_tuiruntime",
+      "target": "app_tuiruntime_start",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L103",
+      "weight": 1.0,
+      "_src": "app_tuiruntime",
+      "_tgt": "app_tuiruntime_stop",
+      "source": "app_tuiruntime",
+      "target": "app_tuiruntime_stop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_src": "app_tuiruntime",
+      "_tgt": "app_tuiruntime_toggle",
+      "source": "app_tuiruntime",
+      "target": "app_tuiruntime_toggle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L117",
+      "weight": 1.0,
+      "_src": "app_tuiruntime",
+      "_tgt": "app_tuiruntime_process_once",
+      "source": "app_tuiruntime",
+      "target": "app_tuiruntime_process_once",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L287",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_tuiruntime",
+      "source": "app_tuiruntime",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_src": "app_rationale_72",
+      "_tgt": "app_tuiruntime",
+      "source": "app_tuiruntime",
+      "target": "app_rationale_72",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "app_tuiruntime",
+      "_tgt": "domain_runtimestatus",
+      "source": "app_tuiruntime",
+      "target": "domain_runtimestatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "app_tuiruntime",
+      "_tgt": "config_schema_appconfig",
+      "source": "app_tuiruntime",
+      "target": "config_schema_appconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L16",
+      "weight": 0.8,
+      "_src": "app_tuiruntime",
+      "_tgt": "engine_webcamengine",
+      "source": "app_tuiruntime",
+      "target": "engine_webcamengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_src": "app_tuiruntime_toggle",
+      "_tgt": "app_tuiruntime_start",
+      "source": "app_tuiruntime_start",
+      "target": "app_tuiruntime_toggle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L289",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_tuiruntime_start",
+      "source": "app_tuiruntime_start",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "_src": "app_tuiruntime_toggle",
+      "_tgt": "app_tuiruntime_stop",
+      "source": "app_tuiruntime_stop",
+      "target": "app_tuiruntime_toggle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_src": "app_tuiruntime_process_once",
+      "_tgt": "app_tuiruntime_stop",
+      "source": "app_tuiruntime_stop",
+      "target": "app_tuiruntime_process_once",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L327",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_tuiruntime_stop",
+      "source": "app_tuiruntime_stop",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L302",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_tuiruntime_toggle",
+      "source": "app_tuiruntime_toggle",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L310",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_tuiruntime_process_once",
+      "source": "app_tuiruntime_process_once",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_src": "app_parse_args",
+      "_tgt": "app_build_parser",
+      "source": "app_build_parser",
+      "target": "app_parse_args",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L185",
+      "weight": 1.0,
+      "_src": "app_format_status_lines",
+      "_tgt": "app_status_label",
+      "source": "app_status_label",
+      "target": "app_format_status_lines",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L259",
+      "weight": 1.0,
+      "_src": "app_draw",
+      "_tgt": "app_status_label",
+      "source": "app_status_label",
+      "target": "app_draw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L266",
+      "weight": 1.0,
+      "_src": "app_draw",
+      "_tgt": "app_format_status_lines",
+      "source": "app_format_status_lines",
+      "target": "app_draw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_log_transition",
+      "source": "app_log_transition",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L279",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_import_curses",
+      "source": "app_import_curses",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L331",
+      "weight": 1.0,
+      "_src": "app_run_curses",
+      "_tgt": "app_import_curses",
+      "source": "app_import_curses",
+      "target": "app_run_curses",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L272",
+      "weight": 1.0,
+      "_src": "app_draw",
+      "_tgt": "app_write_line",
+      "source": "app_write_line",
+      "target": "app_draw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L291",
+      "weight": 1.0,
+      "_src": "app_run_screen",
+      "_tgt": "app_draw",
+      "source": "app_draw",
+      "target": "app_run_screen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "app_rationale_47",
+      "_tgt": "domain_runtimestatus",
+      "source": "app_rationale_47",
+      "target": "domain_runtimestatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "app_rationale_47",
+      "_tgt": "config_schema_appconfig",
+      "source": "app_rationale_47",
+      "target": "config_schema_appconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L16",
+      "weight": 0.8,
+      "_src": "app_rationale_47",
+      "_tgt": "engine_webcamengine",
+      "source": "app_rationale_47",
+      "target": "engine_webcamengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "app_rationale_72",
+      "_tgt": "domain_runtimestatus",
+      "source": "app_rationale_72",
+      "target": "domain_runtimestatus",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "app_rationale_72",
+      "_tgt": "config_schema_appconfig",
+      "source": "app_rationale_72",
+      "target": "config_schema_appconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\tui\\app.py",
+      "source_location": "L16",
+      "weight": 0.8,
+      "_src": "app_rationale_72",
+      "_tgt": "engine_webcamengine",
+      "source": "app_rationale_72",
+      "target": "engine_webcamengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_src": "server",
+      "_tgt": "server_create_app",
+      "source": "server",
+      "target": "server_create_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_src": "server",
+      "_tgt": "server_main",
+      "source": "server",
+      "target": "server_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "server_rationale_1",
+      "_tgt": "server",
+      "source": "server",
+      "target": "server_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_src": "server_main",
+      "_tgt": "server_create_app",
+      "source": "server_create_app",
+      "target": "server_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "server_rationale_1",
+      "_tgt": "service_engineservice",
+      "source": "server_rationale_1",
+      "target": "service_engineservice",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\apps\\web\\server.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "server_rationale_1",
+      "_tgt": "config_schema_appconfig",
+      "source": "server_rationale_1",
+      "target": "config_schema_appconfig",
       "confidence_score": 0.5
     },
     {
@@ -6028,6 +7764,42 @@
     {
       "relation": "uses",
       "confidence": "INFERRED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "test_tui_app_fakeengine",
+      "_tgt": "domain_inferencestats",
+      "source": "domain_inferencestats",
+      "target": "test_tui_app_fakeengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "test_tui_app_rationale_1",
+      "_tgt": "domain_inferencestats",
+      "source": "domain_inferencestats",
+      "target": "test_tui_app_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "test_web_api_rationale_1",
+      "_tgt": "domain_inferencestats",
+      "source": "domain_inferencestats",
+      "target": "test_web_api_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
       "source_file": "src\\block_detected\\runtime\\engine.py",
       "source_location": "L14",
       "weight": 0.8,
@@ -6071,6 +7843,150 @@
       "_tgt": "domain_runtimestatus",
       "source": "domain_runtimestatus",
       "target": "engine_rationale_252",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "schemas_telemetryresponse",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "schemas_telemetryresponse",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "schemas_logsresponse",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "schemas_logsresponse",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "schemas_controlresponse",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "schemas_controlresponse",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "schemas_enginestateresponse",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "schemas_enginestateresponse",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "schemas_rationale_1",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "schemas_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "schemas_rationale_11",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "schemas_rationale_11",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L12",
+      "weight": 0.8,
+      "_src": "service_engineservice",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "service_engineservice",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L12",
+      "weight": 0.8,
+      "_src": "service_rationale_1",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "service_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L12",
+      "weight": 0.8,
+      "_src": "service_rationale_24",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "service_rationale_24",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "test_tui_app_fakeengine",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "test_tui_app_fakeengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "test_tui_app_rationale_1",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "test_tui_app_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L14",
+      "weight": 0.8,
+      "_src": "test_web_api_rationale_1",
+      "_tgt": "domain_runtimestatus",
+      "source": "domain_runtimestatus",
+      "target": "test_web_api_rationale_1",
       "confidence_score": 0.5
     },
     {
@@ -6263,6 +8179,18 @@
       "_tgt": "types",
       "source": "types",
       "target": "types_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "types",
+      "source": "types",
+      "target": "test_tui_app",
       "confidence_score": 1.0
     },
     {
@@ -7048,6 +8976,42 @@
     {
       "relation": "uses",
       "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "service_engineservice",
+      "_tgt": "config_schema_appconfig",
+      "source": "config_schema_appconfig",
+      "target": "service_engineservice",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "service_rationale_1",
+      "_tgt": "config_schema_appconfig",
+      "source": "config_schema_appconfig",
+      "target": "service_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L13",
+      "weight": 0.8,
+      "_src": "service_rationale_24",
+      "_tgt": "config_schema_appconfig",
+      "source": "config_schema_appconfig",
+      "target": "service_rationale_24",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
       "source_file": "src\\block_detected\\ui\\input\\handlers.py",
       "source_location": "L7",
       "weight": 0.8,
@@ -7235,6 +9199,30 @@
       "_tgt": "config_schema_appconfig",
       "source": "config_schema_appconfig",
       "target": "test_gui_smoke_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L8",
+      "weight": 0.8,
+      "_src": "test_tui_app_fakeengine",
+      "_tgt": "config_schema_appconfig",
+      "source": "config_schema_appconfig",
+      "target": "test_tui_app_fakeengine",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L8",
+      "weight": 0.8,
+      "_src": "test_tui_app_rationale_1",
+      "_tgt": "config_schema_appconfig",
+      "source": "config_schema_appconfig",
+      "target": "test_tui_app_rationale_1",
       "confidence_score": 0.5
     },
     {
@@ -7631,6 +9619,42 @@
       "_tgt": "state_runtimestate",
       "source": "engine_webcamengine",
       "target": "state_runtimestate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L61",
+      "weight": 0.8,
+      "_src": "service_engineservice",
+      "_tgt": "engine_webcamengine",
+      "source": "engine_webcamengine",
+      "target": "service_engineservice",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L61",
+      "weight": 0.8,
+      "_src": "service_rationale_1",
+      "_tgt": "engine_webcamengine",
+      "source": "engine_webcamengine",
+      "target": "service_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L61",
+      "weight": 0.8,
+      "_src": "service_rationale_24",
+      "_tgt": "engine_webcamengine",
+      "source": "engine_webcamengine",
+      "target": "service_rationale_24",
       "confidence_score": 0.5
     },
     {
@@ -8520,6 +10544,558 @@
       "source": "state_runtimestate",
       "target": "handlers_rationale_30",
       "confidence_score": 0.5
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\deps.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_src": "deps",
+      "_tgt": "deps_get_engine_service",
+      "source": "deps",
+      "target": "deps_get_engine_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\deps.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "deps_rationale_1",
+      "_tgt": "deps",
+      "source": "deps",
+      "target": "deps_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\deps.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "deps_rationale_1",
+      "_tgt": "service_engineservice",
+      "source": "deps_rationale_1",
+      "target": "service_engineservice",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_src": "schemas",
+      "_tgt": "schemas_telemetryresponse",
+      "source": "schemas",
+      "target": "schemas_telemetryresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_src": "schemas",
+      "_tgt": "schemas_logsresponse",
+      "source": "schemas",
+      "target": "schemas_logsresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_src": "schemas",
+      "_tgt": "schemas_controlresponse",
+      "source": "schemas",
+      "target": "schemas_controlresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_src": "schemas",
+      "_tgt": "schemas_enginestateresponse",
+      "source": "schemas",
+      "target": "schemas_enginestateresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_src": "schemas",
+      "_tgt": "schemas_telemetry_from_status",
+      "source": "schemas",
+      "target": "schemas_telemetry_from_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "schemas_rationale_1",
+      "_tgt": "schemas",
+      "source": "schemas",
+      "target": "schemas_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_src": "schemas_telemetryresponse",
+      "_tgt": "basemodel",
+      "source": "schemas_telemetryresponse",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_src": "schemas_telemetry_from_status",
+      "_tgt": "schemas_telemetryresponse",
+      "source": "schemas_telemetryresponse",
+      "target": "schemas_telemetry_from_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "schemas_rationale_11",
+      "_tgt": "schemas_telemetryresponse",
+      "source": "schemas_telemetryresponse",
+      "target": "schemas_rationale_11",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\telemetry.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "_src": "telemetry_rationale_1",
+      "_tgt": "schemas_telemetryresponse",
+      "source": "schemas_telemetryresponse",
+      "target": "telemetry_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_src": "schemas_logsresponse",
+      "_tgt": "basemodel",
+      "source": "basemodel",
+      "target": "schemas_logsresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_src": "schemas_controlresponse",
+      "_tgt": "basemodel",
+      "source": "basemodel",
+      "target": "schemas_controlresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\schemas.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_src": "schemas_enginestateresponse",
+      "_tgt": "basemodel",
+      "source": "basemodel",
+      "target": "schemas_enginestateresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\telemetry.py",
+      "source_location": "L6",
+      "weight": 0.8,
+      "_src": "telemetry_rationale_1",
+      "_tgt": "schemas_logsresponse",
+      "source": "schemas_logsresponse",
+      "target": "telemetry_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\control.py",
+      "source_location": "L8",
+      "weight": 0.8,
+      "_src": "control_rationale_1",
+      "_tgt": "schemas_controlresponse",
+      "source": "schemas_controlresponse",
+      "target": "control_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\control.py",
+      "source_location": "L8",
+      "weight": 0.8,
+      "_src": "control_rationale_1",
+      "_tgt": "schemas_enginestateresponse",
+      "source": "schemas_enginestateresponse",
+      "target": "control_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_src": "service",
+      "_tgt": "service_engineservice",
+      "source": "service",
+      "target": "service_engineservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_src": "service",
+      "_tgt": "service_is_running",
+      "source": "service",
+      "target": "service_is_running",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_src": "service",
+      "_tgt": "service_last_error",
+      "source": "service",
+      "target": "service_last_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "service_rationale_1",
+      "_tgt": "service",
+      "source": "service",
+      "target": "service_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_init",
+      "source": "service_engineservice",
+      "target": "service_engineservice_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_get_latest_jpeg",
+      "source": "service_engineservice",
+      "target": "service_engineservice_get_latest_jpeg",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_get_status",
+      "source": "service_engineservice",
+      "target": "service_engineservice_get_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_start",
+      "source": "service_engineservice",
+      "target": "service_engineservice_start",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_stop",
+      "source": "service_engineservice",
+      "target": "service_engineservice_stop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_switch_model",
+      "source": "service_engineservice",
+      "target": "service_engineservice_switch_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_switch_camera",
+      "source": "service_engineservice",
+      "target": "service_engineservice_switch_camera",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_apply_pending",
+      "source": "service_engineservice",
+      "target": "service_engineservice_apply_pending",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L138",
+      "weight": 1.0,
+      "_src": "service_engineservice",
+      "_tgt": "service_engineservice_loop",
+      "source": "service_engineservice",
+      "target": "service_engineservice_loop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_src": "service_rationale_24",
+      "_tgt": "service_engineservice",
+      "source": "service_engineservice",
+      "target": "service_rationale_24",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\control.py",
+      "source_location": "L9",
+      "weight": 0.8,
+      "_src": "control_rationale_1",
+      "_tgt": "service_engineservice",
+      "source": "service_engineservice",
+      "target": "control_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\stream.py",
+      "source_location": "L10",
+      "weight": 0.8,
+      "_src": "stream_rationale_1",
+      "_tgt": "service_engineservice",
+      "source": "service_engineservice",
+      "target": "stream_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\telemetry.py",
+      "source_location": "L7",
+      "weight": 0.8,
+      "_src": "telemetry_rationale_1",
+      "_tgt": "service_engineservice",
+      "source": "service_engineservice",
+      "target": "telemetry_rationale_1",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L131",
+      "weight": 1.0,
+      "_src": "service_engineservice_apply_pending",
+      "_tgt": "service_engineservice_switch_model",
+      "source": "service_engineservice_switch_model",
+      "target": "service_engineservice_apply_pending",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_src": "service_engineservice_apply_pending",
+      "_tgt": "service_engineservice_switch_camera",
+      "source": "service_engineservice_switch_camera",
+      "target": "service_engineservice_apply_pending",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\service.py",
+      "source_location": "L144",
+      "weight": 1.0,
+      "_src": "service_engineservice_loop",
+      "_tgt": "service_engineservice_apply_pending",
+      "source": "service_engineservice_apply_pending",
+      "target": "service_engineservice_loop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\control.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "control",
+      "_tgt": "control_get_router",
+      "source": "control",
+      "target": "control_get_router",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\control.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "control_rationale_1",
+      "_tgt": "control",
+      "source": "control",
+      "target": "control_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\stream.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "stream",
+      "_tgt": "stream_mjpeg_frames",
+      "source": "stream",
+      "target": "stream_mjpeg_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\stream.py",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_src": "stream",
+      "_tgt": "stream_get_router",
+      "source": "stream",
+      "target": "stream_get_router",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\stream.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "stream_rationale_1",
+      "_tgt": "stream",
+      "source": "stream",
+      "target": "stream_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\telemetry.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_src": "telemetry",
+      "_tgt": "telemetry_get_router",
+      "source": "telemetry",
+      "target": "telemetry_get_router",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\block_detected\\runtime\\api\\routes\\telemetry.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "telemetry_rationale_1",
+      "_tgt": "telemetry",
+      "source": "telemetry",
+      "target": "telemetry_rationale_1",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11063,6 +13639,438 @@
       "_tgt": "test_postprocess_det",
       "source": "test_postprocess_det",
       "target": "test_postprocess_test_update_config_min_confidence_only_preserves_tracker",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_status",
+      "source": "test_tui_app",
+      "target": "test_tui_app_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_tui_app_import_smoke",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_tui_app_import_smoke",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_console_script_target_matches_tui_main",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_console_script_target_matches_tui_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_config_from_args_applies_camera_and_conf_overrides",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_config_from_args_applies_camera_and_conf_overrides",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_parse_args_accepts_config_camera_and_conf",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_parse_args_accepts_config_camera_and_conf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_detection_tracker_only_reports_transitions",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_detection_tracker_only_reports_transitions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_format_status_lines_reports_detected_and_metrics",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_format_status_lines_reports_detected_and_metrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L96",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_format_status_lines_reports_idle_and_error",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_format_status_lines_reports_idle_and_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_fakeengine",
+      "source": "test_tui_app",
+      "target": "test_tui_app_fakeengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_try_create",
+      "source": "test_tui_app",
+      "target": "test_tui_app_try_create",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L131",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_tui_runtime_start_process_and_stop_without_real_camera",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_tui_runtime_start_process_and_stop_without_real_camera",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L146",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_tui_runtime_returns_error_when_start_fails",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_tui_runtime_returns_error_when_start_fails",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L156",
+      "weight": 1.0,
+      "_src": "test_tui_app",
+      "_tgt": "test_tui_app_test_tui_runtime_sets_error_when_frame_loop_ends",
+      "source": "test_tui_app",
+      "target": "test_tui_app_test_tui_runtime_sets_error_when_frame_loop_ends",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "test_tui_app_rationale_1",
+      "_tgt": "test_tui_app",
+      "source": "test_tui_app",
+      "target": "test_tui_app_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_src": "test_tui_app_test_detection_tracker_only_reports_transitions",
+      "_tgt": "test_tui_app_status",
+      "source": "test_tui_app_status",
+      "target": "test_tui_app_test_detection_tracker_only_reports_transitions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_src": "test_tui_app_test_format_status_lines_reports_detected_and_metrics",
+      "_tgt": "test_tui_app_status",
+      "source": "test_tui_app_status",
+      "target": "test_tui_app_test_format_status_lines_reports_detected_and_metrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_src": "test_tui_app_test_tui_runtime_start_process_and_stop_without_real_camera",
+      "_tgt": "test_tui_app_status",
+      "source": "test_tui_app_status",
+      "target": "test_tui_app_test_tui_runtime_start_process_and_stop_without_real_camera",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_src": "test_tui_app_fakeengine",
+      "_tgt": "test_tui_app_fakeengine_init",
+      "source": "test_tui_app_fakeengine",
+      "target": "test_tui_app_fakeengine_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L117",
+      "weight": 1.0,
+      "_src": "test_tui_app_fakeengine",
+      "_tgt": "test_tui_app_fakeengine_try_start",
+      "source": "test_tui_app_fakeengine",
+      "target": "test_tui_app_fakeengine_try_start",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_src": "test_tui_app_fakeengine",
+      "_tgt": "test_tui_app_fakeengine_process_frame",
+      "source": "test_tui_app_fakeengine",
+      "target": "test_tui_app_fakeengine_process_frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "_src": "test_tui_app_fakeengine",
+      "_tgt": "test_tui_app_fakeengine_shutdown",
+      "source": "test_tui_app_fakeengine",
+      "target": "test_tui_app_fakeengine_shutdown",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_src": "test_tui_app_test_tui_runtime_start_process_and_stop_without_real_camera",
+      "_tgt": "test_tui_app_fakeengine",
+      "source": "test_tui_app_fakeengine",
+      "target": "test_tui_app_test_tui_runtime_start_process_and_stop_without_real_camera",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L147",
+      "weight": 1.0,
+      "_src": "test_tui_app_test_tui_runtime_returns_error_when_start_fails",
+      "_tgt": "test_tui_app_fakeengine",
+      "source": "test_tui_app_fakeengine",
+      "target": "test_tui_app_test_tui_runtime_returns_error_when_start_fails",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_tui_app.py",
+      "source_location": "L157",
+      "weight": 1.0,
+      "_src": "test_tui_app_test_tui_runtime_sets_error_when_frame_loop_ends",
+      "_tgt": "test_tui_app_fakeengine",
+      "source": "test_tui_app_fakeengine",
+      "target": "test_tui_app_test_tui_runtime_sets_error_when_frame_loop_ends",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_mock_service",
+      "source": "test_web_api",
+      "target": "test_web_api_mock_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_client",
+      "source": "test_web_api",
+      "target": "test_web_api_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_health_returns_ok",
+      "source": "test_web_api",
+      "target": "test_web_api_test_health_returns_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_telemetry_json_shape",
+      "source": "test_web_api",
+      "target": "test_web_api_test_telemetry_json_shape",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_telemetry_idle",
+      "source": "test_web_api",
+      "target": "test_web_api_test_telemetry_idle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_logs_tail",
+      "source": "test_web_api",
+      "target": "test_web_api_test_logs_tail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_control_start_stop",
+      "source": "test_web_api",
+      "target": "test_web_api_test_control_start_stop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_control_start_already_running",
+      "source": "test_web_api",
+      "target": "test_web_api_test_control_start_already_running",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L114",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_stream_route_registered",
+      "source": "test_web_api",
+      "target": "test_web_api_test_stream_route_registered",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_camera_next_requires_running",
+      "source": "test_web_api",
+      "target": "test_web_api_test_camera_next_requires_running",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L135",
+      "weight": 1.0,
+      "_src": "test_web_api",
+      "_tgt": "test_web_api_test_engine_state",
+      "source": "test_web_api",
+      "target": "test_web_api_test_engine_state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_web_api.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "test_web_api_rationale_1",
+      "_tgt": "test_web_api",
+      "source": "test_web_api",
+      "target": "test_web_api_rationale_1",
       "confidence_score": 1.0
     },
     {

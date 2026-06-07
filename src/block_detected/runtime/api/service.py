@@ -11,10 +11,9 @@ import cv2
 
 from block_detected.core.domain import RuntimeStatus
 from block_detected.runtime.config_schema import AppConfig
-from block_detected.runtime.engine import WebcamEngine
 
 if TYPE_CHECKING:
-    pass
+    from block_detected.runtime.engine import WebcamEngine
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +57,8 @@ class EngineService:
     def start(self) -> tuple[bool, str | None]:
         if self._running:
             return True, None
+
+        from block_detected.runtime.engine import WebcamEngine
 
         engine, create_error = WebcamEngine.try_create(self._config)
         if engine is None:

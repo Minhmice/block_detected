@@ -91,6 +91,8 @@ def test_process_frame_applies_postprocess_min_confidence():
 
     assert result is not None
     assert result.status.detection_count == 1
+    assert len(result.detections) == 1
+    assert result.detections[0].confidence == 0.95
 
 
 def test_process_frame_returns_none_on_read_failure():
