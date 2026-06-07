@@ -125,3 +125,93 @@ def test_detection_post_processor_full_pipeline():
     second = processor.process([_det(target, confidence=0.9)], frame_width=200, frame_height=200)
     assert len(second) == 1
     assert second[0].box == target
+
+
+def test_update_config_rebuilds_tracker_on_temporal_change():
+    config = StabilityConfig(
+        enabled=True,
+        min_confidence=0.0,
+        min_box_area_px=0,
+        reject_edge_boxes=False,
+        temporal_window=3,
+        required_stable_votes=2,
+    )
+    processor = DetectionPostProcessor(config)
+    target = (80, 80, 120, 120)
+    processor.process([_det(target)], frame_width=200, frame_height=200)
+    stable = processor.process([_det(target)], frame_width=200, frame_height=200)
+    assert len(stable) == 1
+
+    rebuilt = StabilityConfig(
+        enabled=True,
+        min_confidence=0.0,
+        min_box_area_px=0,
+        reject_edge_boxes=False,
+        temporal_window=5,
+        required_stable_votes=2,
+    )
+    processor.update_config(rebuilt)
+    assert processor.process([_det(target)], frame_width=200, frame_height=200) == []
+
+
+def test_update_config_disable_resets_history():
+    config = StabilityConfig(
+        enabled=True,
+        min_confidence=0.0,
+        min_box_area_px=0,
+        reject_edge_boxes=False,
+        temporal_window=3,
+        required_stable_votes=2,
+    )
+    processor = DetectionPostProcessor(config)
+    target = (80, 80, 120, 120)
+    processor.process([_det(target)], frame_width=200, frame_height=200)
+    processor.process([_det(target)], frame_width=200, frame_height=200)
+
+    disabled = StabilityConfig(
+        enabled=False,
+        temporal_window=3,
+        required_stable_votes=2,
+    )
+    processor.update_config(disabled)
+    reenabled = StabilityConfig(
+        enabled=True,
+        min_confidence=0.0,
+        min_box_area_px=0,
+        reject_edge_boxes=False,
+        temporal_window=3,
+        required_stable_votes=2,
+    )
+    processor.update_config(reenabled)
+    assert processor.process([_det(target)], frame_width=200, frame_height=200) == []
+
+
+def test_update_config_min_confidence_only_preserves_tracker():
+    config = StabilityConfig(
+        enabled=True,
+        min_confidence=0.0,
+        min_box_area_px=0,
+        reject_edge_boxes=False,
+        temporal_window=3,
+        required_stable_votes=2,
+    )
+    processor = DetectionPostProcessor(config)
+    target = (80, 80, 120, 120)
+    processor.process([_det(target)], frame_width=200, frame_height=200)
+    processor.process([_det(target)], frame_width=200, frame_height=200)
+
+    hotter = StabilityConfig(
+        enabled=True,
+        min_confidence=0.1,
+        min_box_area_px=0,
+        reject_edge_boxes=False,
+        temporal_window=3,
+        required_stable_votes=2,
+    )
+    processor.update_config(hotter)
+    still_stable = processor.process([_det(target, confidence=0.9)], frame_width=200, frame_height=200)
+    assert len(still_stable) == 1
+
+
+def test_filter_min_confidence_empty_input():
+    assert filter_min_confidence([], 0.5) == []
