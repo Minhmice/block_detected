@@ -130,18 +130,22 @@ Plans:
 
 ### Phase 7: Web telemetry API and frame streaming for Stitch console
 
-**Goal:** HTTP/WebSocket backend exposing `WebcamEngine` to Stitch `code.html` — frame stream, engine control, metrics, log tail.
+**Goal:** HTTP backend exposing `WebcamEngine` to Stitch `code.html` — MJPEG frame stream, engine control, metrics JSON, log tail.
 **Ref:** `BACKEND_GAP_ANALYSIS.md` §4.2, §4.4, mapping "Top nav / Viewport / Main feed"
 **Depends on:** Phase 6
+**Requirements:** REQ-01, REQ-04
 **Success Criteria:**
-  1. MJPEG or WebSocket frame endpoint replaces Qt-only preview for web `<img>` feed
-  2. REST/WS: START/STOP, NEXT CAMERA, NEXT MODEL (wrap existing engine methods)
-  3. Telemetry JSON: FPS, aggregate latency_ms, render_ms + log tail from `get_log_lines()`
-  4. `apps/web/` or `runtime/api/` layer — no detection logic duplicated from engine
-**Plans:** 0 plans
+  1. `GET /stream` serves `multipart/x-mixed-replace` MJPEG from engine annotated frames; usable as `<img src="http://HOST:PORT/stream">`
+  2. `POST /api/start`, `/api/stop`, `/api/camera/next`, `/api/model/next` wrap `WebcamEngine` methods (no duplicated detection/camera logic)
+  3. `GET /api/telemetry` returns `{fps, latency_ms, render_ms}` where `latency_ms = frame_read_ms + inference_ms`; `GET /api/logs?limit=N` tails `get_log_lines()`
+  4. `runtime/api/` routes + schemas; `apps/web/server.py` entry; `pip install -e ".[web]"` + `block-detected-web`; `pytest tests/test_web_api.py` passes without camera
+  5. Optional: static mount serves `example_ui/stitch_block_pickup_vision_console/` at `/ui` for local Stitch dev
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 7 to break down)
+- [ ] 07-01-PLAN.md — EngineService frame loop, Pydantic schemas, FastAPI factory + CORS
+- [ ] 07-02-PLAN.md — MJPEG `/stream` + POST control routes wired into app
+- [ ] 07-03-PLAN.md — Telemetry/log endpoints, `[web]` deps, entry script, TestClient tests
 
 ### Phase 8: YOLO inference params expansion and hot-reload API
 
