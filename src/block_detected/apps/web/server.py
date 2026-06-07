@@ -8,7 +8,8 @@ from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
 from block_detected.runtime.api.deps import get_engine_service
-from block_detected.runtime.api.routes import control_router, stream_router
+from block_detected.config.paths import PROJECT_ROOT
+from block_detected.runtime.api.routes import control_router, stream_router, telemetry_router
 from block_detected.runtime.api.service import EngineService
 from block_detected.runtime.config_schema import AppConfig
 from block_detected.runtime.config_store import load_config
@@ -52,6 +53,14 @@ def create_app(*, config: AppConfig | None = None):
 
     app.include_router(stream_router)
     app.include_router(control_router)
+    app.include_router(telemetry_router)
+
+    # Optional local Stitch UI — update code.html fetch/img URLs to this server manually.
+    ui_dir = PROJECT_ROOT / "example_ui" / "stitch_block_pickup_vision_console"
+    if ui_dir.is_dir():
+        from fastapi.staticfiles import StaticFiles
+
+        app.mount("/ui", StaticFiles(directory=str(ui_dir), html=True), name="ui")
 
     return app
 

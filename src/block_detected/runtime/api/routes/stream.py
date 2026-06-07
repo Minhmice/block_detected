@@ -11,7 +11,24 @@ from block_detected.runtime.api.service import EngineService
 
 logger = logging.getLogger(__name__)
 
-router = None
+
+async def mjpeg_frames(service: EngineService) -> AsyncIterator[bytes]:
+    try:
+        while True:
+            jpeg = service.get_latest_jpeg()
+            if jpeg:
+                header = (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n"
+                    + f"Content-Length: {len(jpeg)}\r\n\r\n".encode()
+                    + jpeg
+                    + b"\r\n"
+                )
+                yield header
+            await asyncio.sleep(0.033)
+    except asyncio.CancelledError:
+        logger.debug("MJPEG stream client disconnected")
+        raise
 
 
 def _get_router():
@@ -19,25 +36,6 @@ def _get_router():
     from starlette.responses import StreamingResponse
 
     api = APIRouter(tags=["stream"])
-
-    async def mjpeg_frames(service: EngineService) -> AsyncIterator[bytes]:
-        try:
-            while True:
-                jpeg = service.get_latest_jpeg()
-                if jpeg:
-                    header = (
-                        b"--frame\r\n"
-                        b"Content-Type: image/jpeg\r\n"
-                        + f"Content-Length: {len(jpeg)}\r\n\r\n".encode()
-                        + jpeg
-                        + b"\r\n"
-                    )
-                    yield header
-                else:
-                    await asyncio.sleep(0.033)
-        except asyncio.CancelledError:
-            logger.debug("MJPEG stream client disconnected")
-            raise
 
     @api.get("/stream")
     async def stream(service: EngineService = Depends(get_engine_service)):
