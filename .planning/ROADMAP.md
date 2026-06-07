@@ -54,7 +54,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Package foundation | 1/1 | Complete | 2026-06-02 |
 | 2. CV layered structure | 3/3 | Complete | 2026-06-02 |
-| 3. Runtime engine + config | 0/2 | Planned | — |
+| 3. Runtime engine + config | 2/2 | Complete | 2026-06-07 |
 
 ### Phase 3: Runtime engine, typed config, and detector abstraction for GUI prep
 
@@ -71,8 +71,8 @@ Plans:
 **Plans:** 2 plans (retroactive verify + close gaps)
 
 Plans:
-- [ ] 03-01-PLAN.md — Config schema, store, and hot-reload test gaps + REQ-04
-- [ ] 03-02-PLAN.md — Engine process_frame, detector abstraction tests + phase verification
+- [x] 03-01-PLAN.md — Config schema, store, and hot-reload test gaps + REQ-04
+- [x] 03-02-PLAN.md — Engine process_frame, detector abstraction tests + phase verification
 
 ### Phase 4: Desktop GUI for webcam runtime control and config
 
