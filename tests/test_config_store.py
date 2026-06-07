@@ -60,3 +60,24 @@ def test_invalid_toml_types_return_validation_errors(tmp_path: Path):
     assert any("camera.width" in error for error in errors)
     assert any("inference.default_conf" in error for error in errors)
     assert any("ui.log_level" in error for error in errors)
+
+
+def test_load_config_ignores_extra_toml_sections(tmp_path: Path):
+    path = tmp_path / "extra.toml"
+    path.write_text(
+        "\n".join(
+            [
+                "[camera]",
+                "width = 640",
+                "",
+                "[future]",
+                "x = 1",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    loaded = load_config(path)
+
+    assert loaded.camera.width == 640
+    assert validate_config(loaded) == []
