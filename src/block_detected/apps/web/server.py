@@ -7,25 +7,27 @@ import logging
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
+from block_detected.runtime.api.deps import get_engine_service
+from block_detected.runtime.api.routes import control_router, stream_router
 from block_detected.runtime.api.service import EngineService
 from block_detected.runtime.config_schema import AppConfig
 from block_detected.runtime.config_store import load_config
 from block_detected.runtime.logging_setup import setup_logging
 
 if TYPE_CHECKING:
-    from fastapi import FastAPI, Request
+    from fastapi import FastAPI
 
 logger = logging.getLogger(__name__)
 
-
-def get_engine_service(request: Request) -> EngineService:
-    return request.app.state.engine_service
+# Re-export for tests that override the dependency.
+__all__ = ["create_app", "get_engine_service", "main"]
 
 
 def create_app(*, config: AppConfig | None = None):
     from fastapi import FastAPI
     from fastapi.middleware.cors import CORSMiddleware
 
+    setup_logging()
     app_config = config if config is not None else load_config()
     engine_service = EngineService(app_config)
 
@@ -47,6 +49,9 @@ def create_app(*, config: AppConfig | None = None):
     @app.get("/health")
     def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    app.include_router(stream_router)
+    app.include_router(control_router)
 
     return app
 
