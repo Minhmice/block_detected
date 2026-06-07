@@ -2,9 +2,9 @@
 
 ## Current Position
 
-**Phase:** 7 next (web telemetry API)
-**Plan:** Phases 4–6 complete (6/6 plans verified); 76 pytest tests passing
-**Status:** Desktop GUI + hardening + postprocess retroactively verified and closed
+**Phase:** 8 next (YOLO inference params)
+**Plan:** Phase 7 complete (3/3 plans verified); 95 pytest tests passing
+**Status:** Web telemetry API + MJPEG streaming for Stitch console complete
 
 ## Accumulated Context
 
@@ -17,7 +17,7 @@
 - Phase 4: Desktop GUI (complete — 2 plans, GUI offscreen tests)
 - Phase 5: GUI/runtime hardening (complete — 2 plans, test_gui_hardening)
 - Phase 6: Postprocess + temporal stability (complete — 2 plans, update_config + engine tests)
-- Phase 7 added: Web telemetry API and frame streaming for Stitch console (gap analysis 2026-06-07)
+- Phase 7: Web telemetry API and frame streaming for Stitch console (complete — 3 plans, 9 web API tests)
 - Phase 8 added: YOLO inference params expansion and hot-reload API
 - Phase 9 added: Stability and reject rules spec alignment
 - Phase 10 added: Camera source types viewport and coordinate mapping

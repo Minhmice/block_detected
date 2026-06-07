@@ -9,7 +9,7 @@ Layered computer-vision Python package: webcam detection today; tracking and alt
 - [x] **Phase 1: Package foundation** - Initial modular refactor (webcam working)
 - [x] **Phase 2: CV layered folder structure** - Scalable folder layout, tests, docs
 - [x] **Phase 3–6:** Runtime, PySide6 GUI, hardening, postprocess (verified — 76 tests)
-- [ ] **Phase 7: Web telemetry API** - MJPEG/WS stream + metrics + log tail (unblock Stitch UI)
+- [x] **Phase 7: Web telemetry API** - MJPEG stream + metrics + log tail (unblock Stitch UI)
 - [ ] **Phase 8: YOLO inference params** - imgsz, IoU, max_det, device + hot-reload API
 - [ ] **Phase 9: Stability/reject spec** - margin, unknown class, HTML-aligned defaults
 - [ ] **Phase 10: Camera & viewport** - source enum, fps/exposure/WB, coordDebug mapping
@@ -58,6 +58,7 @@ Plans:
 | 4. Desktop GUI | 2/2 | Complete | 2026-06-07 |
 | 5. GUI hardening / UAT | 2/2 | Complete | 2026-06-07 |
 | 6. Postprocess + stability | 2/2 | Complete | 2026-06-07 |
+| 7. Web telemetry API | 2/3 | In Progress | — |
 
 ### Phase 3: Runtime engine, typed config, and detector abstraction for GUI prep
 
@@ -143,9 +144,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — EngineService frame loop, Pydantic schemas, FastAPI factory + CORS
-- [ ] 07-02-PLAN.md — MJPEG `/stream` + POST control routes wired into app
-- [ ] 07-03-PLAN.md — Telemetry/log endpoints, `[web]` deps, entry script, TestClient tests
+- [x] 07-01-PLAN.md — EngineService frame loop, Pydantic schemas, FastAPI factory + CORS
+- [x] 07-02-PLAN.md — MJPEG `/stream` + POST control routes wired into app
+- [x] 07-03-PLAN.md — Telemetry/log endpoints, `[web]` deps, entry script, TestClient tests
 
 ### Phase 8: YOLO inference params expansion and hot-reload API
 
