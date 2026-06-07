@@ -55,6 +55,9 @@ Plans:
 | 1. Package foundation | 1/1 | Complete | 2026-06-02 |
 | 2. CV layered structure | 3/3 | Complete | 2026-06-02 |
 | 3. Runtime engine + config | 2/2 | Complete | 2026-06-07 |
+| 4. Desktop GUI | 0/2 | Planned | — |
+| 5. GUI hardening / UAT | 0/2 | Planned | — |
+| 6. Postprocess + stability | 0/2 | Planned | — |
 
 ### Phase 3: Runtime engine, typed config, and detector abstraction for GUI prep
 
@@ -76,33 +79,54 @@ Plans:
 
 ### Phase 4: Desktop GUI for webcam runtime control and config
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** PySide6 desktop GUI (`apps/gui/app.py`) as primary entry (`python main.py` / `block-detected`) delegating to `WebcamEngine` — start/stop, confidence/eval, camera/model controls, stability hot-reload, log panel via `get_log_lines()`, aspect-ratio preview.
+
+**Requirements**: REQ-01, REQ-04
 **Depends on:** Phase 3
-**Plans:** 0 plans
+**Success Criteria:**
+  1. `MainWindow` loads and round-trips `AppConfig` controls offscreen; `main.py` and console script target `apps.gui.app.main`
+  2. GUI reads logs only via `get_log_lines()`; worker uses `engine.shutdown(destroy_cv_windows=False)`
+  3. Control groups present: Runtime, Inference, Stability, Camera, Config, log panel
+  4. Manual smoke: Start/Stop preview, live conf/eval, model/camera cycle (webcam + weights)
+**Plans:** 2 plans (retroactive verify + close gaps)
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 4 to break down)
+- [ ] 04-01-PLAN.md — GUI control wiring, entry point, and log panel tests
+- [ ] 04-02-PLAN.md — 04-VERIFICATION.md + manual preview smoke checkpoint
 
 ### Phase 5: GUI and runtime hardening for production UAT
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Harden GUI worker lifecycle for production UAT — run-generation guards, stop-pending UX, restart-required hints, error surfacing; align `05-UAT.md` with automated evidence.
+
+**Requirements**: REQ-01, REQ-04
 **Depends on:** Phase 4
-**Plans:** 0 plans
+**Success Criteria:**
+  1. Stale `frame_ready`/`error` signals ignored via `_run_generation` (tested)
+  2. `frame_thread` cleared only after `finished` or successful `wait()`; Start disabled while stopping
+  3. Restart-only fields disabled while running; hint shown when camera/model edits pending
+  4. `python -m pytest tests/ -q` passes; manual 05-UAT checklist completed on hardware
+**Plans:** 2 plans (retroactive verify + close gaps)
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 5 to break down)
+- [ ] 05-01-PLAN.md — test_gui_hardening: generation guards, stop-pending, restart hints
+- [ ] 05-02-PLAN.md — 05-VERIFICATION.md, UAT doc alignment, production UAT checkpoint
 
 ### Phase 6: Detection post-processing, reject rules, and temporal stability
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Post-inference spatial filters and temporal stability in `runtime/postprocess.py` wired into `WebcamEngine` when `stability.enabled`; GUI/TOML controls; full pytest coverage of reject paths and hot-reload.
+
+**Requirements**: REQ-01, REQ-04
 **Depends on:** Phase 5
-**Plans:** 0 plans
+**Success Criteria:**
+  1. Filters: min confidence, min area, edge reject, duplicate merge IoU, temporal vote window — each tested
+  2. `DetectionPostProcessor.update_config` rebuilds tracker on window/votes/IoU change; reset when disabled
+  3. `process_frame` applies postprocess; `detection_count` reflects filtered output (engine test)
+  4. Manual webcam: stability reduces flicker; TOML persistence (Phase 9 adds margin/unknown)
+**Plans:** 2 plans (retroactive verify + close gaps)
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 6 to break down)
+- [ ] 06-01-PLAN.md — update_config + engine postprocess integration tests
+- [ ] 06-02-PLAN.md — 06-VERIFICATION.md finalize + optional manual stability UAT
 
 ### Phase 7: Web telemetry API and frame streaming for Stitch console
 
