@@ -32,7 +32,7 @@ def test_stale_frame_ready_ignored():
 
     window = _mainwindow()
     window._run_generation = 2
-    before = window.status_label.text()
+    before = window.fps_label.text()
     image = QtGui.QImage(4, 4, QtGui.QImage.Format.Format_RGB888)
     status = MagicMock(
         stats=MagicMock(fps=0.0, frame_read_ms=0.0, inference_ms=0.0, render_ms=0.0),
@@ -44,7 +44,7 @@ def test_stale_frame_ready_ignored():
         detection_count=0,
     )
     window._on_frame_ready(image, status, generation=1)
-    assert window.status_label.text() == before
+    assert window.fps_label.text() == before
     assert window._current_pixmap is None
     window.close()
 
@@ -80,7 +80,7 @@ def test_finalize_worker_stop_clears_thread_and_status():
     window._finalize_worker_stop(thread)
     assert window.frame_thread is None
     assert window._stopping is False
-    assert "Stopped" in window.status_label.text()
+    assert window.start_button.text() == "▶ START"
     window.close()
 
 
@@ -107,6 +107,6 @@ def test_restart_hint_when_camera_index_differs_while_running():
 
 
 def test_frame_thread_shutdown_uses_destroy_cv_windows_false():
-    source = Path(__file__).resolve().parents[1] / "src" / "block_detected" / "apps" / "gui" / "app.py"
+    source = Path(__file__).resolve().parents[1] / "src" / "block_detected" / "apps" / "gui" / "worker.py"
     text = source.read_text(encoding="utf-8")
-    assert text.count("destroy_cv_windows=False") >= 2
+    assert "destroy_cv_windows=False" in text

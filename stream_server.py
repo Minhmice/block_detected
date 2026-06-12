@@ -189,7 +189,7 @@ def handle_client(conn, addr):
             flush=True,
         )
 
-        conn.settimeout(1.0)
+        conn.settimeout(None)
         frame_dt = 1.0 / max(fps, 1)
         encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
 
@@ -210,8 +210,8 @@ def handle_client(conn, addr):
             delay = frame_dt - (time.perf_counter() - start)
             if delay > 0:
                 time.sleep(delay)
-    except (BrokenPipeError, ConnectionResetError, TimeoutError):
-        print(f"client disconnected: {addr}", flush=True)
+    except (BrokenPipeError, ConnectionResetError, TimeoutError) as exc:
+        print(f"client disconnected: {addr} ({type(exc).__name__})", flush=True)
     except Exception as exc:
         print(f"client error {addr}: {exc}", flush=True)
         if not handshake_done:

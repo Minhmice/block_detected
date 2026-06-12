@@ -393,9 +393,11 @@ class StreamViewer(tk.Tk):
         self.resizable(False, False)
 
         self.messages = queue.Queue()
+        self.frame_queue = queue.Queue(maxsize=2)
         self.worker = None
         self.stop_event = threading.Event()
         self.sock = None
+        self.window_open = False
         self.manual_ip_visible = False
 
         self.resolution_var = tk.StringVar(value="1280x720")
@@ -500,6 +502,11 @@ class StreamViewer(tk.Tk):
     def _disconnect(self):
         self.status_var.set("Disconnecting")
         self.stop_event.set()
+        while True:
+            try:
+                self.frame_queue.get_nowait()
+            except queue.Empty:
+                break
         if self.sock is not None:
             try:
                 self.sock.shutdown(socket.SHUT_RDWR)
@@ -510,9 +517,21 @@ class StreamViewer(tk.Tk):
             except OSError:
                 pass
 
+    def _enqueue_frame(self, frame):
+        try:
+            self.frame_queue.put_nowait(frame)
+        except queue.Full:
+            try:
+                self.frame_queue.get_nowait()
+            except queue.Empty:
+                pass
+            try:
+                self.frame_queue.put_nowait(frame)
+            except queue.Full:
+                pass
+
     def _stream_worker(self, config, manual_host):
         sock = None
-        window_open = False
         failed = False
         try:
             if manual_host:
@@ -538,6 +557,7 @@ class StreamViewer(tk.Tk):
                 raise RuntimeError(ack.get("error", "server rejected config"))
 
             save_cached_host(host)
+            sock.settimeout(None)
             self.messages.put(
                 (
                     "connected",
@@ -547,9 +567,6 @@ class StreamViewer(tk.Tk):
                     f"@ {ack.get('actual_fps')} FPS",
                 )
             )
-
-            cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
-            window_open = True
 
             while not self.stop_event.is_set():
                 hdr = recvall(sock, 4, self.stop_event)
@@ -569,10 +586,7 @@ class StreamViewer(tk.Tk):
                 if frame is None:
                     continue
 
-                cv2.imshow(WINDOW_NAME, frame)
-                if cv2.waitKey(1) == 27:
-                    self.stop_event.set()
-                    break
+                self._enqueue_frame(frame)
         except DiscoveryError as exc:
             failed = True
             print("discovery failed:")
@@ -584,7 +598,7 @@ class StreamViewer(tk.Tk):
             failed = True
             self.messages.put(("manual_ip", None))
             self.messages.put(("failed", f"Failed: {exc}"))
-        except (OSError, RuntimeError, ValueError, json.JSONDecodeError) as exc:
+        except (OSError, RuntimeError, ValueError, json.JSONDecodeError, cv2.error) as exc:
             failed = True
             self.messages.put(("manual_ip", None))
             self.messages.put(("failed", f"Failed: {exc}"))
@@ -594,13 +608,23 @@ class StreamViewer(tk.Tk):
                     sock.close()
                 except OSError:
                     pass
-            if window_open:
-                try:
-                    cv2.destroyWindow(WINDOW_NAME)
-                except cv2.error:
-                    pass
             self.sock = None
             self.messages.put(("done", "Failed" if failed else "Disconnected"))
+
+    def _open_stream_window(self):
+        if self.window_open:
+            return
+        cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
+        self.window_open = True
+
+    def _close_stream_window(self):
+        if not self.window_open:
+            return
+        try:
+            cv2.destroyWindow(WINDOW_NAME)
+        except cv2.error:
+            pass
+        self.window_open = False
 
     def _drain_messages(self):
         try:
@@ -613,19 +637,33 @@ class StreamViewer(tk.Tk):
                 elif kind == "connected":
                     self.status_var.set(value)
                     self.connect_button.configure(text="Disconnect", state="normal")
+                    self._open_stream_window()
                 elif kind == "failed":
                     self.status_var.set(value)
                     self.connect_button.configure(text="Connect", state="normal")
                 elif kind == "done":
+                    self._close_stream_window()
                     if value != "Failed":
                         self.status_var.set(value)
                     self.connect_button.configure(text="Connect", state="normal")
         except queue.Empty:
             pass
+
+        if self.window_open:
+            try:
+                frame = self.frame_queue.get_nowait()
+            except queue.Empty:
+                pass
+            else:
+                cv2.imshow(WINDOW_NAME, frame)
+                if cv2.waitKey(1) == 27:
+                    self._disconnect()
+
         self.after(50, self._drain_messages)
 
     def _close(self):
         self._disconnect()
+        self._close_stream_window()
         self.after(100, self.destroy)
 
 

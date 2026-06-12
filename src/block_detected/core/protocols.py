@@ -13,7 +13,16 @@ class DetectorBackend(Protocol):
     def model_name(self) -> str:
         ...
 
-    def predict(self, frame: Any, *, conf: float) -> FrameResult:
+    def predict(
+        self,
+        frame: Any,
+        *,
+        conf: float,
+        iou: float = 0.45,
+        imgsz: int = 640,
+        max_det: int = 100,
+        agnostic_nms: bool = False,
+    ) -> FrameResult:
         ...
 
     def close(self) -> None:

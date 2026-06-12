@@ -10,23 +10,25 @@ def test_gui_main_is_callable():
     assert callable(app.main)
 
 
-def test_main_py_delegates_to_gui_main():
+def test_main_py_delegates_to_launcher():
     main_path = Path(__file__).resolve().parents[1] / "main.py"
     tree = ast.parse(main_path.read_text(encoding="utf-8"))
     imports = [
         node.names[0].name
         for node in tree.body
-        if isinstance(node, ast.ImportFrom) and node.module == "block_detected.apps.gui.app"
+        if isinstance(node, ast.ImportFrom) and node.module == "block_detected.apps.launcher"
     ]
     assert "main" in imports
 
 
-def test_console_script_target_matches_gui_main():
+def test_console_scripts_separate_launcher_and_gui():
     import tomllib
 
     pyproject = Path(__file__).resolve().parents[1] / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-    assert data["project"]["scripts"]["block-detected"] == "block_detected.apps.gui.app:main"
+    scripts = data["project"]["scripts"]
+    assert scripts["block-detected"] == "block_detected.apps.launcher:main"
+    assert scripts["block-detected-gui"] == "block_detected.apps.gui.app:main"
 
 
 def test_print_missing_qt_returns_nonzero():

@@ -38,4 +38,6 @@ class RuntimeStatus:
     camera_index: int = 0
     stability_enabled: bool = False
     detection_count: int = 0
+    primary_detection: Detection | None = None
+    detections: list[Detection] = field(default_factory=list)
     stats: InferenceStats = field(default_factory=InferenceStats)

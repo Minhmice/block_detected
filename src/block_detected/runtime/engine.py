@@ -14,14 +14,18 @@ from block_detected.config.paths import MODELS_DIR
 from block_detected.core.domain import Detection, FrameResult, RuntimeStatus
 from block_detected.core.protocols import DetectorBackend
 from block_detected.runtime.detector_loader import load_detector
-from block_detected.detection.yolo.loader import default_model_index, discover_model_paths
+from block_detected.detection.yolo.loader import discover_model_paths, resolve_model_index
+from block_detected.runtime.config_store import save_config
 from block_detected.io.camera.capture import open_camera, switch_camera
 from block_detected.runtime.config_schema import AppConfig
 from block_detected.runtime.metrics import RuntimeMetrics
+from block_detected.runtime.logging_setup import log_event
 from block_detected.runtime.postprocess import DetectionPostProcessor
+from block_detected.runtime.preprocess import apply_preprocess
 from block_detected.runtime.state import RuntimeState
 from block_detected.vision.drawing.detections import draw_detection_boxes
 from block_detected.vision.drawing.eval import draw_eval_boxes
+from block_detected.vision.drawing.overlays import draw_contours_overlay, draw_corners_overlay
 from block_detected.vision.drawing.widgets import draw_model_switch_button, draw_status_bar
 
 logger = logging.getLogger(__name__)
@@ -48,11 +52,12 @@ class WebcamEngine:
         self.state = RuntimeState(
             confidence=config.inference.default_conf,
             camera_index=config.camera.index,
-            model_index=default_model_index(model_paths, config.inference.default_model_name),
+            model_index=resolve_model_index(model_paths, config.inference.last_model_name),
         )
         self.metrics = RuntimeMetrics()
         self._postprocess = DetectionPostProcessor(config.stability)
         self._cap: cv2.VideoCapture | None = None
+        self._last_primary_log: tuple[str, float] | None = None
 
     @classmethod
     def try_create(cls, config: AppConfig) -> tuple[WebcamEngine | None, str | None]:
@@ -65,7 +70,7 @@ class WebcamEngine:
             logger.error(message)
             return None, message
 
-        model_index = default_model_index(model_paths, config.inference.default_model_name)
+        model_index = resolve_model_index(model_paths, config.inference.last_model_name)
         model_path = model_paths[model_index]
         try:
             detector = load_detector(model_path)
@@ -82,6 +87,8 @@ class WebcamEngine:
             len(model_paths),
             model_path.name,
         )
+        log_event("INIT", f"Loading model {model_path.name}...")
+        log_event("OK", "Model loaded successfully.")
         return engine, None
 
     @classmethod
@@ -106,6 +113,7 @@ class WebcamEngine:
             logger.error(message)
             return False, message
         logger.info("Opened webcam source: %s", index)
+        log_event("CAM", f"Camera {index} acquired.")
         logger.info(
             "Available models (%s): %s",
             len(self.model_paths),
@@ -140,6 +148,12 @@ class WebcamEngine:
                 len(self.model_paths),
                 model_path.name,
             )
+            log_event("OK", f"Model switched to {model_path.name}.")
+            self.config.inference.last_model_name = model_path.name
+            try:
+                save_config(self.config)
+            except OSError as exc:
+                logger.warning("Failed to persist last_model_name: %s", exc)
         except Exception as exc:
             logger.error("Failed to load model %s: %s", model_path.name, exc)
 
@@ -157,6 +171,7 @@ class WebcamEngine:
         if switched:
             self.state.camera_index = new_index
             logger.info("Switched to webcam source: %s", new_index)
+            log_event("CAM", f"Camera {new_index} acquired.")
         else:
             logger.warning("No other camera source available to switch.")
         return switched
@@ -172,13 +187,31 @@ class WebcamEngine:
             logger.warning("Camera frame read failed. Stopping inference loop.")
             return None
 
+        pp = self.config.preprocess
+        cl = self.config.classical
+        frame = apply_preprocess(
+            frame,
+            contrast=pp.contrast,
+            brightness=pp.brightness,
+            saturation=pp.saturation,
+            blur_kernel=cl.blur_kernel,
+        )
+
         inf = self.config.inference
         active_conf = inf.eval_conf if self.state.eval_mode else self.state.confidence
 
         try:
-            frame_result = self._detector.predict(frame, conf=active_conf)
+            frame_result = self._detector.predict(
+                frame,
+                conf=active_conf,
+                iou=inf.iou,
+                imgsz=inf.imgsz,
+                max_det=inf.max_det,
+                agnostic_nms=inf.agnostic_nms,
+            )
         except Exception as exc:
             logger.error("Inference failed: %s", exc)
+            log_event("ERR", f"Inference failed: {exc}")
             return None
 
         frame_h, frame_w = frame.shape[:2]
@@ -210,6 +243,23 @@ class WebcamEngine:
             button_height=ui.button_height,
             button_pad_x=ui.button_pad_x,
         )
+        sorted_detections = sorted(
+            frame_result.detections,
+            key=lambda d: d.confidence,
+            reverse=True,
+        )
+        ui_cap = min(8, self.config.inference.max_det)
+        top_detections = sorted_detections[:ui_cap]
+        primary = top_detections[0] if top_detections else None
+        if primary is not None:
+            key = (primary.class_name, round(primary.confidence, 3))
+            if getattr(self, "_last_primary_log", None) != key:
+                self._last_primary_log = key
+                log_event(
+                    "DET",
+                    f"Found {primary.class_name.upper()} (conf: {primary.confidence:.2f})",
+                )
+
         status = RuntimeStatus(
             eval_mode=self.state.eval_mode,
             confidence=self.state.confidence,
@@ -217,6 +267,8 @@ class WebcamEngine:
             camera_index=self.state.camera_index,
             stability_enabled=self.config.stability.enabled,
             detection_count=len(frame_result.detections),
+            primary_detection=primary,
+            detections=top_detections,
             stats=stats,
         )
         return ProcessedFrame(
@@ -252,6 +304,18 @@ class WebcamEngine:
             eval_conf=inf.eval_conf,
             model_name=self._detector.model_name,
         )
+
+        cl = self.config.classical
+        if cl.show_contours:
+            draw_contours_overlay(
+                annotated,
+                blur_kernel=cl.blur_kernel,
+                canny_low=cl.canny_low,
+                canny_high=cl.canny_high,
+            )
+        if cl.show_corners:
+            draw_corners_overlay(annotated)
+
         return annotated
 
     def apply_hot_config(self, config: AppConfig) -> None:

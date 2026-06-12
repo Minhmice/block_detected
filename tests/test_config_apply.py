@@ -17,7 +17,7 @@ class _FakeDetector:
     def model_name(self) -> str:
         return self._name
 
-    def predict(self, frame, *, conf: float):
+    def predict(self, frame, *, conf: float, **kwargs):
         raise AssertionError("not used")
 
     def close(self) -> None:
@@ -48,10 +48,10 @@ def test_needs_runtime_restart_for_camera_and_model():
     assert needs_runtime_restart(current, baseline)
 
     current = AppConfig.defaults()
-    current.inference.default_model_name = "other.pt"
-    assert needs_runtime_restart(current, baseline)
+    current.inference.last_model_name = "other.pt"
+    assert not needs_runtime_restart(current, baseline)
 
-    assert "inference.default_model_name" in config_changed_keys(current, baseline)
+    assert "inference.last_model_name" in config_changed_keys(current, baseline)
 
 
 def test_config_changed_keys_detects_each_stability_field():
@@ -70,6 +70,23 @@ def test_config_changed_keys_detects_each_stability_field():
         setattr(current.stability, attr, value)
         changed = config_changed_keys(current, baseline)
         assert key in changed, f"expected {key} for {attr}"
+
+
+def test_config_changed_keys_detects_inference_fields():
+    baseline = AppConfig.defaults()
+    current = AppConfig.defaults()
+    current.inference.iou = 0.6
+    current.inference.max_det = 50
+    changed = config_changed_keys(current, baseline)
+    assert "inference.iou" in changed
+    assert "inference.max_det" in changed
+
+
+def test_needs_runtime_restart_for_imgsz_only():
+    baseline = AppConfig.defaults()
+    current = AppConfig.defaults()
+    current.inference.imgsz = 960
+    assert needs_runtime_restart(current, baseline)
 
 
 def test_needs_runtime_restart_false_for_stability_only_changes():

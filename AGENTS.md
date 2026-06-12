@@ -29,7 +29,12 @@ ui/            keyboard/mouse callbacks
 
 ```
 src/block_detected/
-├── apps/gui/app.py             # PySide6 GUI — primary entry (main.py)
+├── apps/gui/
+│   ├── app.py                  # PySide6 entry (main.py --gui)
+│   ├── robo_window.py          # Composes widgets; runtime wiring
+│   ├── theme.py                # COLORS + modular QSS from DESIGN.md
+│   ├── widgets/                # HeaderBar, PipelineSidebar, cards, etc.
+│   └── worker.py               # FrameThread (Qt worker)
 ├── runtime/
 │   ├── engine.py               # WebcamEngine — read/infer/render/metrics
 │   ├── state.py                # RuntimeState (conf, eval)
@@ -64,7 +69,14 @@ Repo root: `main.py`, optional `block_detected.toml`, `models/*.pt`
 
 | Goal | Edit here |
 |------|-----------|
-| Desktop GUI controls / preview | `apps/gui/app.py` |
+| Desktop GUI layout / controls | `apps/gui/robo_window.py`, `apps/gui/widgets/`, `apps/gui/theme.py` |
+| Frame preprocess (contrast/blur) | `runtime/preprocess.py` |
+| Viewport overlays (contours/corners) | `vision/drawing/overlays.py`, `classical.show_*` in config |
+| Inference params (iou/imgsz/max_det) | `runtime/config_schema.py`, `detection/yolo/backend.py` |
+| Last model persistence | `inference.last_model_name` in TOML; `engine.switch_model()` auto `save_config` |
+| Multi detection panel | `apps/gui/widgets/detection_card.py`, `RuntimeStatus.detections` |
+| GUI frame worker thread | `apps/gui/worker.py` |
+| GUI entry (`block-detected-gui`) | `apps/gui/app.py` |
 | Frame read → infer → render pipeline | `runtime/engine.py` |
 | Post-inference filters / stability | `runtime/postprocess.py`, `vision/geometry.py` |
 | FPS / latency metrics | `runtime/metrics.py` |
@@ -92,7 +104,7 @@ Repo root: `main.py`, optional `block_detected.toml`, `models/*.pt`
 ## GUI
 
 - Primary entry: `python main.py` → `apps/gui/app.py`.
-- PySide6 is a required dependency (`pip install -e .`).
+- Default install (`pip install -e .`) includes PySide6 + textual/rich. Pi lite: `requirements-pi.txt` + `pip install -e . --no-deps`.
 - Keep PySide6 imports lazy in `apps/gui/app.py` for import-time safety in tests.
 - GUI talks to `runtime.WebcamEngine`; do not duplicate YOLO/camera logic in UI code.
 - **Log buffer:** GUI reads logs via `get_log_lines()` (thread-safe snapshot). Do **not** read `LogBufferHandler._records` or any `.records` attribute from UI code.
@@ -102,10 +114,15 @@ Repo root: `main.py`, optional `block_detected.toml`, `models/*.pt`
 ## Run
 
 ```bash
-pip install -e ".[dev]"
-python main.py
-python -m block_detected
-block-detected
+pip install -e .                     # full: GUI + TUI
+pip install -e ".[dev]"              # contributor tests
+pip install -r requirements-pi.txt && pip install -e . --no-deps   # Pi lite
+pip install -e ".[viewer]"           # view_client.py on viewer PC
+python main.py              # interactive GUI/TUI picker in terminal
+python main.py --gui        # PySide6 desktop
+python main.py --tui        # Textual dashboard
+block-detected-gui
+block-detected-tui
 python -m pytest tests/ -q
 ```
 

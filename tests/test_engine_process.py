@@ -37,7 +37,7 @@ class _FakeDetector:
     def model_name(self) -> str:
         return self._name
 
-    def predict(self, frame, *, conf: float):
+    def predict(self, frame, *, conf: float, **kwargs):
         if self._raise_on_predict:
             raise RuntimeError("inference failed")
         return FrameResult(detections=list(self._detections), raw=None)
@@ -120,6 +120,22 @@ def test_apply_hot_config_updates_stability_without_touching_cap():
 
     assert engine.config.stability.enabled is True
     assert engine._cap is cap
+
+
+def test_process_frame_sets_primary_detection():
+    engine = _engine_with_cap()
+    result = engine.process_frame()
+    assert result is not None
+    assert result.status.primary_detection is not None
+    assert result.status.primary_detection.confidence == 0.95
+
+
+def test_process_frame_populates_sorted_detections_list():
+    engine = _engine_with_cap()
+    result = engine.process_frame()
+    assert result is not None
+    assert len(result.status.detections) == 1
+    assert result.status.detections[0].confidence == 0.95
 
 
 def test_apply_hot_config_min_confidence_filters_more_detections():

@@ -3,6 +3,11 @@
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
+pytest.importorskip("rich")
+pytest.importorskip("textual")
+
 from block_detected.apps.tui import app
 from block_detected.core.domain import Detection, InferenceStats, RuntimeStatus
 from block_detected.runtime.config_schema import AppConfig
@@ -55,16 +60,19 @@ def test_console_script_target_matches_tui_main():
     assert data["project"]["scripts"]["block-detected-tui"] == "block_detected.apps.tui.app:main"
 
 
-def test_pyproject_uses_textual_and_rich_not_curses():
+def test_pyproject_tui_extra_uses_textual_and_rich_not_curses():
     import tomllib
 
     pyproject = Path(__file__).resolve().parents[1] / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-    deps = "\n".join(data["project"]["dependencies"])
+    core_deps = "\n".join(data["project"]["dependencies"])
+    tui_deps = "\n".join(data["project"]["optional-dependencies"]["tui"])
 
-    assert "textual" in deps
-    assert "rich" in deps
-    assert "windows-curses" not in deps
+    assert "opencv-python-headless" in core_deps
+    assert "PySide6" not in core_deps
+    assert "textual" in tui_deps
+    assert "rich" in tui_deps
+    assert "windows-curses" not in tui_deps
 
 
 def test_config_from_args_applies_camera_and_conf_overrides(monkeypatch):

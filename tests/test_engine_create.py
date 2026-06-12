@@ -11,7 +11,7 @@ class _FakeDetector:
     def model_name(self) -> str:
         return "fake.pt"
 
-    def predict(self, frame, *, conf: float):
+    def predict(self, frame, *, conf: float, **kwargs):
         raise AssertionError("not used")
 
     def close(self) -> None:

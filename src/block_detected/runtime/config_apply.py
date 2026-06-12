@@ -24,8 +24,42 @@ def config_changed_keys(current: AppConfig, baseline: AppConfig) -> set[str]:
         keys.add("camera.height")
 
     inf_a, inf_b = current.inference, baseline.inference
-    if inf_a.default_model_name != inf_b.default_model_name:
-        keys.add("inference.default_model_name")
+    if inf_a.last_model_name != inf_b.last_model_name:
+        keys.add("inference.last_model_name")
+    if inf_a.default_conf != inf_b.default_conf:
+        keys.add("inference.default_conf")
+    if inf_a.iou != inf_b.iou:
+        keys.add("inference.iou")
+    if inf_a.max_det != inf_b.max_det:
+        keys.add("inference.max_det")
+    if inf_a.agnostic_nms != inf_b.agnostic_nms:
+        keys.add("inference.agnostic_nms")
+    if inf_a.imgsz != inf_b.imgsz:
+        keys.add("inference.imgsz")
+
+    pp_a, pp_b = current.preprocess, baseline.preprocess
+    if pp_a.contrast != pp_b.contrast:
+        keys.add("preprocess.contrast")
+    if pp_a.brightness != pp_b.brightness:
+        keys.add("preprocess.brightness")
+    if pp_a.saturation != pp_b.saturation:
+        keys.add("preprocess.saturation")
+
+    cl_a, cl_b = current.classical, baseline.classical
+    if cl_a.enabled != cl_b.enabled:
+        keys.add("classical.enabled")
+    if cl_a.blur_kernel != cl_b.blur_kernel:
+        keys.add("classical.blur_kernel")
+    if cl_a.canny_low != cl_b.canny_low:
+        keys.add("classical.canny_low")
+    if cl_a.canny_high != cl_b.canny_high:
+        keys.add("classical.canny_high")
+    if cl_a.show_contours != cl_b.show_contours:
+        keys.add("classical.show_contours")
+    if cl_a.show_corners != cl_b.show_corners:
+        keys.add("classical.show_corners")
+    if cl_a.show_warped_face != cl_b.show_warped_face:
+        keys.add("classical.show_warped_face")
 
     if current.ui.log_level != baseline.ui.log_level:
         keys.add(RESTART_LOG_LEVEL_KEY)

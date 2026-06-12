@@ -23,7 +23,7 @@ from block_detected.config.ui import (
 
 # Keys that require reopening camera or reloading detector when changed at runtime.
 RESTART_CAMERA_KEYS = frozenset({"camera.index", "camera.width", "camera.height", "camera.max_index"})
-RESTART_DETECTOR_KEYS = frozenset({"inference.default_model_name"})
+RESTART_DETECTOR_KEYS = frozenset({"inference.imgsz"})
 
 
 @dataclass
@@ -36,22 +36,36 @@ class CameraConfig:
 
 @dataclass
 class InferenceConfig:
-    default_model_name: str = DEFAULT_MODEL_NAME
+    last_model_name: str = DEFAULT_MODEL_NAME
     conf_min: float = CONF_MIN
     conf_max: float = CONF_MAX
     conf_step: float = CONF_STEP
     default_conf: float = DEFAULT_CONF
     eval_conf: float = EVAL_CONF
+    imgsz: int = 640
+    iou: float = 0.45
+    max_det: int = 100
+    agnostic_nms: bool = False
+
+
+@dataclass
+class PreprocessConfig:
+    contrast: float = 1.0
+    brightness: int = 0
+    saturation: float = 1.0
 
 
 @dataclass
 class ClassicalPipelineConfig:
-    """Placeholder for future classical CV stages (blur, threshold, etc.)."""
+    """Classical CV stages (blur, canny) and viewport overlay toggles."""
 
     enabled: bool = False
     blur_kernel: int = 0
     canny_low: int = 50
     canny_high: int = 150
+    show_contours: bool = False
+    show_corners: bool = False
+    show_warped_face: bool = False
 
 
 @dataclass
@@ -82,6 +96,7 @@ class UiDebugConfig:
 class AppConfig:
     camera: CameraConfig = field(default_factory=CameraConfig)
     inference: InferenceConfig = field(default_factory=InferenceConfig)
+    preprocess: PreprocessConfig = field(default_factory=PreprocessConfig)
     classical: ClassicalPipelineConfig = field(default_factory=ClassicalPipelineConfig)
     stability: StabilityConfig = field(default_factory=StabilityConfig)
     ui: UiDebugConfig = field(default_factory=UiDebugConfig)
@@ -99,9 +114,19 @@ class AppConfig:
             fields = {f.name for f in dc_type.__dataclass_fields__.values()}  # type: ignore[attr-defined]
             return dc_type(**{k: v for k, v in raw.items() if k in fields})
 
+        def inference_section() -> InferenceConfig:
+            raw = data.get("inference", {})
+            if not isinstance(raw, dict):
+                return InferenceConfig()
+            if "last_model_name" not in raw and "default_model_name" in raw:
+                raw = {**raw, "last_model_name": raw["default_model_name"]}
+            fields = {f.name for f in InferenceConfig.__dataclass_fields__.values()}  # type: ignore[attr-defined]
+            return InferenceConfig(**{k: v for k, v in raw.items() if k in fields})
+
         return cls(
             camera=section("camera", CameraConfig),
-            inference=section("inference", InferenceConfig),
+            inference=inference_section(),
+            preprocess=section("preprocess", PreprocessConfig),
             classical=section("classical", ClassicalPipelineConfig),
             stability=section("stability", StabilityConfig),
             ui=section("ui", UiDebugConfig),
@@ -111,6 +136,7 @@ class AppConfig:
         return {
             "camera": asdict(self.camera),
             "inference": asdict(self.inference),
+            "preprocess": asdict(self.preprocess),
             "classical": asdict(self.classical),
             "stability": asdict(self.stability),
             "ui": asdict(self.ui),
@@ -153,7 +179,24 @@ class AppConfig:
                 require_number("inference.eval_conf", inf.eval_conf),
             )
         )
-        require_str("inference.default_model_name", inf.default_model_name)
+        require_str("inference.last_model_name", inf.last_model_name)
+        inference_extra_valid = all(
+            (
+                require_int("inference.imgsz", inf.imgsz),
+                require_number("inference.iou", inf.iou),
+                require_int("inference.max_det", inf.max_det),
+                require_bool("inference.agnostic_nms", inf.agnostic_nms),
+            )
+        )
+
+        pp = self.preprocess
+        preprocess_valid = all(
+            (
+                require_number("preprocess.contrast", pp.contrast),
+                require_int("preprocess.brightness", pp.brightness),
+                require_number("preprocess.saturation", pp.saturation),
+            )
+        )
 
         camera_fields_valid = all(
             (
@@ -164,10 +207,14 @@ class AppConfig:
             )
         )
 
-        require_bool("classical.enabled", self.classical.enabled)
-        require_int("classical.blur_kernel", self.classical.blur_kernel)
-        require_int("classical.canny_low", self.classical.canny_low)
-        require_int("classical.canny_high", self.classical.canny_high)
+        cl = self.classical
+        require_bool("classical.enabled", cl.enabled)
+        require_int("classical.blur_kernel", cl.blur_kernel)
+        require_int("classical.canny_low", cl.canny_low)
+        require_int("classical.canny_high", cl.canny_high)
+        require_bool("classical.show_contours", cl.show_contours)
+        require_bool("classical.show_corners", cl.show_corners)
+        require_bool("classical.show_warped_face", cl.show_warped_face)
         require_bool("stability.enabled", self.stability.enabled)
         require_number("stability.min_confidence", self.stability.min_confidence)
         require_int("stability.min_box_area_px", self.stability.min_box_area_px)
@@ -193,6 +240,20 @@ class AppConfig:
             errors.append("inference.default_conf must be within [conf_min, conf_max]")
         if conf_fields_valid and (inf.eval_conf < inf.conf_min or inf.eval_conf > inf.conf_max):
             errors.append("inference.eval_conf must be within [conf_min, conf_max]")
+        if inference_extra_valid and not 320 <= inf.imgsz <= 1280:
+            errors.append("inference.imgsz must be within [320, 1280]")
+        if inference_extra_valid and inf.imgsz % 32 != 0:
+            errors.append("inference.imgsz must be a multiple of 32")
+        if inference_extra_valid and not 0 < inf.iou <= 1:
+            errors.append("inference.iou must be in (0, 1]")
+        if inference_extra_valid and inf.max_det < 1:
+            errors.append("inference.max_det must be >= 1")
+        if preprocess_valid and not 0 <= pp.contrast <= 2:
+            errors.append("preprocess.contrast must be within [0, 2]")
+        if preprocess_valid and not -100 <= pp.brightness <= 100:
+            errors.append("preprocess.brightness must be within [-100, 100]")
+        if preprocess_valid and not 0 <= pp.saturation <= 2:
+            errors.append("preprocess.saturation must be within [0, 2]")
         if camera_fields_valid and (self.camera.width < 1 or self.camera.height < 1):
             errors.append("camera width/height must be positive")
         if log_level_valid and self.ui.log_level.upper() not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:

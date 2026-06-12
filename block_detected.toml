@@ -1,0 +1,49 @@
+[camera]
+index = 0
+max_index = 5
+width = 1280
+height = 720
+
+[inference]
+last_model_name = "new.pt"
+conf_min = 0.001
+conf_max = 0.95
+conf_step = 0.001
+default_conf = 0.25
+eval_conf = 0.01
+imgsz = 640
+iou = 0.45
+max_det = 100
+agnostic_nms = false
+
+[preprocess]
+contrast = 1.0
+brightness = 0
+saturation = 1.0
+
+[classical]
+enabled = false
+blur_kernel = 0
+canny_low = 50
+canny_high = 150
+show_contours = false
+show_corners = false
+show_warped_face = false
+
+[stability]
+enabled = false
+min_confidence = 0.0
+min_box_area_px = 0
+reject_edge_boxes = false
+duplicate_merge_iou = 0.5
+temporal_window = 5
+required_stable_votes = 3
+
+[ui]
+window_name = "YOLO Webcam Inference"
+button_margin = 12
+button_height = 40
+button_pad_x = 14
+key_arrow_up = 2490368
+key_arrow_down = 2621440
+log_level = "INFO"

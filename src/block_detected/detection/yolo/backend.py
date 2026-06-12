@@ -17,8 +17,25 @@ class YoloDetector:
     def model_name(self) -> str:
         return self._path.name
 
-    def predict(self, frame, *, conf: float) -> FrameResult:
-        results = self._model(frame, conf=conf, verbose=False)
+    def predict(
+        self,
+        frame,
+        *,
+        conf: float,
+        iou: float = 0.45,
+        imgsz: int = 640,
+        max_det: int = 100,
+        agnostic_nms: bool = False,
+    ) -> FrameResult:
+        results = self._model(
+            frame,
+            conf=conf,
+            iou=iou,
+            imgsz=imgsz,
+            max_det=max_det,
+            agnostic_nms=agnostic_nms,
+            verbose=False,
+        )
         return parse_yolo_result(results[0])
 
     def close(self) -> None:

@@ -252,3 +252,13 @@ Plans:
 
 Plans:
 - [ ] TBD (run /gsd-plan-phase 14 to break down)
+
+### Phase 15: Robo-Vision desktop GUI from Stitch HTML spec (no FastAPI)
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 14
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 15 to break down)

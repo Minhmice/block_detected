@@ -15,7 +15,7 @@ class _FakeDetector:
     def model_name(self) -> str:
         return self._name
 
-    def predict(self, frame, *, conf: float):
+    def predict(self, frame, *, conf: float, **kwargs):
         return FrameResult(detections=[], raw=None)
 
     def close(self) -> None:
