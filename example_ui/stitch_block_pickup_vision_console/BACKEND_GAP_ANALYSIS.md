@@ -3,7 +3,7 @@
 > Generated: 2026-06-05  
 > Reference UI: `example_ui/stitch_block_pickup_vision_console/code.html`  
 > Reference spec: `html_data_requirements.md`  
-> Codebase snapshot: `.planning/codebase/` (refreshed via `/gsd-map-codebase`)
+> Codebase snapshot: `.planning/codebase/`
 
 Legend: **✅ Có** · **🟡 Một phần** (schema / UI cũ / hành vi tương đương nhưng chưa khớp spec) · **❌ Chưa có**
 

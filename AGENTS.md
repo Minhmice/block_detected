@@ -126,14 +126,8 @@ block-detected-tui
 python -m pytest tests/ -q
 ```
 
-## GSD
-
-- Phase 3: runtime engine + typed config (implemented)
-- Phase 4: PySide6 GUI (implemented; default entry)
-- Phase 5: GUI/runtime hardening (implemented)
-- Phase 6: detection post-processing + temporal stability (in progress)
 
 ## Do not edit
 
 - `models/*.pt`
-- `.planning/codebase/` (refresh via `/gsd-map-codebase` only)
+- `.planning/codebase/`
