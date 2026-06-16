@@ -5,7 +5,7 @@ width = 1280
 height = 720
 
 [inference]
-last_model_name = "new.pt"
+last_model_name = "rbs-final.pt"
 conf_min = 0.001
 conf_max = 0.95
 conf_step = 0.001

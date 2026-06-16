@@ -41,3 +41,6 @@ class RuntimeStatus:
     primary_detection: Detection | None = None
     detections: list[Detection] = field(default_factory=list)
     stats: InferenceStats = field(default_factory=InferenceStats)
+    # Additional kinematic information for GUI
+    primary_center_px: tuple[float, float] | None = None  # (cx, cy) of primary detection
+    camera_center_px: tuple[int, int] | None = None  # (cx, cy) of camera center

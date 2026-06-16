@@ -1,5 +1,7 @@
 """Pure geometry helpers (no model dependencies)."""
 
+import math
+
 from block_detected.core.types import Box
 
 
@@ -35,3 +37,32 @@ def iou(a: Box, b: Box) -> float:
     if union <= 0:
         return 0.0
     return inter / union
+
+
+def box_center(box: Box) -> tuple[float, float]:
+    """Calculate center (cx, cy) of a box (x1, y1, x2, y2)."""
+    x1, y1, x2, y2 = box
+    cx = (x1 + x2) / 2.0
+    cy = (y1 + y2) / 2.0
+    return cx, cy
+
+
+def box_to_xywh(box: Box) -> tuple[float, float, float, float]:
+    """Convert box (x1, y1, x2, y2) to XYWH (x, y, width, height)."""
+    x1, y1, x2, y2 = box
+    x = x1
+    y = y1
+    w = x2 - x1
+    h = y2 - y1
+    return x, y, w, h
+
+
+def distance_between_points(
+    point1: tuple[float, float],
+    point2: tuple[float, float],
+) -> float:
+    """Calculate Euclidean distance between two points."""
+    x1, y1 = point1
+    x2, y2 = point2
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+

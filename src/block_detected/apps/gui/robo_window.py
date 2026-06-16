@@ -21,6 +21,7 @@ from block_detected.apps.gui.widgets import (
     bind_slider_spin,
 )
 from block_detected.apps.gui.worker import create_frame_thread
+from block_detected.core.domain import RuntimeStatus
 from block_detected.runtime.config_apply import apply_hot_runtime_settings, needs_runtime_restart
 from block_detected.runtime.config_schema import AppConfig
 from block_detected.runtime.config_store import DEFAULT_CONFIG_PATH, load_config, save_config, validate_config
@@ -545,6 +546,7 @@ if QtCore is not None:
                 f"conf {status.confidence:.3f} | dets {status.detection_count}"
             )
             self.detection_card.update_detections(list(status.detections))
+            self.kinematics_card.update_status(status)
 
         def _reset_metrics(self) -> None:
             self.fps_label.setText("—")
@@ -552,6 +554,9 @@ if QtCore is not None:
             self.render_label.setText("—")
             self.preview_overlay.setText("Model: — | Click NEXT MODEL or Start")
             self.detection_card.update_detections([])
+            # Reset kinematics card
+            empty_status = RuntimeStatus()
+            self.kinematics_card.update_status(empty_status)
 
         def _update_preview_pixmap(self) -> None:
             if self._current_pixmap is None:

@@ -23,7 +23,12 @@ from block_detected.runtime.logging_setup import log_event
 from block_detected.runtime.postprocess import DetectionPostProcessor
 from block_detected.runtime.preprocess import apply_preprocess
 from block_detected.runtime.state import RuntimeState
-from block_detected.vision.drawing.detections import draw_detection_boxes
+from block_detected.vision.drawing.detections import (
+    draw_detection_boxes,
+    draw_detection_centers,
+    draw_camera_center,
+)
+from block_detected.vision.geometry import box_center
 from block_detected.vision.drawing.eval import draw_eval_boxes
 from block_detected.vision.drawing.overlays import draw_contours_overlay, draw_corners_overlay
 from block_detected.vision.drawing.widgets import draw_model_switch_button, draw_status_bar
@@ -260,6 +265,9 @@ class WebcamEngine:
                     f"Found {primary.class_name.upper()} (conf: {primary.confidence:.2f})",
                 )
 
+        primary_center_px = box_center(primary.box) if primary is not None else None
+        camera_center_px = (frame.shape[1] // 2, frame.shape[0] // 2)
+
         status = RuntimeStatus(
             eval_mode=self.state.eval_mode,
             confidence=self.state.confidence,
@@ -270,6 +278,8 @@ class WebcamEngine:
             primary_detection=primary,
             detections=top_detections,
             stats=stats,
+            primary_center_px=primary_center_px,
+            camera_center_px=camera_center_px,
         )
         return ProcessedFrame(
             annotated=annotated,
@@ -296,6 +306,12 @@ class WebcamEngine:
             draw_detection_boxes(annotated, frame_result.detections)
         else:
             annotated = frame_result.raw.plot()
+
+        # Draw detection centers with XYWH coordinates (red)
+        draw_detection_centers(annotated, frame_result.detections, color=(0, 0, 255))
+
+        # Draw camera center (purple/magenta)
+        draw_camera_center(annotated)
 
         draw_status_bar(
             annotated,
