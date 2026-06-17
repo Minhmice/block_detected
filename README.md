@@ -39,7 +39,7 @@ Post-processing: lọc confidence, diện tích, edge box, merge trùng IoU, ổ
 cd block_detected
 python3 -m venv .venv
 source .venv/bin/activate          # macOS/Linux
-# .\.venv\Scripts\Activate.ps1     # Windows
+# .\.venv\Scripts\Activate.ps1     # Windowsoy
 
 python -m pip install --upgrade pip
 ```

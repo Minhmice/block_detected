@@ -13,9 +13,10 @@ import cv2
 from block_detected.config.paths import MODELS_DIR
 from block_detected.core.domain import Detection, FrameResult, RuntimeStatus
 from block_detected.core.protocols import DetectorBackend
-from block_detected.runtime.detector_loader import load_detector
 from block_detected.detection.yolo.loader import discover_model_paths, resolve_model_index
 from block_detected.runtime.config_store import save_config
+from block_detected.runtime.detector_loader import load_detector
+from block_detected.runtime.platform import is_raspberry_pi
 from block_detected.io.camera.capture import open_camera, switch_camera
 from block_detected.runtime.config_schema import AppConfig
 from block_detected.runtime.metrics import RuntimeMetrics
@@ -62,6 +63,7 @@ class WebcamEngine:
         self.metrics = RuntimeMetrics()
         self._postprocess = DetectionPostProcessor(config.stability)
         self._cap: cv2.VideoCapture | None = None
+        self._camera_source: int | str = 0
         self._last_primary_log: tuple[str, float] | None = None
 
     @classmethod
@@ -101,24 +103,44 @@ class WebcamEngine:
         engine, _error = cls.try_create(config)
         return engine
 
+    def _prompt_pi_camera_source(self) -> int | str:
+        """Interactive prompt for Raspberry Pi camera choice."""
+        print("\n[Raspberry Pi detected] Chọn camera:")
+        print("  1  USB webcam (Logitech C270)")
+        print("  2  Pi Camera Module (CSI / libcamera)")
+        while True:
+            try:
+                choice = input("Chọn [1/2] (mặc định 2): ").strip()
+            except (EOFError, KeyboardInterrupt):
+                print()
+                return "libcamera"
+            if choice in ("", "2"):
+                return "libcamera"
+            if choice == "1":
+                return self.state.camera_index
+            print("Nhập 1 hoặc 2.")
+
     def try_start(self) -> tuple[bool, str | None]:
         cam = self.config.camera
-        index = self.state.camera_index
+        if is_raspberry_pi():
+            self._camera_source = self._prompt_pi_camera_source()
+        else:
+            self._camera_source = self.state.camera_index
         self._cap = open_camera(
-            index,
+            self._camera_source,
             width=cam.width,
             height=cam.height,
         )
         if self._cap is None:
             message = (
-                f"Failed to open camera index {index} "
+                f"Failed to open camera source {self._camera_source} "
                 f"({cam.width}x{cam.height}). "
                 "Check permissions, USB connection, or another app using the camera."
             )
             logger.error(message)
             return False, message
-        logger.info("Opened webcam source: %s", index)
-        log_event("CAM", f"Camera {index} acquired.")
+        logger.info("Opened camera source: %s", self._camera_source)
+        log_event("CAM", f"Camera {self._camera_source} acquired.")
         logger.info(
             "Available models (%s): %s",
             len(self.model_paths),
@@ -165,6 +187,9 @@ class WebcamEngine:
     def switch_camera(self) -> bool:
         if self._cap is None:
             return False
+        if isinstance(self._camera_source, str):
+            logger.warning("Cannot switch camera — Pi Camera Module is the only CSI source.")
+            return False
         cam = self.config.camera
         self._cap, new_index, switched = switch_camera(
             self._cap,
@@ -175,7 +200,8 @@ class WebcamEngine:
         )
         if switched:
             self.state.camera_index = new_index
-            logger.info("Switched to webcam source: %s", new_index)
+            self._camera_source = new_index
+            logger.info("Switched to camera source: %s", new_index)
             log_event("CAM", f"Camera {new_index} acquired.")
         else:
             logger.warning("No other camera source available to switch.")
