@@ -28,7 +28,7 @@ RESTART_DETECTOR_KEYS = frozenset({"inference.imgsz"})
 
 @dataclass
 class CameraConfig:
-    index: int = 0
+    index: int = 8
     max_index: int = 10
     width: int = 1280
     height: int = 720
