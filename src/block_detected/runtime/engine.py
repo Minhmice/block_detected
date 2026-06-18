@@ -17,7 +17,12 @@ from block_detected.detection.yolo.loader import discover_model_paths, resolve_m
 from block_detected.runtime.config_store import save_config
 from block_detected.runtime.detector_loader import load_detector
 from block_detected.runtime.platform import is_raspberry_pi
-from block_detected.io.camera.capture import find_usb_camera, open_camera, switch_camera
+from block_detected.io.camera.capture import (
+    PiCameraCapture,
+    find_usb_camera,
+    open_camera,
+    switch_camera,
+)
 from block_detected.runtime.config_schema import AppConfig, CameraConfig
 from block_detected.runtime.metrics import RuntimeMetrics
 from block_detected.runtime.logging_setup import log_event
@@ -72,7 +77,7 @@ class WebcamEngine:
         )
         self.metrics = RuntimeMetrics()
         self._postprocess = DetectionPostProcessor(config.stability)
-        self._cap: cv2.VideoCapture | None = None
+        self._cap: cv2.VideoCapture | PiCameraCapture | None = None
         self._camera_source: int | str = 0
         self._last_primary_log: tuple[str, float] | None = None
 
@@ -127,7 +132,7 @@ class WebcamEngine:
                     logger.info("Opened USB camera via auto-detect: /dev/video%s", usb_idx)
                     log_event("CAM", f"USB camera /dev/video{usb_idx} acquired.")
                     return True, None
-                logger.error("No USB camera found scanning /dev/video1..%s", cam.max_index)
+                logger.error("No USB camera found scanning /dev/video0..%s", cam.max_index)
                 return False, (
                     "No USB webcam detected. Is it plugged in? "
                     "Try 'ls /dev/video*' to list available devices."

@@ -1,10 +1,59 @@
-"""Webcam capture and source switching."""
+"""Webcam capture and source switching.
+
+Pi Camera Module uses ``picamera2`` (official Pi 5 / Bookworm API).
+USB webcams use V4L2 with warm-up reads.
+"""
+
+from __future__ import annotations
 
 import logging
+import time
+from typing import Any
 
 import cv2
 
 logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Pi Camera Module wrapper (picamera2 → duck-types cv2.VideoCapture)
+# ---------------------------------------------------------------------------
+
+class PiCameraCapture:
+    """Minimal ``cv2.VideoCapture``-compatible wrapper around ``picamera2``."""
+
+    def __init__(self, *, width: int, height: int) -> None:
+        from picamera2 import Picamera2  # lazy import – only on Pi
+
+        self._width = width
+        self._height = height
+        self._picam2 = Picamera2()
+        config = self._picam2.create_preview_configuration(
+            main={"size": (width, height), "format": "RGB888"},
+        )
+        self._picam2.configure(config)
+        self._picam2.start()
+        time.sleep(0.5)  # let AE/AWB settle
+
+    def read(self) -> tuple[bool, Any]:
+        frame = self._picam2.capture_array("main")
+        return True, frame
+
+    def isOpened(self) -> bool:
+        return True
+
+    def release(self) -> None:
+        try:
+            self._picam2.stop()
+            self._picam2.close()
+        except Exception:
+            pass
+
+    def set(self, _prop: int, _value: float) -> bool:
+        return True  # no-op – picamera2 handles this in configure
+
+    def getBackendName(self) -> str:
+        return "picamera2"
 
 
 # ---------------------------------------------------------------------------
@@ -14,7 +63,7 @@ logger = logging.getLogger(__name__)
 
 def _open_v4l2(index: int, *, width: int, height: int) -> cv2.VideoCapture | None:
     """Open a V4L2 camera by numeric index."""
-    cap = cv2.VideoCapture(index)
+    cap = cv2.VideoCapture(index, cv2.CAP_V4L2)
     if not cap.isOpened():
         return None
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -22,23 +71,24 @@ def _open_v4l2(index: int, *, width: int, height: int) -> cv2.VideoCapture | Non
     return cap
 
 
-def _open_libcamera(*, width: int, height: int) -> cv2.VideoCapture | None:
-    """Open Pi Camera Module.
+def _open_libcamera(*, width: int, height: int) -> cv2.VideoCapture | PiCameraCapture | None:
+    """Open Pi Camera Module via picamera2.
 
-    On Pi 5 / Bookworm the CSI camera appears as a V4L2 device (/dev/video0).
-    We try V4L2 first; fall back to GStreamer for older setups.
+    Returns a ``PiCameraCapture`` duck-typing ``cv2.VideoCapture``,
+    or *None* if picamera2 is not installed / camera not available.
     """
-    # Pi 5 Bookworm: Pi Camera via V4L2 (always available)
-    cap = _open_v4l2(0, width=width, height=height)
-    if cap is not None:
-        logger.info("Opened Pi Camera Module via V4L2 (/dev/video0)")
+    try:
+        cap = PiCameraCapture(width=width, height=height)
+        logger.info("Opened Pi Camera Module via picamera2")
         return cap
+    except Exception as exc:
+        logger.warning("picamera2 failed: %s", exc)
 
-    # Fallback: GStreamer pipeline (older Pi OS or custom OpenCV build)
+    # GStreamer fallback for older Pi OS or custom OpenCV builds
     pipeline = (
-        f"libcamerasrc ! "
+        "libcamerasrc ! "
         f"video/x-raw,width={width},height={height},framerate=30/1 ! "
-        f"videoconvert ! videoscale ! appsink"
+        "videoconvert ! videoscale ! appsink"
     )
     try:
         cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
@@ -57,20 +107,27 @@ def _find_usb_camera(
     *,
     width: int,
     height: int,
-    start_index: int = 1,
+    start_index: int = 0,
     max_index: int = 8,
 ) -> tuple[cv2.VideoCapture | None, int]:
-    """Scan V4L2 indices starting from *start_index* for a working USB camera.
+    """Scan V4L2 indices for a working USB camera.
 
-    On Raspberry Pi /dev/video0 is typically the CSI camera, so we skip it.
+    Uses ``cv2.CAP_V4L2`` backend and runs warm-up reads so the camera
+    is ready for the inference loop.
+
     Returns ``(cap, index)`` or ``(None, -1)``.
     """
     for idx in range(start_index, max_index + 1):
-        cap = _open_v4l2(idx, width=width, height=height)
-        if cap is None:
+        cap = cv2.VideoCapture(idx, cv2.CAP_V4L2)
+        if not cap.isOpened():
             continue
-        ok, _ = cap.read()
-        if ok:
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        # Warm-up: discard first few frames so set() takes effect
+        for _ in range(4):
+            cap.read()
+        ok, frame = cap.read()
+        if ok and frame is not None and frame.size > 0:
             logger.info("Found USB camera at /dev/video%s", idx)
             return cap, idx
         cap.release()
@@ -81,7 +138,12 @@ def _find_usb_camera(
 # Public API
 # ---------------------------------------------------------------------------
 
-def find_usb_camera(*, width: int, height: int, max_index: int = 8) -> tuple[cv2.VideoCapture | None, int]:
+def find_usb_camera(
+    *,
+    width: int,
+    height: int,
+    max_index: int = 8,
+) -> tuple[cv2.VideoCapture | PiCameraCapture | None, int]:
     """Public wrapper — scan for a working USB V4L2 camera on the system."""
     return _find_usb_camera(width=width, height=height, max_index=max_index)
 
@@ -91,14 +153,13 @@ def open_camera(
     *,
     width: int,
     height: int,
-) -> cv2.VideoCapture | None:
+) -> cv2.VideoCapture | PiCameraCapture | None:
     """Open a camera source.
 
     Parameters
     ----------
     source : int | str
-        Numeric V4L2 index (e.g. ``0`` for USB webcam) or the string ``"libcamera"``
-        for Raspberry Pi Camera Module (libcamera GStreamer pipeline).
+        Numeric V4L2 index (e.g. ``0``) or ``"libcamera"`` for Pi Camera Module.
     """
     if isinstance(source, str) and source == "libcamera":
         return _open_libcamera(width=width, height=height)
