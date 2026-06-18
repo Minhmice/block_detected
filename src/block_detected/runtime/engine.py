@@ -47,6 +47,9 @@ def _resolve_pi_source(cam: CameraConfig) -> int | str:
     if cam.source == "libcamera":
         logger.info("Pi config: camera.source=libcamera — using Pi Camera Module (CSI)")
         return "libcamera"
+    if cam.source == "gstreamer":
+        logger.info("Pi config: camera.source=gstreamer — using GStreamer pipeline")
+        return "gstreamer"
     # "auto": try libcamera first, fallback handled in try_start
     logger.info("Pi config: camera.source=auto — trying libcamera first")
     return "libcamera"

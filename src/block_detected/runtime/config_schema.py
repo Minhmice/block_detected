@@ -207,9 +207,9 @@ class AppConfig:
                 require_int("camera.height", self.camera.height),
             )
         )
-        source_valid = self.camera.source in ("auto", "usb", "libcamera")
+        source_valid = self.camera.source in ("auto", "usb", "libcamera", "gstreamer")
         if not source_valid:
-            errors.append("camera.source must be one of: auto, usb, libcamera")
+            errors.append("camera.source must be one of: auto, usb, libcamera, gstreamer")
 
         cl = self.classical
         require_bool("classical.enabled", cl.enabled)

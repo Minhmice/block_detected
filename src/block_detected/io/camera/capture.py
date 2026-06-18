@@ -71,11 +71,35 @@ def _open_v4l2(index: int, *, width: int, height: int) -> cv2.VideoCapture | Non
     return cap
 
 
+def _open_gstreamer(*, width: int, height: int) -> cv2.VideoCapture | None:
+    """Open Pi Camera Module directly via GStreamer + libcamerasrc.
+
+    Bypasses ``picamera2`` entirely — works on Python 3.13+ as long as
+    OpenCV was built with GStreamer support and ``libcamera`` is installed.
+    """
+    pipeline = (
+        "libcamerasrc ! "
+        f"video/x-raw,width={width},height={height},framerate=30/1 ! "
+        "videoconvert ! appsink"
+    )
+    try:
+        cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
+    except Exception:
+        logger.debug("cv2.CAP_GSTREAMER not available (no GStreamer support in OpenCV)")
+        return None
+    if cap.isOpened():
+        logger.info("Opened Pi Camera Module via GStreamer (libcamerasrc)")
+        return cap
+    logger.warning("GStreamer pipeline failed")
+    cap.release()
+    return None
+
+
 def _open_libcamera(*, width: int, height: int) -> cv2.VideoCapture | PiCameraCapture | None:
-    """Open Pi Camera Module via picamera2.
+    """Open Pi Camera Module via picamera2, with GStreamer fallback.
 
     Returns a ``PiCameraCapture`` duck-typing ``cv2.VideoCapture``,
-    or *None* if picamera2 is not installed / camera not available.
+    or *None* if picamera2 / GStreamer are not available.
     """
     try:
         cap = PiCameraCapture(width=width, height=height)
@@ -84,23 +108,7 @@ def _open_libcamera(*, width: int, height: int) -> cv2.VideoCapture | PiCameraCa
     except Exception as exc:
         logger.warning("picamera2 failed: %s", exc)
 
-    # GStreamer fallback for older Pi OS or custom OpenCV builds
-    pipeline = (
-        "libcamerasrc ! "
-        f"video/x-raw,width={width},height={height},framerate=30/1 ! "
-        "videoconvert ! videoscale ! appsink"
-    )
-    try:
-        cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
-    except Exception:
-        logger.debug("cv2.CAP_GSTREAMER not available (no GStreamer support in OpenCV)")
-        return None
-    if cap.isOpened():
-        logger.info("Opened Pi Camera Module via libcamera GStreamer")
-        return cap
-    logger.warning("libcamera GStreamer pipeline failed")
-    cap.release()
-    return None
+    return _open_gstreamer(width=width, height=height)
 
 
 def _find_usb_camera(
@@ -168,6 +176,8 @@ def open_camera(
     """
     if isinstance(source, str) and source == "libcamera":
         return _open_libcamera(width=width, height=height)
+    if isinstance(source, str) and source == "gstreamer":
+        return _open_gstreamer(width=width, height=height)
     return _open_v4l2(int(source), width=width, height=height)
 
 
