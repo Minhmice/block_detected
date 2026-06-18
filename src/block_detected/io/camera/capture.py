@@ -107,16 +107,14 @@ def _find_usb_camera(
     *,
     width: int,
     height: int,
-    start_index: int = 4,
+    start_index: int = 0,
     max_index: int = 10,
 ) -> tuple[cv2.VideoCapture | None, int]:
     """Scan V4L2 indices for a working USB camera.
 
-    On Raspberry Pi /dev/video0–3 are typically the CSI camera (rp1-cfe),
-    so scanning starts at index 4.
-
     Uses ``cv2.CAP_V4L2`` backend and runs warm-up reads so the camera
-    is ready for the inference loop.
+    is ready for the inference loop.  On Pi with ``bcm2835-v4l2`` loaded
+    the Pi Camera Module appears as a regular V4L2 device too.
 
     Returns ``(cap, index)`` or ``(None, -1)``.
     """
@@ -145,10 +143,14 @@ def find_usb_camera(
     *,
     width: int,
     height: int,
+    start_index: int = 0,
     max_index: int = 10,
 ) -> tuple[cv2.VideoCapture | PiCameraCapture | None, int]:
     """Public wrapper — scan for a working USB V4L2 camera on the system."""
-    return _find_usb_camera(width=width, height=height, max_index=max_index)
+    return _find_usb_camera(
+        width=width, height=height,
+        start_index=start_index, max_index=max_index,
+    )
 
 
 def open_camera(

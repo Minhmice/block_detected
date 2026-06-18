@@ -1,6 +1,7 @@
 [camera]
-index = 0
-max_index = 5
+source = "usb"
+index = 8
+max_index = 10
 width = 1280
 height = 720
 
