@@ -13,9 +13,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+gui = ["PySide6>=6.7"]
+tui = ["textual>=8.0", "rich>=13.7"]
 viewer = ["opencv-python>=4.8.0"]
 dev = ["pytest>=8.0", "httpx>=0.27"]
-all = ["opencv-python>=4.8.0"]
+all = ["opencv-python>=4.8.0", "PySide6>=6.7"]
 
 [project.scripts]
 block-detected = "block_detected.apps.launcher:main"
