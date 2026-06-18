@@ -187,6 +187,10 @@ if QtCore is not None:
             return self.sidebar.camera_max_spin
 
         @property
+        def camera_source_combo(self):
+            return self.sidebar.camera_source_combo
+
+        @property
         def width_spin(self):
             return self.sidebar.width_spin
 
@@ -201,6 +205,7 @@ if QtCore is not None:
         @property
         def _restart_widgets(self):
             return [
+                self.sidebar.camera_source_combo,
                 self.sidebar.camera_index_spin,
                 self.sidebar.camera_max_spin,
                 self.sidebar.width_spin,
@@ -352,6 +357,7 @@ if QtCore is not None:
             self.toolbar.contours_check.setChecked(cl.show_contours)
             self.toolbar.corners_check.setChecked(cl.show_corners)
 
+            self.sidebar.camera_source_combo.setCurrentText(config.camera.source)
             self.sidebar.camera_index_spin.setValue(config.camera.index)
             self.sidebar.camera_max_spin.setValue(config.camera.max_index)
             self.sidebar.width_spin.setValue(config.camera.width)
@@ -409,6 +415,7 @@ if QtCore is not None:
 
         def _config_from_controls(self) -> AppConfig:
             config = copy.deepcopy(self.config)
+            config.camera.source = self.sidebar.camera_source_combo.currentText()
             config.camera.index = self.sidebar.camera_index_spin.value()
             config.camera.max_index = self.sidebar.camera_max_spin.value()
             config.camera.width = self.sidebar.width_spin.value()

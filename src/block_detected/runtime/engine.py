@@ -18,7 +18,7 @@ from block_detected.runtime.config_store import save_config
 from block_detected.runtime.detector_loader import load_detector
 from block_detected.runtime.platform import is_raspberry_pi
 from block_detected.io.camera.capture import open_camera, switch_camera
-from block_detected.runtime.config_schema import AppConfig
+from block_detected.runtime.config_schema import AppConfig, CameraConfig
 from block_detected.runtime.metrics import RuntimeMetrics
 from block_detected.runtime.logging_setup import log_event
 from block_detected.runtime.postprocess import DetectionPostProcessor
@@ -103,34 +103,42 @@ class WebcamEngine:
         engine, _error = cls.try_create(config)
         return engine
 
-    def _prompt_pi_camera_source(self) -> int | str:
-        """Interactive prompt for Raspberry Pi camera choice."""
-        print("\n[Raspberry Pi detected] Chọn camera:")
-        print("  1  USB webcam (Logitech C270)")
-        print("  2  Pi Camera Module (CSI / libcamera)")
-        while True:
-            try:
-                choice = input("Chọn [1/2] (mặc định 2): ").strip()
-            except (EOFError, KeyboardInterrupt):
-                print()
-                return "libcamera"
-            if choice in ("", "2"):
-                return "libcamera"
-            if choice == "1":
-                return self.state.camera_index
-            print("Nhập 1 hoặc 2.")
+    @staticmethod
+    def _resolve_pi_source(cam: CameraConfig) -> int | str:
+        """Decide Pi camera source from config — no interactive prompt."""
+        if cam.source == "usb":
+            logger.info("Pi config: camera.source=usb — using USB webcam index %s", cam.index)
+            return cam.index
+        if cam.source == "libcamera":
+            logger.info("Pi config: camera.source=libcamera — using Pi Camera Module (CSI)")
+            return "libcamera"
+        # "auto": try libcamera first, fallback handled in try_start
+        logger.info("Pi config: camera.source=auto — trying libcamera first")
+        return "libcamera"
 
     def try_start(self) -> tuple[bool, str | None]:
         cam = self.config.camera
         if is_raspberry_pi():
-            self._camera_source = self._prompt_pi_camera_source()
+            self._camera_source = self._resolve_pi_source(cam)
         else:
             self._camera_source = self.state.camera_index
+
         self._cap = open_camera(
             self._camera_source,
             width=cam.width,
             height=cam.height,
         )
+
+        # "auto" fallback on Pi: if libcamera failed, try USB webcam
+        if self._cap is None and is_raspberry_pi() and cam.source == "auto":
+            logger.info("libcamera failed — falling back to USB camera index %s", self.state.camera_index)
+            self._camera_source = self.state.camera_index
+            self._cap = open_camera(
+                self._camera_source,
+                width=cam.width,
+                height=cam.height,
+            )
+
         if self._cap is None:
             message = (
                 f"Failed to open camera source {self._camera_source} "

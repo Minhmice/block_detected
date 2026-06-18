@@ -228,8 +228,16 @@ if QtWidgets is not None:
             self.width_spin.setRange(1, 7680)
             self.height_spin = QtWidgets.QSpinBox()
             self.height_spin.setRange(1, 4320)
+            self.camera_source_combo = QtWidgets.QComboBox()
+            self.camera_source_combo.addItems(["auto", "usb", "libcamera"])
+            self.camera_source_combo.setToolTip(
+                "auto: try Pi Camera first, fallback to USB\n"
+                "usb: force USB webcam\n"
+                "libcamera: force Pi Camera Module (CSI)"
+            )
             self.log_level_combo = QtWidgets.QComboBox()
             self.log_level_combo.addItems(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+            default_form.addRow("Camera source", self.camera_source_combo)
             default_form.addRow("Index", self.camera_index_spin)
             default_form.addRow("Max index", self.camera_max_spin)
             default_form.addRow("Width", self.width_spin)

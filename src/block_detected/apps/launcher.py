@@ -5,6 +5,9 @@ from __future__ import annotations
 import os
 import sys
 
+from block_detected.runtime.platform import is_raspberry_pi
+from block_detected.runtime.config_store import load_config, save_config
+
 
 def _print_picker() -> None:
     print()
@@ -33,6 +36,39 @@ def prompt_ui_mode() -> str:
         if choice in ("q", "quit", "exit"):
             return "quit"
         print("Nhập 1, 2 hoặc q.")
+
+
+def _prompt_pi_camera_source() -> str:
+    """Ask user to choose camera on Raspberry Pi. Returns ``"usb"`` or ``"libcamera"``."""
+    print()
+    print("[Raspberry Pi detected] Chọn camera:")
+    print("  1  USB webcam (Logitech C270)")
+    print("  2  Pi Camera Module (CSI / libcamera)")
+    while True:
+        try:
+            choice = input("Chọn [1/2] (mặc định 2): ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return "libcamera"
+        if choice in ("", "2"):
+            return "libcamera"
+        if choice == "1":
+            return "usb"
+        print("Nhập 1 hoặc 2.")
+
+
+def _apply_pi_camera_choice() -> None:
+    """If running on Raspberry Pi with a terminal, prompt user and save choice to config."""
+    if not is_raspberry_pi():
+        return
+    if not sys.stdin.isatty():
+        return
+    source = _prompt_pi_camera_source()
+    config = load_config()
+    if config.camera.source != source:
+        config.camera.source = source
+        save_config(config)
+    print()
 
 
 def _strip_launcher_flags(argv: list[str]) -> tuple[bool, bool, list[str]]:
@@ -137,6 +173,7 @@ def main(argv: list[str] | None = None) -> int:
     mode, rest = resolve_mode(argv)
     if mode == "quit":
         return 0
+    _apply_pi_camera_choice()
     if mode == "gui":
         return run_gui()
     return run_tui(rest)

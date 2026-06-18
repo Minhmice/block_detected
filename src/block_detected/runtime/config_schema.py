@@ -22,7 +22,7 @@ from block_detected.config.ui import (
 
 
 # Keys that require reopening camera or reloading detector when changed at runtime.
-RESTART_CAMERA_KEYS = frozenset({"camera.index", "camera.width", "camera.height", "camera.max_index"})
+RESTART_CAMERA_KEYS = frozenset({"camera.index", "camera.width", "camera.height", "camera.max_index", "camera.source"})
 RESTART_DETECTOR_KEYS = frozenset({"inference.imgsz"})
 
 
@@ -32,6 +32,7 @@ class CameraConfig:
     max_index: int = 5
     width: int = 1280
     height: int = 720
+    source: str = "auto"
 
 
 @dataclass
@@ -206,6 +207,9 @@ class AppConfig:
                 require_int("camera.height", self.camera.height),
             )
         )
+        source_valid = self.camera.source in ("auto", "usb", "libcamera")
+        if not source_valid:
+            errors.append("camera.source must be one of: auto, usb, libcamera")
 
         cl = self.classical
         require_bool("classical.enabled", cl.enabled)
