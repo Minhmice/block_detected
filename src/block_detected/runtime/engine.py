@@ -17,7 +17,7 @@ from block_detected.detection.yolo.loader import discover_model_paths, resolve_m
 from block_detected.runtime.config_store import save_config
 from block_detected.runtime.detector_loader import load_detector
 from block_detected.runtime.platform import is_raspberry_pi
-from block_detected.io.camera.capture import open_camera, switch_camera
+from block_detected.io.camera.capture import find_usb_camera, open_camera, switch_camera
 from block_detected.runtime.config_schema import AppConfig, CameraConfig
 from block_detected.runtime.metrics import RuntimeMetrics
 from block_detected.runtime.logging_setup import log_event
@@ -35,6 +35,16 @@ from block_detected.vision.drawing.overlays import draw_contours_overlay, draw_c
 from block_detected.vision.drawing.widgets import draw_model_switch_button, draw_status_bar
 
 logger = logging.getLogger(__name__)
+
+
+def _resolve_pi_source(cam: CameraConfig) -> int | str:
+    """Decide Pi camera source from config for non-USB cases."""
+    if cam.source == "libcamera":
+        logger.info("Pi config: camera.source=libcamera — using Pi Camera Module (CSI)")
+        return "libcamera"
+    # "auto": try libcamera first, fallback handled in try_start
+    logger.info("Pi config: camera.source=auto — trying libcamera first")
+    return "libcamera"
 
 
 @dataclass(slots=True)
@@ -103,23 +113,26 @@ class WebcamEngine:
         engine, _error = cls.try_create(config)
         return engine
 
-    @staticmethod
-    def _resolve_pi_source(cam: CameraConfig) -> int | str:
-        """Decide Pi camera source from config — no interactive prompt."""
-        if cam.source == "usb":
-            logger.info("Pi config: camera.source=usb — using USB webcam index %s", cam.index)
-            return cam.index
-        if cam.source == "libcamera":
-            logger.info("Pi config: camera.source=libcamera — using Pi Camera Module (CSI)")
-            return "libcamera"
-        # "auto": try libcamera first, fallback handled in try_start
-        logger.info("Pi config: camera.source=auto — trying libcamera first")
-        return "libcamera"
-
     def try_start(self) -> tuple[bool, str | None]:
         cam = self.config.camera
         if is_raspberry_pi():
-            self._camera_source = self._resolve_pi_source(cam)
+            if cam.source == "usb":
+                # Scan for USB webcam — /dev/video0 is usually Pi Camera on Pi
+                usb_cap, usb_idx = find_usb_camera(
+                    width=cam.width, height=cam.height, max_index=cam.max_index,
+                )
+                if usb_cap is not None:
+                    self._cap = usb_cap
+                    self._camera_source = usb_idx
+                    logger.info("Opened USB camera via auto-detect: /dev/video%s", usb_idx)
+                    log_event("CAM", f"USB camera /dev/video{usb_idx} acquired.")
+                    return True, None
+                logger.error("No USB camera found scanning /dev/video1..%s", cam.max_index)
+                return False, (
+                    "No USB webcam detected. Is it plugged in? "
+                    "Try 'ls /dev/video*' to list available devices."
+                )
+            self._camera_source = _resolve_pi_source(cam)
         else:
             self._camera_source = self.state.camera_index
 
@@ -131,13 +144,16 @@ class WebcamEngine:
 
         # "auto" fallback on Pi: if libcamera failed, try USB webcam
         if self._cap is None and is_raspberry_pi() and cam.source == "auto":
-            logger.info("libcamera failed — falling back to USB camera index %s", self.state.camera_index)
-            self._camera_source = self.state.camera_index
-            self._cap = open_camera(
-                self._camera_source,
-                width=cam.width,
-                height=cam.height,
+            logger.info("libcamera failed — scanning for USB webcam")
+            usb_cap, usb_idx = find_usb_camera(
+                width=cam.width, height=cam.height, max_index=cam.max_index,
             )
+            if usb_cap is not None:
+                self._cap = usb_cap
+                self._camera_source = usb_idx
+                logger.info("Fallback USB camera at /dev/video%s", usb_idx)
+                log_event("CAM", f"USB camera /dev/video{usb_idx} acquired (fallback).")
+                return True, None
 
         if self._cap is None:
             message = (
