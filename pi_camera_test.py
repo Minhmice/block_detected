@@ -364,6 +364,8 @@ class PiCamTestApp(App[None]):
         yield Footer()
 
     def watch_current_src(self, src: Source | None) -> None:
+        if not self.is_mounted:
+            return
         viewer = self.query_one("#viewer-placeholder", CameraViewer)
         label_src = self.query_one("#label-source", Static)
         label_kind = self.query_one("#label-kind", Static)
@@ -395,6 +397,8 @@ class PiCamTestApp(App[None]):
 
     def _poll_frame(self) -> None:
         if self._cap is None or not self._cap.isOpened():
+            return
+        if not self.is_mounted:
             return
         ok, frame = self._cap.read()
         if not ok or frame is None:
