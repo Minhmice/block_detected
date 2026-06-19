@@ -273,8 +273,7 @@ class PiCamTestApp(App[None]):
         ("q", "quit", "Quit"),
     ]
 
-    sources = reactive(list[Source], recompose=True)
-    current_src = reactive(Source | None, init=False)
+    _src_idx: int = -1
 
     def __init__(
         self,
@@ -289,33 +288,38 @@ class PiCamTestApp(App[None]):
         self._v4l2_start = v4l2_start
         self._v4l2_end = v4l2_end
         self._cap: cv2.VideoCapture | RpicamCapture | None = None
+        self._sources: list[Source] = []
+        self._current_src: Source | None = None
 
     def on_mount(self) -> None:
-        self.scan()
+        self.call_after_refresh(self._scan)
 
-    def scan(self) -> None:
+    def _scan(self) -> None:
         self._close_camera()
-        self.sources = all_sources(self._v4l2_start, self._v4l2_end)
-        # Find first source that actually opens
-        for s in self.sources:
+        self._sources = all_sources(self._v4l2_start, self._v4l2_end)
+        for i, s in enumerate(self._sources):
             cap = open_source(s)
             if cap is not None:
                 self._cap = cap
                 s.opened = True
-                self.current_src = s
+                self._current_src = s
+                self._src_idx = i
+                self._update_ui()
                 return
-        self.current_src = Source(label="none", kind="rpicam", width=0, height=0) if self.sources else self.sources[0]
+        self._src_idx = 0 if self._sources else -1
+        self._current_src = self._sources[0] if self._sources else None
+        self._update_ui()
 
     def _open_current(self) -> None:
         self._close_camera()
-        if self.current_src is None:
+        if self._current_src is None:
             return
-        cap = open_source(self.current_src)
+        cap = open_source(self._current_src)
         if cap is not None:
             self._cap = cap
-            self.current_src.opened = True
+            self._current_src.opened = True
         else:
-            self.current_src.opened = False
+            self._current_src.opened = False
 
     def _close_camera(self) -> None:
         if self._cap is not None:
@@ -323,23 +327,13 @@ class PiCamTestApp(App[None]):
             self._cap = None
 
     def _nav_source(self, direction: int) -> None:
-        if not self.sources:
+        if not self._sources:
             return
-        try:
-            pos = self._current_index()
-        except (ValueError, IndexError):
-            pos = 0
-        new_pos = (pos + direction) % len(self.sources)
-        self.current_src = self.sources[new_pos]
+        new_pos = (self._src_idx + direction) % len(self._sources)
+        self._current_src = self._sources[new_pos]
+        self._src_idx = new_pos
         self._open_current()
-
-    def _current_index(self) -> int:
-        if self.current_src is None:
-            return 0
-        for i, s in enumerate(self.sources):
-            if s == self.current_src:
-                return i
-        return 0
+        self._update_ui()
 
     def action_prev_src(self) -> None:
         self._nav_source(-1)
@@ -348,7 +342,7 @@ class PiCamTestApp(App[None]):
         self._nav_source(1)
 
     def action_rescan(self) -> None:
-        self.scan()
+        self.call_after_refresh(self._scan)
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -363,14 +357,14 @@ class PiCamTestApp(App[None]):
         yield Static(id="controls")
         yield Footer()
 
-    def watch_current_src(self, src: Source | None) -> None:
-        if not self.is_mounted:
-            return
+    def _update_ui(self) -> None:
+        src = self._current_src
         viewer = self.query_one("#viewer-placeholder", CameraViewer)
         label_src = self.query_one("#label-source", Static)
         label_kind = self.query_one("#label-kind", Static)
         label_status = self.query_one("#label-status", Static)
         label_res = self.query_one("#label-res", Static)
+        ctrl = self.query_one("#controls", Static)
 
         if src is None or src.width == 0:
             viewer.current_label = "none"
@@ -387,7 +381,6 @@ class PiCamTestApp(App[None]):
             label_status.update(f"Status: [{cls}]{status}[/]")
             label_res.update(f"Resolution: {src.detail if src.opened else '—'}")
 
-        ctrl = self.query_one("#controls", Static)
         ctrl.update("[dim]← → prev/next  │  r re-scan V4L2  │  q quit[/]")
 
     # ── frame loop ──────────────────────────────────────────────────
