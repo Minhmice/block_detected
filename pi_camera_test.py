@@ -28,8 +28,8 @@ from textual.widgets import Header, Footer, Static
 
 # ── constants ──────────────────────────────────────────────────────────
 
-DEFAULT_WIDTH = 1280
-DEFAULT_HEIGHT = 720
+DEFAULT_WIDTH = 640
+DEFAULT_HEIGHT = 480
 DEFAULT_V4L2_START = 0
 DEFAULT_V4L2_END = 10
 
@@ -94,14 +94,16 @@ Screen {
 
 
 class RpicamCapture:
-    """Duck-type ``cv2.VideoCapture`` via ``rpicam-vid`` subprocess.
+    """Duck-type ``cv2.VideoCapture`` via ``rpicam-vid`` with background thread.
 
-    Launches ``rpicam-vid --codec yuv420``, reads raw YUV420 I420 frames
-    from stdout, converts to BGR via OpenCV.
+    A daemon thread continuously reads YUV420 frames from the subprocess,
+    converts to BGR, and keeps the latest frame.  ``read()`` returns
+    immediately — no blocking on pipe I/O.
     """
 
     def __init__(self, *, width: int, height: int) -> None:
-        import subprocess  # noqa: F811 — re-import fine in local scope
+        import subprocess
+        import threading
 
         self._width = width
         self._height = height
@@ -120,30 +122,42 @@ class RpicamCapture:
             stderr=subprocess.DEVNULL,
             bufsize=10 ** 8,
         )
-        # Discard first frames to let AE/AWB settle
-        for _ in range(5):
-            self._read_raw()
+        self._latest: Any = None
+        self._lock = threading.Lock()
+        self._running = True
+        self._thread = threading.Thread(target=self._reader_loop, daemon=True)
+        self._thread.start()
+        import time
+        time.sleep(0.5)
 
-    def _read_raw(self) -> bytes | None:
+    def _reader_loop(self) -> None:
         assert self._proc.stdout is not None
-        return self._proc.stdout.read(self._frame_bytes)
+        while self._running:
+            raw = self._proc.stdout.read(self._frame_bytes)
+            if raw is None or len(raw) != self._frame_bytes:
+                self._running = False
+                break
+            yuv = np.frombuffer(raw, dtype=np.uint8).reshape(
+                (self._height * 3 // 2, self._width)
+            )
+            bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
+            with self._lock:
+                self._latest = bgr
 
     def read(self) -> tuple[bool, Any]:
-        raw = self._read_raw()
-        if raw is None or len(raw) != self._frame_bytes:
-            return False, None
-        yuv = np.frombuffer(raw, dtype=np.uint8).reshape(
-            (self._height * 3 // 2, self._width)
-        )
-        bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
-        return True, bgr
+        with self._lock:
+            if self._latest is None:
+                return False, None
+            frame = self._latest.copy()
+        return True, frame
 
     def isOpened(self) -> bool:
-        return self._proc is not None and self._proc.poll() is None
+        return self._running and self._proc is not None and self._proc.poll() is None
 
     def release(self) -> None:
         import subprocess
 
+        self._running = False
         if self._proc is not None:
             self._proc.terminate()
             try:
@@ -151,6 +165,8 @@ class RpicamCapture:
             except subprocess.TimeoutExpired:
                 self._proc.kill()
             self._proc = None
+        if self._thread.is_alive():
+            self._thread.join(timeout=1)
 
     def set(self, _prop: int, _value: float) -> bool:
         return True
@@ -228,9 +244,6 @@ def open_source(src: Source) -> cv2.VideoCapture | RpicamCapture | None:
     if src.kind == "rpicam":
         try:
             cap = RpicamCapture(width=src.width, height=src.height)
-            # warm-up
-            for _ in range(4):
-                cap.read()
             return cap
         except Exception:
             return None

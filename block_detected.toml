@@ -2,8 +2,8 @@
 source = "usb"
 index = 8
 max_index = 10
-width = 1280
-height = 720
+width = 640
+height = 480
 
 [inference]
 last_model_name = "rbs-final.pt"

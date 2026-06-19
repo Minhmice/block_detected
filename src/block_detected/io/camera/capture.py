@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import subprocess
+import threading
 import time
 from typing import Any
 
@@ -18,15 +19,16 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# Pi Camera Module wrapper (rpicam-vid → duck-types cv2.VideoCapture)
+# Pi Camera Module wrapper (rpicam-vid background thread → duck-types)
 # ---------------------------------------------------------------------------
 
 
 class RpicamCapture:
-    """``cv2.VideoCapture``-compatible wrapper around ``rpicam-vid`` subprocess.
+    """``cv2.VideoCapture``-compatible wrapper around ``rpicam-vid``.
 
-    Launches ``rpicam-vid --codec yuv420``, reads raw YUV420 frames from
-    its stdout, and converts to BGR via OpenCV.
+    A background thread continuously reads raw YUV420 frames from
+    ``rpicam-vid`` stdout, converts to BGR, and keeps the latest frame.
+    ``read()`` returns instantly — no blocking on I/O.
     """
 
     def __init__(self, *, width: int, height: int) -> None:
@@ -47,29 +49,42 @@ class RpicamCapture:
             stderr=subprocess.DEVNULL,
             bufsize=10 ** 8,
         )
-        # Discard first frames so AE/AWB settles
-        for _ in range(5):
-            self._read_raw()
-        time.sleep(0.3)
+        self._latest: Any = None          # latest BGR frame
+        self._lock = threading.Lock()
+        self._running = True
+        self._thread = threading.Thread(target=self._reader_loop, daemon=True)
+        self._thread.start()
+        # Let AE/AWB settle
+        time.sleep(0.5)
 
-    def _read_raw(self) -> bytes | None:
+    def _reader_loop(self) -> None:
+        """Background thread: read YUV420 → BGR, keep latest."""
         assert self._proc.stdout is not None
-        return self._proc.stdout.read(self._frame_bytes)
+        while self._running:
+            raw = self._proc.stdout.read(self._frame_bytes)
+            if raw is None or len(raw) != self._frame_bytes:
+                # Subprocess may have died — stop
+                self._running = False
+                break
+            yuv = np.frombuffer(raw, dtype=np.uint8).reshape(
+                (self._height * 3 // 2, self._width)
+            )
+            bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
+            with self._lock:
+                self._latest = bgr
 
     def read(self) -> tuple[bool, Any]:
-        raw = self._read_raw()
-        if raw is None or len(raw) != self._frame_bytes:
-            return False, None
-        yuv = np.frombuffer(raw, dtype=np.uint8).reshape(
-            (self._height * 3 // 2, self._width)
-        )
-        bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
-        return True, bgr
+        with self._lock:
+            if self._latest is None:
+                return False, None
+            frame = self._latest.copy()
+        return True, frame
 
     def isOpened(self) -> bool:
-        return self._proc is not None and self._proc.poll() is None
+        return self._running and self._proc is not None and self._proc.poll() is None
 
     def release(self) -> None:
+        self._running = False
         if self._proc is not None:
             self._proc.terminate()
             try:
@@ -77,6 +92,8 @@ class RpicamCapture:
             except subprocess.TimeoutExpired:
                 self._proc.kill()
             self._proc = None
+        if self._thread.is_alive():
+            self._thread.join(timeout=1)
 
     def set(self, _prop: int, _value: float) -> bool:
         return True
