@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pi Camera GStreamer + V4L2 diagnostic tool — live preview in terminal.
+"""Pi Camera diagnostic tool — rpicam-vid + V4L2 live preview in terminal.
 
 Usage:
     python pi_camera_test.py
@@ -8,7 +8,6 @@ Usage:
 
 Keys:
     ← →      prev/next source
-    g        add GStreamer pipeline (custom resolution prompt)
     r        re-scan V4L2 cameras
     q        quit
 """
@@ -18,8 +17,10 @@ from __future__ import annotations
 from argparse import ArgumentParser
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import cv2
+import numpy as np
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal
 from textual.reactive import reactive
@@ -32,7 +33,7 @@ DEFAULT_HEIGHT = 720
 DEFAULT_V4L2_START = 0
 DEFAULT_V4L2_END = 10
 
-# Brute-force a set of common resolutions the Pi camera supports.
+# Common Pi Camera resolutions to try.
 RESOLUTIONS: list[tuple[int, int]] = [
     (640, 480),
     (1280, 720),
@@ -89,57 +90,111 @@ Screen {
 .highlight { color: #ffd700; text-style: bold; }
 """
 
+# ── RpicamCapture (inline, no project dependency) ──────────────────────
+
+
+class RpicamCapture:
+    """Duck-type ``cv2.VideoCapture`` via ``rpicam-vid`` subprocess.
+
+    Launches ``rpicam-vid --codec yuv420``, reads raw YUV420 I420 frames
+    from stdout, converts to BGR via OpenCV.
+    """
+
+    def __init__(self, *, width: int, height: int) -> None:
+        import subprocess  # noqa: F811 — re-import fine in local scope
+
+        self._width = width
+        self._height = height
+        self._frame_bytes = width * height * 3 // 2
+        self._proc = subprocess.Popen(
+            [
+                "rpicam-vid",
+                "-t", "0",
+                "--width", str(width),
+                "--height", str(height),
+                "--codec", "yuv420",
+                "--output", "-",
+                "--inline",
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            bufsize=10 ** 8,
+        )
+        # Discard first frames to let AE/AWB settle
+        for _ in range(5):
+            self._read_raw()
+
+    def _read_raw(self) -> bytes | None:
+        assert self._proc.stdout is not None
+        return self._proc.stdout.read(self._frame_bytes)
+
+    def read(self) -> tuple[bool, Any]:
+        raw = self._read_raw()
+        if raw is None or len(raw) != self._frame_bytes:
+            return False, None
+        yuv = np.frombuffer(raw, dtype=np.uint8).reshape(
+            (self._height * 3 // 2, self._width)
+        )
+        bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
+        return True, bgr
+
+    def isOpened(self) -> bool:
+        return self._proc is not None and self._proc.poll() is None
+
+    def release(self) -> None:
+        import subprocess
+
+        if self._proc is not None:
+            self._proc.terminate()
+            try:
+                self._proc.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                self._proc.kill()
+            self._proc = None
+
+    def set(self, _prop: int, _value: float) -> bool:
+        return True
+
+    def getBackendName(self) -> str:
+        return "rpicam-vid"
+
+
+# ── data types ──────────────────────────────────────────────────────────
+
 
 @dataclass
 class Source:
-    """A camera source — either GStreamer pipeline or V4L2 index."""
+    """A camera source — either rpicam-vid (Pi) or V4L2 (USB)."""
 
-    label: str      # human-readable name, e.g. "GStreamer 1280x720"
-    kind: str       # "gst" or "v4l2"
+    label: str
+    kind: str       # "rpicam" or "v4l2"
     width: int
     height: int
-    index: int = -1             # only for v4l2
-    pipeline: str | None = None  # only for gst
+    index: int = -1
     opened: bool = False
 
     @property
     def detail(self) -> str:
-        if self.kind == "gst":
-            return f"GStreamer {self.width}x{self.height}"
+        if self.kind == "rpicam":
+            return f"rpicam-vid {self.width}x{self.height}"
         return f"V4L2 /dev/video{self.index} {self.width}x{self.height}"
 
     def __hash__(self) -> int:
-        return hash((self.kind, self.index, self.pipeline))
+        return hash((self.kind, self.index))
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Source):
             return NotImplemented
-        return self.kind == other.kind and self.index == other.index and self.pipeline == other.pipeline
+        return self.kind == other.kind and self.index == other.index
 
 
 # ── helpers ─────────────────────────────────────────────────────────────
 
-def _gst_pipeline(width: int, height: int) -> str:
-    """Build a ``libcamerasrc`` GStreamer pipeline string."""
-    return (
-        f"libcamerasrc ! "
-        f"video/x-raw,width={width},height={height},framerate=30/1 ! "
-        "videoconvert ! appsink"
-    )
 
-
-def gst_sources() -> list[Source]:
-    """Return one GStreamer source per common resolution."""
-    sources: list[Source] = []
-    for w, h in RESOLUTIONS:
-        sources.append(Source(
-            label=f"GST {w}x{h}",
-            kind="gst",
-            width=w,
-            height=h,
-            pipeline=_gst_pipeline(w, h),
-        ))
-    return sources
+def rpicam_sources() -> list[Source]:
+    """Return one ``rpicam`` source per common resolution (label only — opened lazily)."""
+    return [Source(label=f"rpicam {w}x{h}", kind="rpicam", width=w, height=h)
+            for w, h in RESOLUTIONS]
 
 
 def v4l2_sources(start: int, end: int) -> list[Source]:
@@ -152,7 +207,6 @@ def v4l2_sources(start: int, end: int) -> list[Source]:
         cap = cv2.VideoCapture(idx, cv2.CAP_V4L2)
         if not cap.isOpened():
             continue
-        # Warm-up reads
         for _ in range(4):
             cap.read()
         ok, frame = cap.read()
@@ -160,43 +214,39 @@ def v4l2_sources(start: int, end: int) -> list[Source]:
         if not ok or frame is None:
             continue
         h, w = frame.shape[:2]
-        sources.append(Source(
-            label=f"V4L2 /dev/video{idx}",
-            kind="v4l2",
-            index=idx,
-            width=w,
-            height=h,
-            opened=True,
-        ))
+        sources.append(Source(label=f"/dev/video{idx}", kind="v4l2", index=idx, width=w, height=h, opened=True))
     return sources
 
 
 def all_sources(v4l2_start: int, v4l2_end: int) -> list[Source]:
-    """Gather GStreamer + V4L2 sources. GStreamer first, then USB."""
-    return gst_sources() + v4l2_sources(v4l2_start, v4l2_end)
+    """Gather rpicam + V4L2 sources. rpicam first, then USB."""
+    return rpicam_sources() + v4l2_sources(v4l2_start, v4l2_end)
 
 
-def open_source(src: Source) -> cv2.VideoCapture | None:
+def open_source(src: Source) -> cv2.VideoCapture | RpicamCapture | None:
     """Try to open *src* and return the capture, or None."""
-    if src.kind == "gst" and src.pipeline:
+    if src.kind == "rpicam":
         try:
-            cap = cv2.VideoCapture(src.pipeline, cv2.CAP_GSTREAMER)
+            cap = RpicamCapture(width=src.width, height=src.height)
+            # warm-up
+            for _ in range(4):
+                cap.read()
+            return cap
         except Exception:
             return None
-    elif src.kind == "v4l2":
+    if src.kind == "v4l2":
         cap = cv2.VideoCapture(src.index, cv2.CAP_V4L2)
-    else:
-        return None
-    if not cap.isOpened():
-        cap.release()
-        return None
-    # Warm-up
-    for _ in range(4):
-        cap.read()
-    return cap
+        if not cap.isOpened():
+            cap.release()
+            return None
+        for _ in range(4):
+            cap.read()
+        return cap
+    return None
 
 
 # ── widgets ─────────────────────────────────────────────────────────────
+
 
 class CameraViewer(Static):
     """Renders the current camera frame or placeholder."""
@@ -205,14 +255,15 @@ class CameraViewer(Static):
 
     def render(self) -> str:
         if not self.current_label:
-            return "[dim]No source selected. Press ← → to browse, r to re-scan.[/]"
+            return "[dim]No source selected. Press ← →, r to re-scan.[/]"
         return f"[bold]📷 {self.current_label}[/]"
 
 
 # ── app ─────────────────────────────────────────────────────────────────
 
+
 class PiCamTestApp(App[None]):
-    """Textual TUI — GStreamer + V4L2 camera sources with ASCII live preview."""
+    """Textual TUI — rpicam-vid + V4L2 camera sources with ASCII live preview."""
 
     CSS = CSS
     BINDINGS = [
@@ -237,7 +288,7 @@ class PiCamTestApp(App[None]):
         self._default_h = height
         self._v4l2_start = v4l2_start
         self._v4l2_end = v4l2_end
-        self._cap: cv2.VideoCapture | None = None
+        self._cap: cv2.VideoCapture | RpicamCapture | None = None
 
     def on_mount(self) -> None:
         self.scan()
@@ -245,15 +296,15 @@ class PiCamTestApp(App[None]):
     def scan(self) -> None:
         self._close_camera()
         self.sources = all_sources(self._v4l2_start, self._v4l2_end)
-        # Skip to first GStreamer source that opens
-        for i, s in enumerate(self.sources):
+        # Find first source that actually opens
+        for s in self.sources:
             cap = open_source(s)
             if cap is not None:
                 self._cap = cap
                 s.opened = True
                 self.current_src = s
                 return
-        self.current_src = Source(label="none", kind="gst", width=0, height=0) if not self.sources else self.sources[0]
+        self.current_src = Source(label="none", kind="rpicam", width=0, height=0) if self.sources else self.sources[0]
 
     def _open_current(self) -> None:
         self._close_camera()
@@ -274,12 +325,11 @@ class PiCamTestApp(App[None]):
     def _nav_source(self, direction: int) -> None:
         if not self.sources:
             return
-        indices = list(range(len(self.sources)))
         try:
-            pos = indices.index(self._current_index())
+            pos = self._current_index()
         except (ValueError, IndexError):
             pos = 0
-        new_pos = (pos + direction) % len(indices)
+        new_pos = (pos + direction) % len(self.sources)
         self.current_src = self.sources[new_pos]
         self._open_current()
 
@@ -381,12 +431,13 @@ def _brightness_char(val: int) -> str:
 
 # ── entry ───────────────────────────────────────────────────────────────
 
+
 def main() -> None:
-    parser = ArgumentParser(description="Pi Camera GStreamer + V4L2 TUI test tool")
+    parser = ArgumentParser(description="Pi Camera rpicam-vid + V4L2 TUI test tool")
     parser.add_argument("--width", type=int, default=DEFAULT_WIDTH,
-                        help=f"GStreamer width (default: {DEFAULT_WIDTH})")
+                        help=f"Resolution width (default: {DEFAULT_WIDTH})")
     parser.add_argument("--height", type=int, default=DEFAULT_HEIGHT,
-                        help=f"GStreamer height (default: {DEFAULT_HEIGHT})")
+                        help=f"Resolution height (default: {DEFAULT_HEIGHT})")
     parser.add_argument("--v4l2-start", type=int, default=DEFAULT_V4L2_START,
                         help=f"First V4L2 index to scan (default: {DEFAULT_V4L2_START})")
     parser.add_argument("--v4l2-end", type=int, default=DEFAULT_V4L2_END,

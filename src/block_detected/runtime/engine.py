@@ -19,6 +19,7 @@ from block_detected.runtime.detector_loader import load_detector
 from block_detected.runtime.platform import is_raspberry_pi
 from block_detected.io.camera.capture import (
     PiCameraCapture,
+    RpicamCapture,
     find_usb_camera,
     open_camera,
     switch_camera,
@@ -47,6 +48,9 @@ def _resolve_pi_source(cam: CameraConfig) -> int | str:
     if cam.source == "libcamera":
         logger.info("Pi config: camera.source=libcamera — using Pi Camera Module (CSI)")
         return "libcamera"
+    if cam.source == "rpicam":
+        logger.info("Pi config: camera.source=rpicam — using rpicam-vid subprocess")
+        return "rpicam"
     if cam.source == "gstreamer":
         logger.info("Pi config: camera.source=gstreamer — using GStreamer pipeline")
         return "gstreamer"
@@ -80,7 +84,7 @@ class WebcamEngine:
         )
         self.metrics = RuntimeMetrics()
         self._postprocess = DetectionPostProcessor(config.stability)
-        self._cap: cv2.VideoCapture | PiCameraCapture | None = None
+        self._cap: cv2.VideoCapture | PiCameraCapture | RpicamCapture | None = None
         self._camera_source: int | str = 0
         self._last_primary_log: tuple[str, float] | None = None
 
