@@ -1,32 +1,47 @@
-"""Configuration — paths, camera, inference, and UI defaults."""
+"""Configuration — paths, defaults, schema, and store."""
 
-from block_detected.config.camera import (
+from block_detected.config.defaults import (
+    BUTTON_HEIGHT,
+    BUTTON_MARGIN,
+    BUTTON_PAD_X,
     CAMERA_HEIGHT,
     CAMERA_INDEX,
     CAMERA_WIDTH,
-    MAX_CAMERA_INDEX,
-)
-from block_detected.config.inference import (
     CONF_MAX,
     CONF_MIN,
     CONF_STEP,
     DEFAULT_CONF,
     DEFAULT_MODEL_NAME,
     EVAL_CONF,
-)
-from block_detected.config.paths import MODELS_DIR, PROJECT_ROOT
-from block_detected.config.ui import (
-    BUTTON_HEIGHT,
-    BUTTON_MARGIN,
-    BUTTON_PAD_X,
     KEY_ARROW_DOWN,
     KEY_ARROW_UP,
+    MAX_CAMERA_INDEX,
     WINDOW_NAME,
+)
+from block_detected.config.paths import MODELS_DIR, PACKAGE_ROOT, PROJECT_ROOT
+from block_detected.config.schema import (
+    AppConfig,
+    CameraConfig,
+    ClassicalPipelineConfig,
+    InferenceConfig,
+    PreprocessConfig,
+    RESTART_CAMERA_KEYS,
+    RESTART_DETECTOR_KEYS,
+    StabilityConfig,
+    UiDebugConfig,
+)
+from block_detected.config.store import (
+    DEFAULT_CONFIG_PATH,
+    load_config,
+    save_config,
+    validate_config,
 )
 
 __all__ = [
     "PROJECT_ROOT",
+    "PACKAGE_ROOT",
     "MODELS_DIR",
+    "DEFAULT_CONFIG_PATH",
     "DEFAULT_MODEL_NAME",
     "CAMERA_INDEX",
     "MAX_CAMERA_INDEX",
@@ -43,4 +58,16 @@ __all__ = [
     "BUTTON_PAD_X",
     "KEY_ARROW_UP",
     "KEY_ARROW_DOWN",
+    "AppConfig",
+    "CameraConfig",
+    "InferenceConfig",
+    "PreprocessConfig",
+    "ClassicalPipelineConfig",
+    "StabilityConfig",
+    "UiDebugConfig",
+    "RESTART_CAMERA_KEYS",
+    "RESTART_DETECTOR_KEYS",
+    "load_config",
+    "save_config",
+    "validate_config",
 ]

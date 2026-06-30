@@ -1,4 +1,4 @@
-"""Optional dependency layout in pyproject.toml."""
+"""Tests for default dependency layout in pyproject.toml."""
 
 from pathlib import Path
 
@@ -10,20 +10,21 @@ def _load_pyproject() -> dict:
     return tomllib.loads(path.read_text(encoding="utf-8"))
 
 
-def test_default_deps_include_full_ui():
+def test_default_deps_no_pyside6():
     data = _load_pyproject()
     core = data["project"]["dependencies"]
     optional = data["project"]["optional-dependencies"]
 
     assert any("ultralytics" in d for d in core)
     assert any("opencv-python-headless" in d for d in core)
-    assert any("PySide6" in d for d in core)
+    assert not any("PySide6" in d for d in core)
     assert any("textual" in d for d in core)
     assert any("rich" in d for d in core)
+    assert "view" in optional
     assert "viewer" in optional
+    assert "stream" in optional
     assert "all" in optional
     assert "dev" in optional
-    assert "web" not in optional
 
 
 def test_requirements_pi_excludes_pyside6():

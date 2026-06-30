@@ -1,6 +1,10 @@
-"""Webcam capture settings."""
+"""Re-export legacy constants from defaults."""
 
-CAMERA_INDEX = 8
-MAX_CAMERA_INDEX = 10
-CAMERA_WIDTH = 640
-CAMERA_HEIGHT = 480
+from block_detected.config.defaults import (
+    CAMERA_HEIGHT,
+    CAMERA_INDEX,
+    CAMERA_WIDTH,
+    MAX_CAMERA_INDEX,
+)
+
+__all__ = ["CAMERA_INDEX", "MAX_CAMERA_INDEX", "CAMERA_WIDTH", "CAMERA_HEIGHT"]

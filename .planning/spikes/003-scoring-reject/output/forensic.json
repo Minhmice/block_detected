@@ -1,0 +1,3898 @@
+{
+  "summary": {
+    "spike_id": "003-scoring-reject",
+    "duration_s": 1.901834,
+    "event_count": 364,
+    "categories": {
+      "roi": 108,
+      "fit": 148,
+      "score": 108
+    }
+  },
+  "events": [
+    {
+      "ts": "2026-06-29T03:42:09.570544+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 121209,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.573994+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 76
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.574095+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 76,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.583843+00:00",
+      "category": "score",
+      "message": "dt1.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6137886597938145,
+        "legacy_score": 0.8842013888888889,
+        "legacy_area": 3885.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.591234+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 116184,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.592631+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 79,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.602370+00:00",
+      "category": "score",
+      "message": "dt2.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.29566190233365164,
+        "legacy_score": 0.8785837345416785,
+        "legacy_area": 3635.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.610273+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 115434,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.611613+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 81
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.611694+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 81,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.620261+00:00",
+      "category": "score",
+      "message": "dt3.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6543814432989691,
+        "legacy_score": 0.8565873812027379,
+        "legacy_area": 2576.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.626756+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 92024,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.628406+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 61
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.628485+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 61,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.635780+00:00",
+      "category": "score",
+      "message": "dt4.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6300257731958763,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.643805+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 366,
+        "area": 91790,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.645800+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 99
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.645919+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 99,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.653491+00:00",
+      "category": "score",
+      "message": "dt5.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6376,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.660574+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 96509,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.662917+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 90,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.670587+00:00",
+      "category": "score",
+      "message": "dt6.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.536445810688315,
+        "legacy_score": 0.48767377811440166,
+        "legacy_area": 4106.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.678787+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 342,
+        "area": 83847,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.680619+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 87
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.680719+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 87,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.688425+00:00",
+      "category": "score",
+      "message": "dt7.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6683561643835616,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.695547+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 338,
+        "area": 65464,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.697630+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 82
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.697707+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 82,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.704871+00:00",
+      "category": "score",
+      "message": "dt8.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6528925619834711,
+        "legacy_score": 0.8710086771418125,
+        "legacy_area": 4714.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.710080+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 387,
+        "h": 189,
+        "area": 23476,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.711365+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 15
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.711420+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 15,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.715514+00:00",
+      "category": "score",
+      "message": "dt9.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5680000000000001,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.721951+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 333,
+        "area": 78476,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.724115+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 66,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.731361+00:00",
+      "category": "score",
+      "message": "dt10.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.58515625,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.738750+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 231,
+        "area": 52210,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.740947+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 74,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.746990+00:00",
+      "category": "score",
+      "message": "dt11.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6801204819277109,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.755314+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 117247,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.757813+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 108
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.757921+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 108,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.765575+00:00",
+      "category": "score",
+      "message": "dt12.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6358247422680412,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.771934+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 116667,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.773902+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 119,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.782536+00:00",
+      "category": "score",
+      "message": "dt13.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5587152458190359,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.788970+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 104164,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.790565+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 89,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.799221+00:00",
+      "category": "score",
+      "message": "dt14.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6663185378590077,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.805629+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 123181,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.807632+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 119,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.817106+00:00",
+      "category": "score",
+      "message": "dt15.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.647012987012987,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.824562+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 136815,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.826566+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 117,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.837099+00:00",
+      "category": "score",
+      "message": "dt16.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6203125,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.843218+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 108374,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.844604+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 72
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.844690+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 72,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.852589+00:00",
+      "category": "score",
+      "message": "dt17.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6242268041237113,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.858799+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 125993,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.860198+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 109,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.869039+00:00",
+      "category": "score",
+      "message": "dt18.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5283878873581214,
+        "legacy_score": 0.9061332152724876,
+        "legacy_area": 2788.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.874361+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 98254,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.875806+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 64
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.875881+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 64,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.883525+00:00",
+      "category": "score",
+      "message": "dt19.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6021907216494845,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.888931+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 100700,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.890736+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 71,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.898866+00:00",
+      "category": "score",
+      "message": "dt20.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6468503937007875,
+        "legacy_score": 0.7233257120316935,
+        "legacy_area": 7824.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.903774+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 91446,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.905545+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 63,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.913764+00:00",
+      "category": "score",
+      "message": "dt21.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6288659793814433,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.918627+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 77426,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.920683+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 62,
+        "dominant": 4
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.929839+00:00",
+      "category": "score",
+      "message": "dt22.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6360655737704918,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.934444+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 394,
+        "area": 64619,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.935622+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 36
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.935687+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 36,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.942588+00:00",
+      "category": "score",
+      "message": "dt23.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5721502590673575,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.947640+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 87661,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.949577+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 61,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.956852+00:00",
+      "category": "score",
+      "message": "dt24.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6086117846959064,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.960712+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 497,
+        "h": 397,
+        "area": 51226,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.961853+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 17
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.961903+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 17,
+        "dominant": 4
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.967796+00:00",
+      "category": "score",
+      "message": "dt25.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.572265625,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.972096+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 460,
+        "h": 390,
+        "area": 44668,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.973486+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 22,
+        "dominant": 4
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.978889+00:00",
+      "category": "score",
+      "message": "dt26.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6210526315789473,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.982988+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 341,
+        "area": 51926,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.984099+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 26,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.990552+00:00",
+      "category": "score",
+      "message": "dt27.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5879795396419437,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.995305+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 87287,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:09.997066+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 67,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.004689+00:00",
+      "category": "score",
+      "message": "dt28.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6147560975609756,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.010364+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 492,
+        "h": 397,
+        "area": 73558,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.011782+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 41,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.018556+00:00",
+      "category": "score",
+      "message": "dt29.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6186648501362397,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.022977+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 188,
+        "w": 489,
+        "h": 197,
+        "area": 41595,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.023971+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 18,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.028775+00:00",
+      "category": "score",
+      "message": "dt30.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6032094594594595,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.032396+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 177,
+        "w": 500,
+        "h": 202,
+        "area": 41972,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.033332+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 21,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.038258+00:00",
+      "category": "score",
+      "message": "dt31.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5941176470588235,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.042277+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 166,
+        "w": 500,
+        "h": 200,
+        "area": 42852,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.043560+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 15
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.043614+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 15,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.048402+00:00",
+      "category": "score",
+      "message": "dt32.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5587662337662338,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.052756+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 63304,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.054044+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 35,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.059944+00:00",
+      "category": "score",
+      "message": "dt33.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6104109589041096,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.065984+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 116695,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.067305+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 117
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.067397+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 117,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.076316+00:00",
+      "category": "score",
+      "message": "dt34.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.671778350515464,
+        "legacy_score": 0.7637736608107073,
+        "legacy_area": 3922.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.082904+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 113551,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.084659+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 127
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.084770+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 127,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.092851+00:00",
+      "category": "score",
+      "message": "dt35.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.671778350515464,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.099794+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 120094,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.101910+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 109
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.101996+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 109,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.110376+00:00",
+      "category": "score",
+      "message": "dt36.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.671778350515464,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.116550+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 97786,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.118484+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 99,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.126220+00:00",
+      "category": "score",
+      "message": "dt37.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5602864793967592,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.131626+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 94147,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.133144+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 74
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.133226+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 74,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.140339+00:00",
+      "category": "score",
+      "message": "dt38.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6323453608247422,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.146868+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 124997,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.148655+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 153
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.148779+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 153,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.157560+00:00",
+      "category": "score",
+      "message": "dt39.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.660180412371134,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.163766+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 113568,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.165636+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 138,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.174896+00:00",
+      "category": "score",
+      "message": "dt40.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.29651528290454043,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.180745+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 353,
+        "area": 92244,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.182418+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 77,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.190914+00:00",
+      "category": "score",
+      "message": "dt41.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6441326530612245,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.197697+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 104015,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.199588+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 122
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.199679+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 122,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.207720+00:00",
+      "category": "score",
+      "message": "dt42.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6288659793814433,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.214594+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 330,
+        "area": 96808,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.216409+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 121
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.216516+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 121,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.223986+00:00",
+      "category": "score",
+      "message": "dt43.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.657202216066482,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.230081+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 96325,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.232045+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 90,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.241390+00:00",
+      "category": "score",
+      "message": "dt44.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5740346848235142,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.249746+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 113120,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.252003+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 120
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.252123+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 120,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.261723+00:00",
+      "category": "score",
+      "message": "dt45.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.659020618556701,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.268803+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 118485,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.271397+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 102,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.280332+00:00",
+      "category": "score",
+      "message": "dt46.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5400892118856417,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.287448+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 132279,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.290274+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 149
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.290395+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 149,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.299396+00:00",
+      "category": "score",
+      "message": "dt47.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6427835051546391,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.305987+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 133465,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.307706+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 122,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.316754+00:00",
+      "category": "score",
+      "message": "dt48.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6369861099149127,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.323163+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 393,
+        "area": 127963,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.324968+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 109
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.325065+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 109,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.333282+00:00",
+      "category": "score",
+      "message": "dt49.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6374352331606217,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.340465+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 143408,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.342036+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 139,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.351517+00:00",
+      "category": "score",
+      "message": "dt50.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6260347449073582,
+        "legacy_score": 0.8808980882014078,
+        "legacy_area": 8229.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.359327+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 137257,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.361443+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 152,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.370719+00:00",
+      "category": "score",
+      "message": "dt51.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.630440414507772,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.377132+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 118911,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.379036+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 167,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.388752+00:00",
+      "category": "score",
+      "message": "dt52.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6362694300518135,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.394286+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 97371,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.396099+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 117,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.403654+00:00",
+      "category": "score",
+      "message": "dt53.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.25661435910654484,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.409548+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 104745,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.411525+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 117,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.418851+00:00",
+      "category": "score",
+      "message": "dt54.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.29167946717717963,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.423819+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 76591,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.425518+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 78
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.425607+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 78,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.432261+00:00",
+      "category": "score",
+      "message": "dt55.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5755154639175257,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.436376+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 153,
+        "y": 0,
+        "w": 380,
+        "h": 397,
+        "area": 58162,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.437875+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 41,
+        "dominant": 4
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.443992+00:00",
+      "category": "score",
+      "message": "dt56.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.2756001409626749,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.448581+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 396,
+        "area": 76601,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.450216+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 61,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.456756+00:00",
+      "category": "score",
+      "message": "dt57.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6008681032385645,
+        "legacy_score": 0.8407607918938117,
+        "legacy_area": 2888.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.461283+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 387,
+        "area": 76842,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.462755+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 64
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.462819+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 64,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.469295+00:00",
+      "category": "score",
+      "message": "dt58.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.58046875,
+        "legacy_score": 0.6308228684990014,
+        "legacy_area": 2587.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.474334+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 96,
+        "w": 500,
+        "h": 298,
+        "area": 71762,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.476003+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 75,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.482389+00:00",
+      "category": "score",
+      "message": "dt59.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5870567407318966,
+        "legacy_score": 0.8359335331928087,
+        "legacy_area": 3194.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.487046+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 392,
+        "area": 73172,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.488924+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 53,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.495321+00:00",
+      "category": "score",
+      "message": "dt60.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.27542133778228184,
+        "legacy_score": 0.7490848959052031,
+        "legacy_area": 7539.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.509137+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 145854,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.512207+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 403,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.522261+00:00",
+      "category": "score",
+      "message": "dt61.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6640503049749624,
+        "legacy_score": 0.9545454545454546,
+        "legacy_area": 3386.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.529750+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 113491,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.532057+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 173
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.532184+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 173,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.540832+00:00",
+      "category": "score",
+      "message": "dt62.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6439432989690721,
+        "legacy_score": 0.7608158742296611,
+        "legacy_area": 6393.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.546853+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 91010,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.548725+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 115,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.556787+00:00",
+      "category": "score",
+      "message": "dt63.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.24243664746417193,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.562388+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 375,
+        "area": 99205,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.564445+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 91,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.572535+00:00",
+      "category": "score",
+      "message": "dt64.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.2454799132933914,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.578434+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 100502,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.580046+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 83
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.580136+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 83,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.587823+00:00",
+      "category": "score",
+      "message": "dt65.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6114690721649485,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.595911+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 345,
+        "area": 117870,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.598231+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 243,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.607139+00:00",
+      "category": "score",
+      "message": "dt66.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5877370965923685,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.614292+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 341,
+        "area": 110843,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.616305+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 175
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.616441+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 175,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.624498+00:00",
+      "category": "score",
+      "message": "dt67.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6301369863013699,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.635788+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 126296,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.638016+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 282
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.638252+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 282,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.646700+00:00",
+      "category": "score",
+      "message": "dt68.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6161082474226804,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.655190+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 93327,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.656966+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 188,
+        "dominant": 4
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.665204+00:00",
+      "category": "score",
+      "message": "dt69.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6411842105263157,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.676017+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 125151,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.678191+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 243,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.688399+00:00",
+      "category": "score",
+      "message": "dt70.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.2674273088635247,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.696426+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 133832,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.698781+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 224,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.707558+00:00",
+      "category": "score",
+      "message": "dt71.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5835157385761489,
+        "legacy_score": 0.8330122214234363,
+        "legacy_area": 3633.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.714423+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 114528,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.716455+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 154,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.724380+00:00",
+      "category": "score",
+      "message": "dt72.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5296958315131282,
+        "legacy_score": 0.9864864864864865,
+        "legacy_area": 3554.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.730026+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 25,
+        "w": 500,
+        "h": 370,
+        "area": 85150,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.731860+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 82,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.738831+00:00",
+      "category": "score",
+      "message": "dt73.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6331134564643799,
+        "legacy_score": 0.808041339261798,
+        "legacy_area": 7429.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.743958+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 88490,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.745357+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 80,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.752944+00:00",
+      "category": "score",
+      "message": "dt74.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.633587786259542,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.759102+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 101633,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.767120+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 76,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.782991+00:00",
+      "category": "score",
+      "message": "dt75.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6504854368932038,
+        "legacy_score": 0.8589179770750532,
+        "legacy_area": 4319.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.791218+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 149,
+        "w": 500,
+        "h": 200,
+        "area": 50306,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.798788+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 36,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.828521+00:00",
+      "category": "score",
+      "message": "dt76.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5773162939297125,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.849562+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 71964,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.851072+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 58,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.874254+00:00",
+      "category": "score",
+      "message": "dt77.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6159574468085106,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.894247+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 348,
+        "area": 49913,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.901765+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 38
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.901872+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 38,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.911061+00:00",
+      "category": "score",
+      "message": "dt78.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5891304347826087,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.918321+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 99733,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.920290+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 72
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.920371+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 72,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.931066+00:00",
+      "category": "score",
+      "message": "dt79.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5998711340206185,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.936170+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 83881,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.939327+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 46,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.949401+00:00",
+      "category": "score",
+      "message": "dt80.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.22263199273763407,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.957556+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 75,
+        "w": 500,
+        "h": 272,
+        "area": 43554,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.958794+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 20,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.965081+00:00",
+      "category": "score",
+      "message": "dt81.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5927989130434783,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.968941+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 174,
+        "w": 500,
+        "h": 187,
+        "area": 36094,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.969906+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 12,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.974687+00:00",
+      "category": "score",
+      "message": "dt82.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6230519480519481,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.979646+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 73606,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.981201+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 54
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.981263+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 54,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.987420+00:00",
+      "category": "score",
+      "message": "dt83.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5743556701030927,
+        "legacy_score": 0.991304347826087,
+        "legacy_area": 7813.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.994100+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 365,
+        "area": 61321,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.995442+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 27
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:10.995512+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 27,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.001849+00:00",
+      "category": "score",
+      "message": "dt84.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5824,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.007007+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 369,
+        "area": 60506,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.008336+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 33,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.014548+00:00",
+      "category": "score",
+      "message": "dt85.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6027142857142858,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.019528+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 80327,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.021194+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 42,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.028097+00:00",
+      "category": "score",
+      "message": "dt86.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.36845722902157974,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.037053+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 377,
+        "area": 161840,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.041188+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 271,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.052805+00:00",
+      "category": "score",
+      "message": "dt87.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5937283207962651,
+        "legacy_score": 0.8566403277729003,
+        "legacy_area": 10547.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.061622+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 355,
+        "area": 151237,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.064230+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 198,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.076463+00:00",
+      "category": "score",
+      "message": "dt88.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5960570536047789,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.082753+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 373,
+        "area": 115059,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.084397+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 111
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.084513+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 111,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.093668+00:00",
+      "category": "score",
+      "message": "dt89.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6369047619047619,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.100763+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 136700,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.103505+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 179,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.115252+00:00",
+      "category": "score",
+      "message": "dt90.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.30568023603003747,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.123986+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 122512,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.126296+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 170
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.126452+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 170,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.135406+00:00",
+      "category": "score",
+      "message": "dt91.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6230670103092784,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.142928+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 106658,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.145063+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 134
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.145188+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 134,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.153378+00:00",
+      "category": "score",
+      "message": "dt92.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5940721649484536,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.161610+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 128792,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.164036+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 217
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.164202+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 217,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.174390+00:00",
+      "category": "score",
+      "message": "dt93.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6439432989690721,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.182788+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 371,
+        "area": 114317,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.185175+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 222
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.185365+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 222,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.194551+00:00",
+      "category": "score",
+      "message": "dt94.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6287798408488063,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.202413+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 358,
+        "area": 122400,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.205872+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 219,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.214898+00:00",
+      "category": "score",
+      "message": "dt95.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.28141473777313913,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.226345+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 143839,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.228501+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 257,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.240996+00:00",
+      "category": "score",
+      "message": "dt96.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6566666666666667,
+        "legacy_score": 0.6546299867509945,
+        "legacy_area": 12728.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.257778+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 139891,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.261822+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 269,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.275445+00:00",
+      "category": "score",
+      "message": "dt97.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.649742268041237,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.290197+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 120339,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.293113+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 158,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.303504+00:00",
+      "category": "score",
+      "message": "dt98.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.21169963502774164,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.314941+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 138415,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.317963+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 196,
+        "dominant": 1
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.328281+00:00",
+      "category": "score",
+      "message": "dt99.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5711621841075758,
+        "legacy_score": 0.9052867060504921,
+        "legacy_area": 4565.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.336305+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 112425,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.340489+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 179
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.340667+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 179,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.349630+00:00",
+      "category": "score",
+      "message": "dt100.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6091494845360825,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.356468+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 105102,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.359130+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 121,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.368361+00:00",
+      "category": "score",
+      "message": "dt101.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5149316622041027,
+        "legacy_score": 0.9715517241379311,
+        "legacy_area": 2519.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.377496+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 376,
+        "area": 79964,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.379319+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 69,
+        "dominant": 4
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.386154+00:00",
+      "category": "score",
+      "message": "dt102.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6092249251082655,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.390371+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 56442,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.391531+00:00",
+      "category": "fit",
+      "message": "topology_reject_relaxed",
+      "data": {
+        "lines_in": 33
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.391599+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 33,
+        "dominant": 4
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.397212+00:00",
+      "category": "score",
+      "message": "dt103.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.5731958762886598,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.402027+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 369,
+        "area": 78065,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.403749+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 73,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.410457+00:00",
+      "category": "score",
+      "message": "dt104.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.23910870842925014,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.414789+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 464,
+        "h": 362,
+        "area": 64047,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.416395+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 47,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.422378+00:00",
+      "category": "score",
+      "message": "dt105.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.2363165012695463,
+        "legacy_score": 0,
+        "legacy_area": 0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.427996+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 81349,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.429650+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 75,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.436720+00:00",
+      "category": "score",
+      "message": "dt106.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6357702349869452,
+        "legacy_score": 0.8765208452300555,
+        "legacy_area": 3340.0
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.442544+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 75470,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.444461+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 52,
+        "dominant": 2
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.450787+00:00",
+      "category": "score",
+      "message": "dt107.jpg",
+      "data": {
+        "accepted": false,
+        "new_score": 0.26816263251278183,
+        "legacy_score": 0.8819994319174971,
+        "legacy_area": 3657.5
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.455839+00:00",
+      "category": "roi",
+      "message": "cluster_found",
+      "data": {
+        "x": 0,
+        "y": 0,
+        "w": 500,
+        "h": 397,
+        "area": 76556,
+        "block_mode": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.457620+00:00",
+      "category": "fit",
+      "message": "hexagon_fitted",
+      "data": {
+        "lines_in": 64,
+        "dominant": 3
+      }
+    },
+    {
+      "ts": "2026-06-29T03:42:11.463926+00:00",
+      "category": "score",
+      "message": "dt108.jpg",
+      "data": {
+        "accepted": true,
+        "new_score": 0.6059248002184657,
+        "legacy_score": 0.8475418089057283,
+        "legacy_area": 3952.0
+      }
+    }
+  ]
+}

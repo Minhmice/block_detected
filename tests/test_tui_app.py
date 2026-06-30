@@ -8,9 +8,9 @@ import pytest
 pytest.importorskip("rich")
 pytest.importorskip("textual")
 
-from block_detected.apps.tui import app
+from block_detected.tui import app
 from block_detected.core.domain import Detection, InferenceStats, RuntimeStatus
-from block_detected.runtime.config_schema import AppConfig
+from block_detected.config.schema import AppConfig
 
 
 def _status(count: int = 0) -> RuntimeStatus:
@@ -57,7 +57,7 @@ def test_console_script_target_matches_tui_main():
     pyproject = Path(__file__).resolve().parents[1] / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
 
-    assert data["project"]["scripts"]["block-detected-tui"] == "block_detected.apps.tui.app:main"
+    assert data["project"]["scripts"]["block-detected-tui"] == "block_detected.tui.app:main"
 
 
 def test_pyproject_tui_extra_uses_textual_and_rich_not_curses():

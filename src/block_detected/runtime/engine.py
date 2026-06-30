@@ -1,62 +1,30 @@
-"""Webcam runtime engine — frame loop, inference, render, metrics."""
+"""Webcam runtime engine — facade over session, frame loop, and model switching."""
 
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from time import perf_counter
 from typing import Any
 
 import cv2
 
 from block_detected.config.paths import MODELS_DIR
-from block_detected.core.domain import Detection, FrameResult, RuntimeStatus
+from block_detected.config.schema import AppConfig
+from block_detected.config.store import save_config
+from block_detected.core.domain import Detection, RuntimeStatus
 from block_detected.core.protocols import DetectorBackend
 from block_detected.detection.yolo.loader import discover_model_paths, resolve_model_index
-from block_detected.runtime.config_store import save_config
+from block_detected.io.camera.capture import PiCameraCapture, RpicamCapture
 from block_detected.runtime.detector_loader import load_detector
-from block_detected.runtime.platform import is_raspberry_pi
-from block_detected.io.camera.capture import (
-    PiCameraCapture,
-    RpicamCapture,
-    find_usb_camera,
-    open_camera,
-    switch_camera,
-)
-from block_detected.runtime.config_schema import AppConfig, CameraConfig
-from block_detected.runtime.metrics import RuntimeMetrics
+from block_detected.runtime.frame_loop import process_single_frame
 from block_detected.runtime.logging_setup import log_event
+from block_detected.runtime.metrics import RuntimeMetrics
 from block_detected.runtime.postprocess import DetectionPostProcessor
-from block_detected.runtime.preprocess import apply_preprocess
+from block_detected.runtime.session import try_open_camera, try_switch_camera
 from block_detected.runtime.state import RuntimeState
-from block_detected.vision.drawing.detections import (
-    draw_detection_boxes,
-    draw_detection_centers,
-    draw_camera_center,
-)
-from block_detected.vision.geometry import box_center
-from block_detected.vision.drawing.eval import draw_eval_boxes
-from block_detected.vision.drawing.overlays import draw_contours_overlay, draw_corners_overlay
-from block_detected.vision.drawing.widgets import draw_model_switch_button, draw_status_bar
 
 logger = logging.getLogger(__name__)
-
-
-def _resolve_pi_source(cam: CameraConfig) -> int | str:
-    """Decide Pi camera source from config for non-USB cases."""
-    if cam.source == "libcamera":
-        logger.info("Pi config: camera.source=libcamera — using Pi Camera Module (CSI)")
-        return "libcamera"
-    if cam.source == "rpicam":
-        logger.info("Pi config: camera.source=rpicam — using rpicam-vid subprocess")
-        return "rpicam"
-    if cam.source == "gstreamer":
-        logger.info("Pi config: camera.source=gstreamer — using GStreamer pipeline")
-        return "gstreamer"
-    # "auto": try libcamera first, fallback handled in try_start
-    logger.info("Pi config: camera.source=auto — trying libcamera first")
-    return "libcamera"
 
 
 @dataclass(slots=True)
@@ -126,57 +94,11 @@ class WebcamEngine:
         return engine
 
     def try_start(self) -> tuple[bool, str | None]:
-        cam = self.config.camera
-        if is_raspberry_pi():
-            if cam.source == "usb":
-                # Scan for USB webcam — /dev/video0 is usually Pi Camera on Pi
-                usb_cap, usb_idx = find_usb_camera(
-                    width=cam.width, height=cam.height, max_index=cam.max_index,
-                )
-                if usb_cap is not None:
-                    self._cap = usb_cap
-                    self._camera_source = usb_idx
-                    logger.info("Opened USB camera via auto-detect: /dev/video%s", usb_idx)
-                    log_event("CAM", f"USB camera /dev/video{usb_idx} acquired.")
-                    return True, None
-                logger.error("No USB camera found scanning /dev/video0..%s", cam.max_index)
-                return False, (
-                    "No USB webcam detected. Is it plugged in? "
-                    "Try 'ls /dev/video*' to list available devices."
-                )
-            self._camera_source = _resolve_pi_source(cam)
-        else:
-            self._camera_source = self.state.camera_index
-
-        self._cap = open_camera(
-            self._camera_source,
-            width=cam.width,
-            height=cam.height,
-        )
-
-        # "auto" fallback on Pi: if libcamera failed, try USB webcam
-        if self._cap is None and is_raspberry_pi() and cam.source == "auto":
-            logger.info("libcamera failed — scanning for USB webcam")
-            usb_cap, usb_idx = find_usb_camera(
-                width=cam.width, height=cam.height, max_index=cam.max_index,
-            )
-            if usb_cap is not None:
-                self._cap = usb_cap
-                self._camera_source = usb_idx
-                logger.info("Fallback USB camera at /dev/video%s", usb_idx)
-                log_event("CAM", f"USB camera /dev/video{usb_idx} acquired (fallback).")
-                return True, None
-
-        if self._cap is None:
-            message = (
-                f"Failed to open camera source {self._camera_source} "
-                f"({cam.width}x{cam.height}). "
-                "Check permissions, USB connection, or another app using the camera."
-            )
-            logger.error(message)
-            return False, message
-        logger.info("Opened camera source: %s", self._camera_source)
-        log_event("CAM", f"Camera {self._camera_source} acquired.")
+        cap, source, error = try_open_camera(self.config, self.state)
+        if error is not None:
+            return False, error
+        self._cap = cap
+        self._camera_source = source
         logger.info(
             "Available models (%s): %s",
             len(self.model_paths),
@@ -223,181 +145,37 @@ class WebcamEngine:
     def switch_camera(self) -> bool:
         if self._cap is None:
             return False
-        if isinstance(self._camera_source, str):
-            logger.warning("Cannot switch camera — Pi Camera Module is the only CSI source.")
-            return False
-        cam = self.config.camera
-        self._cap, new_index, switched = switch_camera(
+        self._cap, self._camera_source, switched = try_switch_camera(
             self._cap,
-            self.state.camera_index,
-            max_index=cam.max_index,
-            width=cam.width,
-            height=cam.height,
+            self._camera_source,
+            self.config,
+            self.state,
         )
-        if switched:
-            self.state.camera_index = new_index
-            self._camera_source = new_index
-            logger.info("Switched to camera source: %s", new_index)
-            log_event("CAM", f"Camera {new_index} acquired.")
-        else:
-            logger.warning("No other camera source available to switch.")
         return switched
 
     def process_frame(self) -> ProcessedFrame | None:
         if self._cap is None:
             return None
-
-        frame_start = self.metrics.begin_frame()
-        ok, frame = self._cap.read()
-        read_end = perf_counter()
-        if not ok or frame is None:
-            logger.warning("Camera frame read failed. Stopping inference loop.")
+        result = process_single_frame(
+            self._cap,
+            config=self.config,
+            state=self.state,
+            detector=self._detector,
+            metrics=self.metrics,
+            postprocess=self._postprocess,
+            last_primary_log=self._last_primary_log,
+        )
+        if result is None:
             return None
-
-        pp = self.config.preprocess
-        cl = self.config.classical
-        frame = apply_preprocess(
-            frame,
-            contrast=pp.contrast,
-            brightness=pp.brightness,
-            saturation=pp.saturation,
-            blur_kernel=cl.blur_kernel,
-        )
-
-        inf = self.config.inference
-        active_conf = inf.eval_conf if self.state.eval_mode else self.state.confidence
-
-        try:
-            frame_result = self._detector.predict(
-                frame,
-                conf=active_conf,
-                iou=inf.iou,
-                imgsz=inf.imgsz,
-                max_det=inf.max_det,
-                agnostic_nms=inf.agnostic_nms,
-            )
-        except Exception as exc:
-            logger.error("Inference failed: %s", exc)
-            log_event("ERR", f"Inference failed: {exc}")
-            return None
-
-        frame_h, frame_w = frame.shape[:2]
-        filtered = self._postprocess.process(
-            frame_result.detections,
-            frame_width=frame_w,
-            frame_height=frame_h,
-        )
-        frame_result = FrameResult(detections=filtered, raw=frame_result.raw)
-
-        infer_end = perf_counter()
-        annotated = self._render(frame, frame_result)
-        render_end = perf_counter()
-
-        stats = self.metrics.record(
-            frame_start=frame_start,
-            read_end=read_end,
-            infer_end=infer_end,
-            render_end=render_end,
-            model_name=self._detector.model_name,
-            camera_index=self.state.camera_index,
-        )
-
-        ui = self.config.ui
-        button_rect = draw_model_switch_button(
-            annotated,
-            self._detector.model_name,
-            button_margin=ui.button_margin,
-            button_height=ui.button_height,
-            button_pad_x=ui.button_pad_x,
-        )
-        sorted_detections = sorted(
-            frame_result.detections,
-            key=lambda d: d.confidence,
-            reverse=True,
-        )
-        ui_cap = min(8, self.config.inference.max_det)
-        top_detections = sorted_detections[:ui_cap]
-        primary = top_detections[0] if top_detections else None
-        if primary is not None:
-            key = (primary.class_name, round(primary.confidence, 3))
-            if getattr(self, "_last_primary_log", None) != key:
-                self._last_primary_log = key
-                log_event(
-                    "DET",
-                    f"Found {primary.class_name.upper()} (conf: {primary.confidence:.2f})",
-                )
-
-        primary_center_px = box_center(primary.box) if primary is not None else None
-        camera_center_px = (frame.shape[1] // 2, frame.shape[0] // 2)
-
-        status = RuntimeStatus(
-            eval_mode=self.state.eval_mode,
-            confidence=self.state.confidence,
-            model_name=self._detector.model_name,
-            camera_index=self.state.camera_index,
-            stability_enabled=self.config.stability.enabled,
-            detection_count=len(frame_result.detections),
-            primary_detection=primary,
-            detections=top_detections,
-            stats=stats,
-            primary_center_px=primary_center_px,
-            camera_center_px=camera_center_px,
-        )
+        annotated, button_rect, status, detections, self._last_primary_log = result
         return ProcessedFrame(
             annotated=annotated,
             button_rect=button_rect,
             status=status,
-            detections=list(frame_result.detections),
+            detections=detections,
         )
-
-    def _render(self, frame, frame_result: FrameResult) -> Any:
-        inf = self.config.inference
-        stability_on = self.config.stability.enabled
-        if self.state.eval_mode:
-            annotated = frame.copy()
-            if stability_on:
-                draw_detection_boxes(
-                    annotated,
-                    frame_result.detections,
-                    color=(0, 220, 255),
-                )
-            else:
-                draw_eval_boxes(annotated, frame_result.raw)
-        elif stability_on:
-            annotated = frame.copy()
-            draw_detection_boxes(annotated, frame_result.detections)
-        else:
-            annotated = frame_result.raw.plot()
-
-        # Draw detection centers with XYWH coordinates (red)
-        draw_detection_centers(annotated, frame_result.detections, color=(0, 0, 255))
-
-        # Draw camera center (purple/magenta)
-        draw_camera_center(annotated)
-
-        draw_status_bar(
-            annotated,
-            eval_mode=self.state.eval_mode,
-            conf=self.state.confidence,
-            eval_conf=inf.eval_conf,
-            model_name=self._detector.model_name,
-        )
-
-        cl = self.config.classical
-        if cl.show_contours:
-            draw_contours_overlay(
-                annotated,
-                blur_kernel=cl.blur_kernel,
-                canny_low=cl.canny_low,
-                canny_high=cl.canny_high,
-            )
-        if cl.show_corners:
-            draw_corners_overlay(annotated)
-
-        return annotated
 
     def apply_hot_config(self, config: AppConfig) -> None:
-        """Apply fields that do not require camera/detector restart."""
         self.config = config
         self._postprocess.update_config(config.stability)
 

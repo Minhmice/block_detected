@@ -1,28 +1,29 @@
 [project]
 name = "block-detected"
-version = "0.1.0"
-description = "YOLO webcam block detection — Robo-Vision desktop GUI and TUI"
+version = "1.0.0"
+description = "YOLO block detection — OpenCV view, TUI, and Pi camera stream"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "ultralytics>=8.4.0",
     "opencv-python-headless>=4.8.0",
-    "PySide6>=6.7",
     "textual>=8.0",
     "rich>=13.7",
 ]
 
 [project.optional-dependencies]
-gui = ["PySide6>=6.7"]
+view = ["opencv-python>=4.8.0"]
 tui = ["textual>=8.0", "rich>=13.7"]
+stream = ["opencv-python-headless>=4.8.0"]
 viewer = ["opencv-python>=4.8.0"]
 dev = ["pytest>=8.0", "httpx>=0.27"]
-all = ["opencv-python>=4.8.0", "PySide6>=6.7"]
+all = ["opencv-python>=4.8.0"]
 
 [project.scripts]
-block-detected = "block_detected.apps.launcher:main"
-block-detected-gui = "block_detected.apps.gui.app:main"
-block-detected-tui = "block_detected.apps.tui.app:main"
+block-detected = "main:main"
+block-detected-stream = "stream.__main__:main"
+block-detected-view = "view.app:main"
+block-detected-tui = "block_detected.tui.app:main"
 
 [build-system]
 requires = ["setuptools>=61"]
@@ -30,3 +31,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools]
+py-modules = ["main", "bootstrap"]

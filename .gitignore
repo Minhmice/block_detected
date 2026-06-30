@@ -1,48 +1,53 @@
-# Python
+# --- Python ---
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+
+# Virtual environments
 .venv/
 venv/
 env/
-.env
-.env.*
-!.env.example
+ENV/
+
+# Packaging / install artifacts (pip install -e .)
+*.egg-info/
+*.egg
+dist/
+build/
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Test / type / lint caches
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-*.egg-info/
-dist/
-build/
+.coverage
+htmlcov/
+.tox/
+.nox/
 
-# Jupyter
-.ipynb_checkpoints/
+# --- Project: local secrets ---
+.env
+.env.*
+!.env.example
 
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
+# --- Project: block_detection_v2 benchmark output ---
+src/block_detection_v2/benchmark_output/
+block_detected.toml
+block_detected.json
+.raspi_cam_viewer.json
+pyvenv.cfg
 
-# IDE / editor
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
+# Accidental venv copy at repo root (never commit site-packages)
+Lib/
+Scripts/
+Include/
 
-# Project output
+# --- Project: ML / detection output ---
 runs/
 wandb/
-
-# Logs & debug
-*.log
-.cursor/
-
-# YOLO / Ultralytics caches
 *.cache
 
 # Model weights (large binaries — keep folder via .gitkeep)
@@ -50,3 +55,28 @@ models/*.pt
 models/*.onnx
 models/*.engine
 !models/.gitkeep
+
+# --- Tooling / IDE ---
+.idea/
+.vscode/
+.cursor/
+*.swp
+*.swo
+*~
+
+# Node (if example_ui or tooling uses npm)
+node_modules/
+
+# GSD / graphify local cache
+graphify-out/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs ---
+*.log
+
+# --- Jupyter ---
+.ipynb_checkpoints/

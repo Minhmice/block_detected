@@ -1,4 +1,4 @@
-    """Tests for frame preprocessing."""
+"""Tests for frame preprocessing."""
 
 import numpy as np
 

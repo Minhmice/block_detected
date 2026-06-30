@@ -1,0 +1,23 @@
+"""Default constants for AppConfig (single source for schema defaults)."""
+
+# Camera
+CAMERA_INDEX = 8
+MAX_CAMERA_INDEX = 10
+CAMERA_WIDTH = 640
+CAMERA_HEIGHT = 480
+
+# Inference
+DEFAULT_MODEL_NAME = "train-3.pt"
+CONF_MIN = 0.001
+CONF_MAX = 0.95
+CONF_STEP = 0.001
+DEFAULT_CONF = 0.25
+EVAL_CONF = 0.01
+
+# UI / OpenCV console
+WINDOW_NAME = "YOLO Webcam Inference"
+BUTTON_MARGIN = 12
+BUTTON_HEIGHT = 40
+BUTTON_PAD_X = 14
+KEY_ARROW_UP = 2490368
+KEY_ARROW_DOWN = 2621440

@@ -20,3 +20,14 @@ def is_raspberry_pi() -> bool:
         return True
     cpuinfo = _read_first_line(Path("/proc/cpuinfo"))
     return "BCM" in cpuinfo
+
+
+def device_kind() -> str:
+    """Return device kind: pi | mac | windows | linux."""
+    if is_raspberry_pi():
+        return "pi"
+    if sys.platform == "darwin":
+        return "mac"
+    if sys.platform == "win32":
+        return "windows"
+    return "linux"

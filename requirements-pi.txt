@@ -1,4 +1,4 @@
-# Raspberry Pi — TUI + stream_server (no PySide6 GUI)
+# Raspberry Pi — TUI + stream (no OpenCV view window)
 # Install: pip install -r requirements-pi.txt && pip install -e . --no-deps
 # Python 3.10+
 

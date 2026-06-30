@@ -1,6 +1,6 @@
 """Apply hot-reloadable config to a running WebcamEngine (testable helper)."""
 
-from block_detected.runtime.config_schema import (
+from block_detected.config.schema import (
     RESTART_CAMERA_KEYS,
     RESTART_DETECTOR_KEYS,
     AppConfig,

@@ -1,11 +1,19 @@
-"""UI window, widget, and keyboard constants."""
+"""Re-export legacy UI constants from defaults."""
 
-WINDOW_NAME = "YOLO Webcam Inference"
+from block_detected.config.defaults import (
+    BUTTON_HEIGHT,
+    BUTTON_MARGIN,
+    BUTTON_PAD_X,
+    KEY_ARROW_DOWN,
+    KEY_ARROW_UP,
+    WINDOW_NAME,
+)
 
-BUTTON_MARGIN = 12
-BUTTON_HEIGHT = 40
-BUTTON_PAD_X = 14
-
-# OpenCV waitKeyEx codes for arrow keys (platform-dependent; macOS/Linux)
-KEY_ARROW_UP = 2490368
-KEY_ARROW_DOWN = 2621440
+__all__ = [
+    "WINDOW_NAME",
+    "BUTTON_MARGIN",
+    "BUTTON_HEIGHT",
+    "BUTTON_PAD_X",
+    "KEY_ARROW_UP",
+    "KEY_ARROW_DOWN",
+]
