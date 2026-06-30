@@ -29,6 +29,7 @@ from .models import (
     BBox,
     DetectionResult,
     HexPoints,
+    LineGroups,
     LineSegment,
     RejectReason,
     ScoreBreakdown,
@@ -235,6 +236,8 @@ class HexDetector:
                 E=roi_to_frame_point(smoothed.E, effective_bbox) if smoothed.E else None,
                 F=roi_to_frame_point(smoothed.F, effective_bbox) if smoothed.F else None,
             )
+            _af, _be, _ab, _fe, _cd, _bc, _ed = best_hex_combo
+            winning_lines: list[LineSegment] = [_af, _be, _ab, _fe, _cd, _bc, _ed]
             return DetectionResult(
                 track_id=track_id,
                 mode="hex",
@@ -244,12 +247,12 @@ class HexDetector:
                 reject_reason="",
                 status="detected",
                 score_breakdown=best_hex_breakdown,
-                debug={
-                    "raw_lines": raw_lines,
-                    "filtered_lines": filtered,
-                    "groups": groups,
-                    "roi_size": (roi_w, roi_h),
-                },
+                debug=self._build_debug_payload(
+                    winning_lines=winning_lines,
+                    groups=groups,
+                    roi_w=roi_w,
+                    roi_h=roi_h,
+                ),
             )
 
         # Check total score threshold for rectangle
@@ -275,6 +278,7 @@ class HexDetector:
         frame_points["C"] = None
         frame_points["D"] = None
 
+        rect_winning = [af_line, be_line, ab_line, fe_line]
         return DetectionResult(
             track_id=track_id,
             mode="rectangle",
@@ -284,10 +288,26 @@ class HexDetector:
             reject_reason="",
             status="detected",
             score_breakdown=best_rect_breakdown,
-            debug={
-                "raw_lines": raw_lines,
-                "filtered_lines": filtered,
-                "groups": groups,
-                "roi_size": (roi_w, roi_h),
-            },
+            debug=self._build_debug_payload(
+                winning_lines=rect_winning,
+                groups=groups,
+                roi_w=roi_w,
+                roi_h=roi_h,
+            ),
         )
+
+    def _build_debug_payload(
+        self,
+        winning_lines: list[LineSegment],
+        groups: LineGroups,
+        roi_w: int,
+        roi_h: int,
+    ) -> dict[str, object]:
+        """Construct a debug dict respecting the active debug_mode."""
+        payload: dict[str, object] = {
+            "winning_lines": winning_lines,
+            "roi_size": (roi_w, roi_h),
+        }
+        if self.cfg.debug_mode == "verbose":
+            payload["groups"] = groups
+        return payload
