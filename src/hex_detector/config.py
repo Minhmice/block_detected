@@ -74,10 +74,17 @@ class HexDetectorConfig:
     # Temporal
     point_ema_alpha: float = 0.45
     max_hold_frames: int = 3
+    hold_iou_threshold: float = 0.5
+    hold_score_decay: float = 0.8
+    hold_bbox_center_jump_ratio: float = 0.3
+    hold_bbox_size_change_ratio: float = 0.5
+    hold_point_conflict_threshold: float = 0.3
 
     # Debug
     debug_draw_raw_lines: bool = True
     debug_draw_selected_lines: bool = True
+    debug_mode: str = "basic"
+    debug_top_candidates: int = 5
 
     def validate(self) -> None:
         total = (
@@ -102,6 +109,26 @@ class HexDetectorConfig:
         if not 0.0 <= self.accept_score_threshold <= 1.0:
             raise ValueError(
                 f"accept_score_threshold must be in [0, 1], got {self.accept_score_threshold}"
+            )
+        if not 0.0 <= self.hold_iou_threshold <= 1.0:
+            raise ValueError(
+                f"hold_iou_threshold must be in [0, 1], got {self.hold_iou_threshold}"
+            )
+        if not 0.0 < self.hold_score_decay < 1.0:
+            raise ValueError(
+                f"hold_score_decay must be in (0, 1), got {self.hold_score_decay}"
+            )
+        if self.max_hold_frames <= 0:
+            raise ValueError(
+                f"max_hold_frames must be positive, got {self.max_hold_frames}"
+            )
+        if self.debug_mode not in ("basic", "verbose"):
+            raise ValueError(
+                f"debug_mode must be 'basic' or 'verbose', got {self.debug_mode}"
+            )
+        if self.debug_top_candidates <= 0:
+            raise ValueError(
+                f"debug_top_candidates must be positive, got {self.debug_top_candidates}"
             )
 
 

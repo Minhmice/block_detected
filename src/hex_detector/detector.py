@@ -66,11 +66,18 @@ class HexDetector:
             result = self.detect_roi(frame, det.track_id, smoothed, w, h)
             if result.mode != "not_detected":
                 result = self.tracker.store_result(det.track_id, result)
-            results.append(result)
+                results.append(result)
+            else:
+                # Present-track CV failure — try guarded hold
+                held = self.tracker.try_hold(det.track_id, smoothed)
+                if held is not None:
+                    results.append(held)
+                else:
+                    results.append(result)
 
         for tid in list(self.tracker._tracks.keys()):
             if tid not in active_ids:
-                held = self.tracker.hold_or_clear(tid)
+                held = self.tracker.try_hold(tid)
                 if held is not None:
                     results.append(held)
 
@@ -102,6 +109,14 @@ class HexDetector:
                 roi_bbox=bbox.to_dict(),
                 reject_reason=reason or "",
                 status="rejected",
+                score_breakdown=ScoreBreakdown(
+                    edge_support=0.0,
+                    parallelism=0.0,
+                    topology=0.0,
+                    area_position=0.0,
+                    temporal=0.0,
+                    total=0.0,
+                ),
             )
 
         # --- ROI extraction ---
