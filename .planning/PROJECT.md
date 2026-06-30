@@ -2,11 +2,11 @@
 
 ## What This Is
 
-Python computer-vision project for realtime block/object detection. v1 uses YOLO (Ultralytics) with webcam, GUI, and web API. v2 adds a standalone classical-CV hexagon block detector (`block_detection_v2`) using only OpenCV + NumPy.
+Python computer-vision project for realtime block/object detection using YOLO (Ultralytics) with webcam capture, OpenCV View preview, Textual TUI, and optional Pi JPEG stream.
 
 ## Core Value
 
-Reliable realtime block pose from camera: v1 via YOLO; v2 via classical geometry on hexagon contours.
+Reliable realtime block detection and pose from camera via a shared `WebcamEngine` runtime.
 
 ## Requirements
 
@@ -15,57 +15,30 @@ Reliable realtime block pose from camera: v1 via YOLO; v2 via classical geometry
 - [x] Webcam YOLO inference with model switch, camera switch, eval mode
 - [x] Layered CV package, runtime, GUI, postprocess, web telemetry (v1 phases 1–7)
 
-### Active (Milestone v2.0)
+### Active (Milestone v1.x)
 
-- [ ] Standalone `block_detection_v2` module — no v1 imports, no YOLO
-- [ ] Hexagon 6-point detection, front/right faces, yaw, EMA tracker, overlay
-- [ ] Runnable via `python -m block_detection_v2.main`
+- [ ] Phases 8–14: inference params, stability, camera sources, ROI/preprocess, classical CV overlays, kinematics, config profiles
 
 ### Out of Scope
 
 - Cloud API / auth — local-only inference
-- YOLO inside v2 — deferred; TODO for ROI only
-- Modifying v1 packages for v2 integration — separate milestone
+- Standalone classical-CV v2 milestone (removed from planning)
 
-## Current Milestone: v2.0 Classical CV Block Detection
+## Current Milestone: v1.x
 
-**Goal:** Greenfield OpenCV-only hexagon block detector as isolated package under `src/block_detection_v2/`.
-
-**Target features:**
-
-- Camera → preprocess → edges → 6-point polygon → geometry (faces, yaw, homography splits)
-- EMA temporal stability with jump reject and short hold
-- Live overlay + per-frame result dict
-- Future YOLO ROI noted as TODO only
+**Goal:** Harden and extend the shared `block_detected` runtime and app shells (View, TUI, Stream).
 
 ## Context
 
-Brownfield v1 at `src/block_detected/`. v2 is intentionally decoupled: classical CV path for block hexagon without neural detector.
+Brownfield v1 at `src/block_detected/`. Entry via `main.py` → `--view`, `--tui`, or `--stream`.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | `src/` layout + pyproject.toml | Standard installable package | ✓ Good |
-| v2 isolated from v1 | Clean experiment; no YOLO yet | — In progress |
-| OpenCV + NumPy only for v2 | Spec requirement | — In progress |
-
-## Evolution
-
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd-transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd-complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+| Shared `WebcamEngine` runtime | One pipeline for View + TUI | ✓ Good |
+| Stream standalone | Pi JPEG server has no `block_detected` import | ✓ Good |
 
 ---
-*Last updated: 2026-06-29 — milestone v2.0 started*
+*Last updated: 2026-06-30 — v2 planning removed; codebase map refreshed*

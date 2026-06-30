@@ -1,187 +1,133 @@
 # Architecture
 
-**Analysis Date:** 2025-06-05
+**Analysis Date:** 2026-06-30
 
 ## Pattern Overview
 
-**Overall:** Layered monolith with a dedicated runtime orchestration layer and thin application shell.
+**Overall:** One Python package (`src/block_detected/`) providing a **shared detection runtime** (camera → preprocess → YOLO → postprocess → render → metrics) with **three thin app shells**:
 
-**Key Characteristics:**
-- Strict dependency direction: `core` → `detection`/`vision`/`io` → `runtime` → `apps`
-- Domain types and protocols live in `core` with zero OpenCV/YOLO imports
-- `WebcamEngine` in `runtime/engine.py` owns the frame loop (read → infer → postprocess → render → metrics)
-- PySide6 GUI runs the engine on a `QThread`; UI never duplicates camera or inference logic
-- Typed `AppConfig` dataclasses with TOML persistence and hot-reload vs restart key classification
+- **View**: OpenCV window preview (`src/view/`)
+- **TUI**: Textual dashboard (`src/block_detected/tui/`)
+- **Stream**: Raspberry Pi JPEG server + LAN viewer (`src/stream/`) — intentionally standalone
 
-## Layers
+Evidence:
 
-**Application (`apps/`):**
-- Purpose: User-facing entry points and orchestration only
-- Location: `src/block_detected/apps/`
-- Contains: PySide6 desktop GUI (`apps/gui/app.py`)
-- Depends on: `runtime` (engine, config, logging)
-- Used by: `main.py`, `block_detected.__main__`, console script `block-detected`
+- Launcher routes: `main.py` (selects `stream` / `view` / `tui`)
+- View entry: `src/view/app.py` imports `block_detected.runtime.engine.WebcamEngine`
+- TUI entry: `src/block_detected/tui/app.py` imports `block_detected.runtime.engine.WebcamEngine`
+- Stream is separate: `src/stream/__main__.py` only imports within `stream.*` (no `block_detected` import)
+- Dependency intent documented: `AGENTS.md`
 
-**Runtime (`runtime/`):**
-- Purpose: Engine loop, session state, metrics, config schema/store, post-processing orchestration, detector loading
-- Location: `src/block_detected/runtime/`
-- Contains: `WebcamEngine`, `RuntimeState`, `RuntimeMetrics`, `DetectionPostProcessor`, `AppConfig`, TOML load/save, logging ring buffer
-- Depends on: `core`, `detection`, `vision`, `io`, `config`
-- Used by: `apps/gui/app.py`, tests
+## Runtime Pipeline (Shared)
 
-**Core (`core/`):**
-- Purpose: Domain model and backend protocol — no third-party CV/ML imports
-- Location: `src/block_detected/core/`
-- Contains: `Box`, `Detection`, `FrameResult`, `InferenceStats`, `RuntimeStatus`, `DetectorBackend` Protocol
-- Depends on: stdlib only
-- Used by: `detection`, `runtime`, `vision`, `postprocess`
+### Core orchestrator
 
-**Detection (`detection/`):**
-- Purpose: YOLO backend and raw-result parsing into domain types
-- Location: `src/block_detected/detection/`
-- Contains: `parse_yolo_result` in `boxes.py`, `YoloDetector` in `yolo/backend.py`, model discovery in `yolo/loader.py`
-- Depends on: `core`, `config` (paths/inference constants), Ultralytics
-- Used by: `runtime/detector_loader.py`, `runtime/engine.py`
+- **Facade**: `src/block_detected/runtime/engine.py` → `WebcamEngine`
+  - Loads available model weights from `block_detected.config.paths.MODELS_DIR` and `block_detected.detection.yolo.loader.discover_model_paths()`
+  - Owns session state (`src/block_detected/runtime/state.py`), metrics (`src/block_detected/runtime/metrics.py`), and stability postprocess (`src/block_detected/runtime/postprocess.py`)
 
-**Vision (`vision/`):**
-- Purpose: Pure geometry and OpenCV drawing — no detection module imports
-- Location: `src/block_detected/vision/`
-- Contains: `geometry.py` (IoU, box area), `drawing/detections.py`, `drawing/eval.py`, `drawing/widgets.py`
-- Depends on: `core`, `config` (UI constants), OpenCV
-- Used by: `runtime/engine.py`, `runtime/postprocess.py`, `ui/input/handlers.py`
+### Single-frame data flow
 
-**IO (`io/`):**
-- Purpose: Hardware and stream access
-- Location: `src/block_detected/io/camera/`
-- Contains: `open_camera`, `switch_camera` in `capture.py`
-- Depends on: OpenCV only
-- Used by: `runtime/engine.py`
+The heart of the pipeline is **one frame** processed by:
 
-**UI input (`ui/`):**
-- Purpose: OpenCV-window keyboard/mouse handlers (legacy/debug path; GUI uses Qt widgets instead)
-- Location: `src/block_detected/ui/input/handlers.py`
-- Contains: `handle_key`, `on_mouse`
-- Depends on: `runtime` config/state, `vision/geometry`
-- Used by: Re-exported from `ui/__init__.py`; not wired into current PySide6 GUI loop
+- `src/block_detected/runtime/frame_loop.py` → `process_single_frame(...)`
+  - **Read**: `cap.read()` on either `cv2.VideoCapture` or Pi camera adapters (`src/block_detected/io/camera/capture.py`)
+  - **Preprocess**: `src/block_detected/runtime/preprocess.py` → `apply_preprocess(...)` (contrast/brightness/saturation + optional blur)
+  - **Infer**: `DetectorBackend.predict(...)` (protocol in `src/block_detected/core/protocols.py`)
+    - Current implementation: `src/block_detected/detection/yolo/backend.py`
+  - **Postprocess**: `src/block_detected/runtime/postprocess.py` (`DetectionPostProcessor.process(...)`)
+  - **Render**: `src/block_detected/runtime/render.py` → `render_frame(...)`
+    - Adds UI overlay elements via `src/block_detected/vision/drawing/widgets.py` (e.g., model switch button)
+  - **Metrics**: `src/block_detected/runtime/metrics.py` (`RuntimeMetrics.record(...)`)
+  - **Status**: returns `RuntimeStatus` (`src/block_detected/core/domain.py`) + annotated frame + top detections
 
-**Config (`config/`):**
-- Purpose: Legacy path constants and module-level defaults that `AppConfig` mirrors
-- Location: `src/block_detected/config/`
-- Contains: `paths.py` (`PROJECT_ROOT`, `MODELS_DIR`), `camera.py`, `inference.py`, `ui.py`
-- Depends on: stdlib
-- Used by: `runtime/config_schema.py`, `detection/yolo/loader.py`, `vision/drawing/widgets.py`
+### Camera session management
 
-## Dependency Rules
+- Open/switch camera lives in `src/block_detected/runtime/session.py`
+  - `try_open_camera(...)` supports **desktop camera index** and **Pi camera source selection**
+  - Pi detection and branching is in `src/block_detected/runtime/platform.py` (`is_raspberry_pi()`)
 
-Enforced by design (documented in `AGENTS.md`):
+## Configuration Architecture
 
-| Layer | Must NOT import |
-|-------|-----------------|
-| `core` | OpenCV, Ultralytics, PySide6 |
-| `detection` | `apps`, `ui`, `runtime` |
-| `vision` | `detection` |
-| `runtime` | `apps`, `ui` |
-| `apps` | Direct YOLO/camera logic (delegate to `WebcamEngine`) |
+### Typed config
 
-**Detector indirection:** `runtime/detector_loader.py` returns `DetectorBackend`; only implementation is `YoloDetector`. Swap backends by changing the loader, not the engine.
+- Config schema: `src/block_detected/config/schema.py` (`AppConfig` + nested dataclasses)
+  - Restart boundaries expressed as key sets:
+    - `RESTART_CAMERA_KEYS` (e.g. `camera.*` including `camera.source`)
+    - `RESTART_DETECTOR_KEYS` (e.g. `inference.imgsz`)
 
-## Data Flow
+### Storage and migration
 
-**Frame processing loop (`WebcamEngine.process_frame`):**
+- Config load/save: `src/block_detected/config/store.py`
+  - Default path: `DEFAULT_CONFIG_PATH = PACKAGE_ROOT / "block_detected.json"`
+  - Legacy migration (on first load):
+    - `block_detected.toml` at repo root (`LEGACY_TOML_PATH`)
+    - `block_detected.json` at repo root (`LEGACY_ROOT_JSON`)
 
-1. **Read** — `io/camera/capture.py` → `VideoCapture.read()` → BGR frame
-2. **Infer** — `DetectorBackend.predict(frame, conf=...)` → `FrameResult` with `list[Detection]` + raw YOLO result
-3. **Postprocess** — `DetectionPostProcessor.process()` applies spatial filters, duplicate merge, temporal stability when `stability.enabled`
-4. **Render** — `_render()` chooses eval vs normal vs stability drawing path; overlays status bar and model-switch button
-5. **Metrics** — `RuntimeMetrics.record()` computes FPS and per-stage ms latencies → `InferenceStats`
-6. **Return** — `ProcessedFrame(annotated, button_rect, status)` to caller
+Evidence: `src/block_detected/config/store.py` functions `load_config()`, `save_config()`, `_migrate_legacy_config_if_needed()`.
 
-**GUI thread model:**
+## Application Shells
 
-1. `MainWindow` starts `FrameThread` (`QThread`) with run-generation guard
-2. Worker creates `WebcamEngine.try_create()` → `try_start()` → loop `process_frame()` until stop or read failure
-3. `frame_ready` signal emits `QImage` + `RuntimeStatus` to main thread for preview and status labels
-4. User controls queue pending changes (confidence, eval mode, hot config, model/camera switch) via thread-safe locks; applied at start of each loop iteration via `apply_hot_runtime_settings()`
-5. Logs polled every 500 ms via `get_log_lines()` (never read `LogBufferHandler._records` from UI)
-6. Shutdown: `engine.shutdown(destroy_cv_windows=False)` in worker; main thread waits for `finished` before clearing `frame_thread`
+### Launcher / bootstrap
 
-**Config flow:**
+- **Launcher**: `main.py`
+  - Picks mode by argv flags (`--stream`, `--view`, `--tui`), explicit subcommand (`stream|view|tui`), or env var (`BLOCK_DETECTED_UI`)
+  - Dispatches into:
+    - `stream.__main__.main`
+    - `view.app.main`
+    - `block_detected.tui.app.main`
+- **Bootstrap**: `bootstrap.py`
+  - Detects device (`detect_device()`)
+  - Auto-installs deps into the environment (desktop: `pip install -e ".[view]"`; Pi: `requirements-pi.txt` + `pip install -e . --no-deps`)
 
-1. Startup: `load_config()` reads optional `block_detected.toml` at repo root → `AppConfig.from_dict()` or defaults
-2. Validation: `AppConfig.validate()` before GUI launch
-3. Hot reload: confidence, eval mode, all `stability.*` fields via `engine.apply_hot_config()` without restart
-4. Restart required: `camera.*`, `inference.default_model_name`, `ui.log_level` — detected by `needs_runtime_restart()` in `runtime/config_apply.py`
+### View (OpenCV window)
 
-**State Management:**
-- **Persistent config:** `AppConfig` dataclass, saved to TOML via `runtime/config_store.py`
-- **Session state:** `RuntimeState` (confidence, eval_mode, camera_index, model_index) — mutable per run, hot-updated from GUI
-- **Postprocess state:** `TemporalStabilityTracker` sliding window inside `DetectionPostProcessor`; reset on model switch
-- **Metrics state:** Rolling 30-frame deque for FPS averaging in `RuntimeMetrics`
+- Entry: `src/view/app.py`
+  - Validates config (`block_detected.config.store.validate_config`)
+  - Runs `WebcamEngine.process_frame()` loop with:
+    - keyboard/mouse input: `src/view/input.py`
+    - config reload: `src/view/reload.py` (triggered by `r`)
 
-## Key Abstractions
+### TUI (Textual dashboard)
 
-**DetectorBackend Protocol:**
-- Purpose: Pluggable object detector interface
-- Location: `src/block_detected/core/protocols.py`
-- Pattern: `@runtime_checkable` Protocol with `model_name`, `predict()`, `close()`
-- Implementation: `detection/yolo/backend.py` → `YoloDetector`
+- Entry: `src/block_detected/tui/app.py`
+  - Wraps `WebcamEngine` in a small controller (`TuiRuntime`) for start/stop and hot updates
+  - Applies runtime hot settings via `src/block_detected/runtime/config_apply.py` (`apply_hot_runtime_settings`)
 
-**FrameResult / Detection:**
-- Purpose: Normalized inference output independent of Ultralytics
-- Location: `src/block_detected/core/domain.py`, parsing in `detection/boxes.py`
-- Pattern: `Detection` holds `Box`, class metadata, confidence; `FrameResult` bundles detections + optional raw backend object for eval rendering
+### Stream (Pi server + viewer)
 
-**WebcamEngine:**
-- Purpose: Single orchestrator for webcam block-detection session
-- Location: `src/block_detected/runtime/engine.py`
-- Pattern: Factory methods `try_create()` / `create()`; lifecycle `try_start()` → `process_frame()` → `shutdown()`
+- Entry: `src/stream/__main__.py`
+  - Server: `src/stream/server.py` (TCP stream + UDP discovery)
+  - Viewer: `src/stream/viewer.py` (Tkinter UI + OpenCV window; LAN discovery + manual IP fallback)
 
-**AppConfig:**
-- Purpose: Typed, validated, TOML-serializable application settings
-- Location: `src/block_detected/runtime/config_schema.py`
-- Pattern: Nested dataclasses (`CameraConfig`, `InferenceConfig`, `StabilityConfig`, etc.); `RESTART_CAMERA_KEYS` / `RESTART_DETECTOR_KEYS` frozensets
+This stack is **intentionally separate** from the detection runtime (see `AGENTS.md` dependency rule: “stream → standalone”).
 
-**DetectionPostProcessor:**
-- Purpose: Config-driven spatial and temporal filtering pipeline
-- Location: `src/block_detected/runtime/postprocess.py`
-- Pattern: Pure filter functions + stateful `TemporalStabilityTracker`; enabled only when `stability.enabled`
+## Dependency Direction (Enforced by Convention)
 
-## Entry Points
+Documented in `AGENTS.md`:
 
-**Primary GUI:**
-- Location: `main.py` → `block_detected.apps.gui.app.main`
-- Triggers: `python main.py`, `python -m block_detected`, `block-detected` console script
-- Responsibilities: Load/validate config, setup logging, launch `QApplication` + `MainWindow`
+- **View** (`src/view/`) → depends on `block_detected.runtime`
+- **TUI** (`src/block_detected/tui/`) → depends on `block_detected.runtime`
+- **Stream** (`src/stream/`) → standalone (no `block_detected` imports)
 
-**Package module:**
-- Location: `src/block_detected/__main__.py`
-- Triggers: `python -m block_detected`
-- Responsibilities: Same as GUI main
+Within `block_detected/`:
 
-**Dev path bootstrap:**
-- Location: `main.py` inserts `src/` into `sys.path` before import (editable install also works via `pip install -e .`)
+- **Config** (`src/block_detected/config/`) is foundational (schema + storage + constants)
+- **Core types/protocols** (`src/block_detected/core/`) define shared domain objects and the detector contract
+- **Detection backend** (`src/block_detected/detection/`) implements Ultralytics YOLO adapter
+- **IO + Vision** (`src/block_detected/io/`, `src/block_detected/vision/`) support the runtime
+- **Runtime** (`src/block_detected/runtime/`) orchestrates everything for apps to call
 
-## Error Handling
+## Packaging & Entry Points
 
-**Strategy:** Log and degrade gracefully; return optional/error tuples rather than raising in hot paths.
+Defined in `pyproject.toml`:
 
-**Patterns:**
-- `WebcamEngine.try_create()` → `(engine | None, error_message | None)` when models missing or load fails
-- `WebcamEngine.try_start()` → `(bool, error_message | None)` when camera open fails
-- `process_frame()` returns `None` on read failure or inference exception; worker thread emits `error` signal and exits loop
-- Model/camera switch catches load failures, logs error, keeps previous detector/camera
-- Config validation collects all errors in a list before GUI launch; invalid config exits with code 1
+- Console scripts:
+  - `block-detected = "main:main"`
+  - `block-detected-stream = "stream.__main__:main"`
+  - `block-detected-view = "view.app:main"`
+  - `block-detected-tui = "block_detected.tui.app:main"`
+- Optional extras for feature sets:
+  - `view` includes `opencv-python` (needed for `cv2.imshow`, see `main.py` check)
+  - `tui` includes `textual` + `rich`
 
-## Cross-Cutting Concerns
-
-**Logging:** `runtime/logging_setup.py` — root logger with stdout + `LogBufferHandler` ring buffer (500 lines); GUI reads via `get_log_lines()`. Ultralytics logger capped at WARNING.
-
-**Validation:** `AppConfig.validate()` in `config_schema.py` — type checks, range checks, stability vote/window consistency. `validate_config()` wrapper in `config_store.py`.
-
-**Authentication:** Not applicable — local desktop app, no network auth.
-
-**Thread safety:** GUI worker uses `threading.Event` for stop, `threading.Lock` for pending control queue; log buffer uses lock in `snapshot_lines()`.
-
----
-
-*Architecture analysis: 2025-06-05*

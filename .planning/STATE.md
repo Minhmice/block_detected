@@ -1,31 +1,31 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Classical CV Block Detection
-status: executing
-last_updated: "2026-06-29"
-last_activity: 2026-06-29 — Phase 18 executed (YOLO-first pipeline)
+milestone: v1.x
+milestone_name: Block Detected Core
+status: maintaining
+last_updated: "2026-06-30"
+last_activity: 2026-06-30 — Removed v2 spikes/phases; refreshed codebase map
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 10
-  completed_plans: 10
-  percent: 100
+  total_phases: 13
+  completed_phases: 6
+  total_plans: null
+  completed_plans: null
+  percent: null
 ---
 
 # Project State
 
 ## Current Position
 
-Phase: 18 executed (pending verification)
-Plan: 18-01 through 18-04 complete
-Status: Milestone v2.0 — YOLO + classical CV hybrid live
-Last activity: 2026-06-29 — `/gsd-execute-phase 18`
+Phase: v1.x maintenance (phases 8–14 deferred)
+Plan: —
+Status: v2.0 milestone artifacts removed; focus on `block_detected` runtime + View/TUI/Stream
+Last activity: 2026-06-30 — `/gsd-map-codebase` refresh + v2 cleanup
 
 ## Accumulated Context
 
 ### Roadmap Evolution
 
-- Phase 18 executed: YOLO first-pass `rbs-final.pt` → `roi_from_bbox` → hex fit; edge_roi fallback
-- Phase 17: ROI-fit-score pipeline (≥80% benchmark maintained with YOLO)
-- `docs/BLOCK_DETECTION_V2.md` — full pipeline + YOLO docs
+- v2.0 milestone (phases 15–18, spikes, `docs/BLOCK_DETECTION_V2.md`) removed from planning
+- Codebase map refreshed in `.planning/codebase/` (7 documents)
+- Active track: v1 phases 1–7 complete; 8–14 remain on v1.x roadmap

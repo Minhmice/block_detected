@@ -4,12 +4,10 @@
 
 YOLO webcam inference, layered CV package, runtime engine, GUI, postprocess, web telemetry API.
 
-Phases 1–7 verified. Phases 8–14 planned on v1.x roadmap.
+Phases 1–7 verified. Phases 8–14 on v1.x roadmap.
 
 ---
 
-## v2.0 — Classical CV Block Detection (active)
+## v2.0 — Classical CV Block Detection (removed)
 
-**Goal:** Standalone OpenCV-only hexagon block detector (`block_detection_v2`) with geometry, tracking, and overlay — no YOLO, no v1 imports.
-
-**Started:** 2026-06-29
+Planning artifacts for this milestone (spikes, phases 15–18, `docs/BLOCK_DETECTION_V2.md`) were removed on 2026-06-30. No active v2 roadmap.

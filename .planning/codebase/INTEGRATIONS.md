@@ -1,132 +1,73 @@
 # External Integrations
 
-**Analysis Date:** 2026-06-05
+**Analysis Date:** 2026-06-30
 
-## APIs & External Services
+## Network / Protocol Integrations
 
-**HTTP/REST APIs:**
-- None in application code — no `requests`, `httpx`, `aiohttp`, or similar imports under `src/` or `tests/`
+- **Raspberry Pi JPEG stream (custom TCP/UDP protocol)**
+  - **UDP discovery**: server listens and replies with JSON metadata
+    - Evidence: `src/stream/server.py` (`discovery_loop`, binds UDP port from `src/stream/protocol.py`)
+    - Evidence: `src/stream/protocol.py` defines `UDP_PORT = 5001` and `DISCOVERY_MESSAGE = b"RASPI_CAM_DISCOVER_V1"`
+  - **TCP streaming**: client sends a JSON “config” line, server ACKs JSON, then sends frames as `uint32_be length + jpeg_bytes`
+    - Evidence: `src/stream/server.py` (`read_config`, `send_json_line`, `struct.pack("!I", len(data))`)
+    - Evidence: `src/stream/protocol.py` (`send_json_line`, `recv_json_line`, `pack_frame`)
+  - **Desktop viewer**: LAN discovery + TCP client + OpenCV window
+    - Evidence: `src/stream/viewer.py` (`discover_server`, `socket.connect`, `cv2.imshow`)
+  - **Operational note**: stream server introspects IP addresses via OS commands
+    - Evidence: `src/stream/server.py` runs `ip -o -4 addr show up`
+    - Evidence: `src/stream/viewer.py` runs `ipconfig /all` on Windows and `ip -o -4 ...` elsewhere
 
-**Ultralytics ecosystem (local-only usage):**
-- YOLO inference via local weight files only
-  - Discovery: `src/block_detected/detection/yolo/loader.py` → `discover_model_paths()` globs `models/*.pt`
-  - Load: `YOLO(str(model_path))` in `src/block_detected/detection/yolo/backend.py`
-  - No code paths call Ultralytics Hub download APIs or remote model URLs
-  - Ultralytics may still perform internal network activity for optional features (updates, telemetry) when installed — not configured or invoked by this project
+## ML / Model Integration
 
-**Future UI reference (not integrated):**
-- `example_ui/stitch_block_pickup_vision_console/code.html` describes a web-style console that would consume frame streams (base64 or MJPEG URL per `html_data_requirements.md`) — not connected to Python backend today
+- **Ultralytics YOLO (local `.pt` weights)**
+  - **Model discovery**: `.pt` files in `models/`
+    - Evidence: `src/block_detected/detection/yolo/loader.py` (`MODELS_DIR.glob("*.pt")`)
+  - **Model load + inference**:
+    - Evidence: `src/block_detected/detection/yolo/backend.py` (`from ultralytics import YOLO`, `YOLO(str(model_path))`)
+  - **No explicit remote model download APIs used** in application code (no Hub calls found in the YOLO backend modules above)
 
-## Data Storage
+## Hardware / OS Integrations
 
-**Databases:**
-- None — no SQLAlchemy, sqlite3 usage for persistence, Redis, or ORM detected
+- **Camera capture**
+  - **Linux USB / V4L2**: opens `cv2.VideoCapture(..., cv2.CAP_V4L2)`
+    - Evidence: `src/block_detected/io/camera/v4l2.py` (`open_v4l2`, `find_usb_camera`)
+  - **Raspberry Pi Camera Module (CSI / libcamera)**
+    - `picamera2` adapter
+      - Evidence: `src/block_detected/io/camera/pi/picamera2.py` imports `Picamera2` and exposes `PiCameraCapture.read()`
+    - `rpicam-vid` subprocess adapter (YUV420 → BGR via OpenCV)
+      - Evidence: `src/block_detected/io/camera/pi/rpicam.py` runs `subprocess.Popen(["rpicam-vid", ...])` and converts via `cv2.cvtColor(...)`
+  - **Source selection logic**:
+    - Evidence: `src/block_detected/runtime/session.py` selects `usb` vs `libcamera`/`rpicam` based on config + `is_raspberry_pi()`
+    - Evidence: `src/block_detected/io/camera/open.py` dispatches `source` string to the correct backend
 
-**File Storage:**
+## UI Integrations
+
+- **OpenCV HighGUI window loop (desktop View app)**
+  - Evidence: `src/view/app.py` uses `cv2.namedWindow`, `cv2.setMouseCallback`, `cv2.waitKeyEx`, `cv2.imshow`
+- **Terminal UI (Textual + Rich)**
+  - Evidence: `src/block_detected/tui/app.py` imports `textual.*` and `rich.*`
+- **Desktop LAN viewer UI (tkinter + OpenCV)**
+  - Evidence: `src/stream/viewer.py` uses `tkinter`/`ttk` for controls and `cv2.namedWindow/cv2.imshow` for frames
+- **Optional/legacy PySide6 GUI modules exist**
+  - Evidence: `src/block_detected/apps/gui/app.py` (PySide6 imports) and `tests/test_gui_controls.py` (`pytest.importorskip("PySide6")`)
+
+## Storage Integrations
+
 - **Local filesystem only**
-  - Model weights: `models/*.pt` (`src/block_detected/config/paths.py` → `MODELS_DIR`; binaries gitignored)
-  - User config: `block_detected.toml` at repo root (`src/block_detected/runtime/config_store.py`)
-  - Save from GUI: `save_config()` writes TOML via custom serializer in `config_store.py`
-  - Training/inference output dirs `runs/`, `wandb/` — gitignored; not written by current GUI runtime
+  - **Config**: JSON stored in-package by default
+    - Evidence: `src/block_detected/config/store.py` → `DEFAULT_CONFIG_PATH = PACKAGE_ROOT / "block_detected.json"`
+    - Evidence: default shipped JSON: `src/block_detected/block_detected.json`
+  - **Models**: `.pt` weights under `models/`
+    - Evidence: `src/block_detected/config/paths.py` → `MODELS_DIR = PROJECT_ROOT / "models"`
 
-**Caching:**
-- In-memory only:
-  - Log ring buffer: `src/block_detected/runtime/logging_setup.py` → `LogBufferHandler` (capacity 500)
-  - FPS rolling window: `src/block_detected/runtime/metrics.py` → `deque(maxlen=30)`
-  - Temporal stability votes: `src/block_detected/runtime/postprocess.py` → `deque` per detection track
+## Observability
 
-## Authentication & Identity
+- **Stdlib logging (no external log shipping)**
+  - Evidence: `src/block_detected/runtime/logging_setup.py` + `log_event` usage in `src/block_detected/runtime/engine.py`
 
-**Auth Provider:**
-- Not applicable — single-user local desktop app with no login, tokens, or user accounts
+## What is *not* integrated (as of code on disk)
 
-## Hardware & OS Integrations
-
-**Webcam (primary external integration):**
-- OpenCV `cv2.VideoCapture` — `src/block_detected/io/camera/capture.py`
-  - Opens camera by integer index (`camera.index`, default 0)
-  - Sets resolution via `CAP_PROP_FRAME_WIDTH` / `CAP_PROP_FRAME_HEIGHT`
-  - Camera cycling: `switch_camera()` tries indices up to `camera.max_index`
-- Platform dependency: OS camera drivers (DirectShow/Media Foundation on Windows, V4L2 on Linux, AVFoundation on macOS)
-
-**GPU (optional):**
-- PyTorch/CUDA via Ultralytics — not explicitly configured in project code; follows Ultralytics/torch defaults when GPU available
-
-**Desktop windowing:**
-- PySide6/Qt6 — `src/block_detected/apps/gui/app.py`
-  - `QThread` worker for frame loop
-  - `QImage` from OpenCV BGR frames (`_frame_to_qimage`)
-  - Headless test platform: `QT_QPA_PLATFORM=offscreen` in `tests/test_gui_smoke.py`
-
-**Legacy OpenCV windows:**
-- `src/block_detected/runtime/engine.py` → `shutdown(destroy_cv_windows=True)` can call `cv2.destroyAllWindows()`
-- GUI worker passes `destroy_cv_windows=False` to avoid conflicting with Qt
-
-## Monitoring & Observability
-
-**Error Tracking:**
-- None — no Sentry, Rollbar, or similar
-
-**Logs:**
-- Python stdlib `logging` — `src/block_detected/runtime/logging_setup.py`
-  - StreamHandler → stdout with format `%(asctime)s [%(levelname)s] %(name)s: %(message)s`
-  - Ring buffer handler for GUI log panel via `get_log_lines()`
-  - Ultralytics logger level capped to WARNING
-- No log file rotation or external log shipping
-
-**Metrics:**
-- In-process only — `src/block_detected/runtime/metrics.py` computes FPS and stage latencies (read/infer/render ms); displayed in GUI status bar via `RuntimeStatus`
-
-## CI/CD & Deployment
-
-**Hosting:**
-- Not applicable — local desktop application, no server deployment target
-
-**CI Pipeline:**
-- Not detected — no `.github/workflows/`, GitLab CI, or similar in repo
-
-**Containerization:**
-- Not detected — no `Dockerfile` or `docker-compose`
-
-## Environment Configuration
-
-**Required env vars:**
-- None for normal operation
-
-**Optional env vars (testing only):**
-- `QT_QPA_PLATFORM=offscreen` — headless PySide6 smoke test (`tests/test_gui_smoke.py`)
-
-**Secrets location:**
-- Not applicable — no API keys, credentials files, or secret directories in use
-- `.env` / `.env.*` listed in `.gitignore` but no `.env` file present in repo
-
-## Webhooks & Callbacks
-
-**Incoming:**
-- None — no HTTP server, WebSocket listener, or IPC service
-
-**Outgoing:**
-- None — no outbound HTTP calls, webhooks, or message queues from application code
-
-## Third-party library boundaries
-
-| Integration | Contact point | Direction | Notes |
-|-------------|---------------|-----------|-------|
-| OpenCV camera | `src/block_detected/io/camera/capture.py` | OS → app | Local device index |
-| Ultralytics YOLO | `src/block_detected/detection/yolo/backend.py` | File → app | Local `.pt` only |
-| PySide6/Qt | `src/block_detected/apps/gui/app.py` | OS display → user | Desktop GUI |
-| TOML config | `src/block_detected/runtime/config_store.py` | Disk → app | Optional `block_detected.toml` |
-
-**Protocol abstraction:**
-- `DetectorBackend` Protocol in `src/block_detected/core/protocols.py` — allows swapping YOLO backend without changing `runtime/engine.py`; currently only `YoloDetector` is loaded via `src/block_detected/runtime/detector_loader.py`
-
-## Ignored / adjacent artifacts (not runtime integrations)
-
-- `wandb/` — gitignored; typical Ultralytics training export path, not used by GUI app
-- `runs/` — gitignored; Ultralytics default output directory
-- `graphify-out/` — local knowledge-graph tooling output (per workspace rules); not a runtime dependency
-- `node_modules/` — stray artifact (contains `concurrently` shim); no root `package.json`; not part of Python stack
-
----
-
-*Integration audit: 2026-06-05*
+- **No HTTP server / REST API in runtime**
+  - Evidence: stream is raw sockets (`src/stream/*`); no `fastapi` package dependency in `pyproject.toml`
+- **No database**
+  - Evidence: no DB modules under `src/`; config + assets are file-based (see paths above)

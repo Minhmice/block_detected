@@ -1,127 +1,86 @@
 # Technology Stack
 
-**Analysis Date:** 2026-06-05
+**Analysis Date:** 2026-06-30
 
 ## Languages
 
-**Primary:**
-- Python 3.10+ — entire application (`src/block_detected/`, `tests/`, `main.py`)
-  - Declared in `pyproject.toml` as `requires-python = ">=3.10"`
-  - README and `requirements.txt` repeat 3.10+ requirement
+- **Python** (primary): library + apps (`src/block_detected/`, `src/view/`, `src/stream/`, `main.py`)
+  - Evidence: `pyproject.toml` → `requires-python = ">=3.10"`
+- **HTML/CSS/JS** (reference only): static spec/mockups under `example_ui/` (not executed by runtime)
 
-**Secondary:**
-- HTML/CSS/JavaScript — static UI mockup only in `example_ui/stitch_block_pickup_vision_console/code.html` (not wired to runtime; reference design for future GUI work per `example_ui/stitch_block_pickup_vision_console/html_data_requirements.md`)
+## Packaging & Build
 
-## Runtime
+- **Build system**: setuptools (`pyproject.toml` → `[build-system] build-backend = "setuptools.build_meta"`)
+- **Layout**: `src/`-layout packages (`pyproject.toml` → `[tool.setuptools.packages.find] where = ["src"]`)
+- **Install**: pip / editable (`README.md` shows `pip install -e ...`; `bootstrap.py` runs `python -m pip ...`)
+- **Lockfiles**: none detected (no `poetry.lock`, `uv.lock`, `requirements.lock`, etc.)
 
-**Environment:**
-- CPython (desktop local process)
-- No containerization, no WSGI/ASGI server, no background worker service
+## Runtime Apps (entrypoints)
 
-**Package Manager:**
-- pip (primary install path)
-- Lockfile: **missing** — versions pinned only as lower bounds in `pyproject.toml` and mirrored `requirements.txt`
+- **Launcher / device-aware picker**: `main.py` + `bootstrap.py`
+  - Routes to:
+    - **View (OpenCV window)**: `src/view/app.py`
+    - **TUI (Textual dashboard)**: `src/block_detected/tui/app.py`
+    - **Stream (Pi JPEG server + desktop viewer)**: `src/stream/server.py`, `src/stream/viewer.py`
+- **Console scripts** (packaged): `pyproject.toml` → `[project.scripts]`
+  - `block-detected = "main:main"`
+  - `block-detected-view = "view.app:main"`
+  - `block-detected-tui = "block_detected.tui.app:main"`
+  - `block-detected-stream = "stream.__main__:main"`
+- **`python -m block_detected`**: `src/block_detected/__main__.py` delegates to repo `main.py`
 
-**Build backend:**
-- setuptools ≥61 (`pyproject.toml` → `[build-system]`)
-- Package layout: `src/` layout via `[tool.setuptools.packages.find] where = ["src"]`
+## Core Libraries
 
-## Frameworks
+### ML / CV
 
-**Core (application):**
-- **Ultralytics YOLO** ≥8.4.0 — object detection inference
-  - Used in `src/block_detected/detection/yolo/backend.py`, `src/block_detected/detection/yolo/loader.py`
-  - Loads local `.pt` weights from `models/` via `YOLO(str(model_path))`
-- **OpenCV (opencv-python)** ≥4.8.0 — webcam capture, frame drawing, BGR↔RGB conversion
-  - Used across `src/block_detected/io/camera/capture.py`, `src/block_detected/runtime/engine.py`, `src/block_detected/vision/drawing/`, `src/block_detected/apps/gui/app.py`
-- **PySide6** ≥6.7 — desktop GUI (Qt6 bindings)
-  - Primary entry: `src/block_detected/apps/gui/app.py`
-  - Lazy-imported with graceful fallback when missing (`ModuleNotFoundError` guard)
-  - Console script: `block-detected = block_detected.apps.gui.app:main`
+- **Ultralytics** (YOLO inference): `pyproject.toml` → `ultralytics>=8.4.0`
+  - Evidence: `src/block_detected/detection/yolo/backend.py` uses `from ultralytics import YOLO`
+- **OpenCV**:
+  - Default/core dependency is **headless**: `pyproject.toml` → `opencv-python-headless>=4.8.0`
+  - View / viewer require **HighGUI**: `pyproject.toml` → extras `view = ["opencv-python>=4.8.0"]`, `viewer = ["opencv-python>=4.8.0"]`
+  - Evidence: `src/view/app.py` uses `cv2.namedWindow`, `cv2.imshow`; `main.py` checks `hasattr(cv2, "imshow")`
+- **NumPy** (transitive, also used directly): used in stream viewer + Pi camera adapters
+  - Evidence: `src/stream/viewer.py` imports `numpy as np`; `src/block_detected/io/camera/pi/rpicam.py` imports `numpy as np`
 
-**Testing:**
-- **pytest** ≥8.0 — dev optional dependency (`pyproject.toml` → `[project.optional-dependencies] dev`)
-  - Config: `tests/conftest.py` (adds `src/` to `sys.path`)
-  - No `pytest.ini`, `pyproject.toml` `[tool.pytest]`, or coverage config detected
+### Terminal UI
 
-**Build/Dev:**
-- **setuptools** — package build and editable install (`pip install -e ".[dev]"`)
-- Not detected: ruff, black, mypy, pre-commit, tox, nox, uv, poetry, pip-tools
+- **Textual + Rich**: `pyproject.toml` → `textual>=8.0`, `rich>=13.7`
+  - Evidence: `src/block_detected/tui/app.py` imports `textual.*` and `rich.*`
 
-## Key Dependencies
+### GUI (optional / legacy module still present)
 
-**Direct (declared in `pyproject.toml`):**
+- **PySide6 (Qt)** code exists but is not part of default deps in `pyproject.toml`
+  - Evidence (code): `src/block_detected/apps/gui/app.py` and `src/block_detected/apps/gui/widgets/*.py` import `PySide6`
+  - Evidence (tests): `tests/test_gui_optional.py`, `tests/test_gui_controls.py` use `pytest.importorskip("PySide6")`
 
-| Package | Version constraint | Role |
-|---------|-------------------|------|
-| `ultralytics` | ≥8.4.0 | YOLO model load + inference |
-| `opencv-python` | ≥4.8.0 | Camera I/O, image ops, legacy OpenCV window helpers |
-| `PySide6` | ≥6.7 | Desktop GUI framework |
-| `pytest` | ≥8.0 (dev) | Unit/smoke tests |
+## Configuration & Assets
 
-**Transitive (not declared; pulled by direct deps):**
-- **NumPy** — array frames and test fixtures (`tests/test_widgets.py` imports `numpy`; OpenCV and Ultralytics depend on it)
-- **PyTorch (`torch`)** — Ultralytics inference backend; GPU optional (README notes NVIDIA GPU as optional)
-- Additional Ultralytics stack (e.g. PIL, PyYAML, matplotlib) — used internally by YOLO; not imported directly in app code
+- **Primary config format**: JSON
+  - Default location is **inside the package**: `src/block_detected/block_detected.json`
+    - Evidence: `src/block_detected/config/store.py` → `DEFAULT_CONFIG_PATH = PACKAGE_ROOT / "block_detected.json"`
+- **Typed config schema**: dataclasses in `src/block_detected/config/schema.py` (e.g., `AppConfig`, `CameraConfig`, `InferenceConfig`)
+- **Model weights**: local `.pt` files under `models/`
+  - Evidence: `src/block_detected/config/paths.py` → `MODELS_DIR = PROJECT_ROOT / "models"`
+  - Evidence: `src/block_detected/detection/yolo/loader.py` globs `MODELS_DIR.glob("*.pt")`
 
-**Stdlib (significant usage):**
-- `tomllib` — load TOML config (`src/block_detected/runtime/config_store.py`)
-- `dataclasses`, `pathlib`, `logging`, `threading`, `collections.deque`, `typing.Protocol`
+## Platform / Hardware Notes
 
-## Configuration
+- **Raspberry Pi detection**:
+  - Evidence: `src/block_detected/runtime/platform.py` reads `/proc/device-tree/model` and `/proc/cpuinfo`
+- **Camera backends**:
+  - USB / V4L2 path (Linux): `src/block_detected/io/camera/v4l2.py` uses `cv2.CAP_V4L2`
+  - Pi Camera Module (CSI / libcamera):
+    - `picamera2` adapter: `src/block_detected/io/camera/pi/picamera2.py`
+    - `rpicam-vid` subprocess fallback: `src/block_detected/io/camera/pi/rpicam.py`
 
-**Application config:**
-- Typed dataclasses: `src/block_detected/runtime/config_schema.py` → `AppConfig` with sections `camera`, `inference`, `classical`, `stability`, `ui`
-- Optional file: `block_detected.toml` at repo root (`src/block_detected/runtime/config_store.py` → `DEFAULT_CONFIG_PATH`)
-- Defaults: `AppConfig.defaults()`; legacy constants re-exported from `src/block_detected/config/`
-- Hot-reload keys: confidence, eval mode, stability filters (via `src/block_detected/runtime/config_apply.py`)
-- Restart-required keys: camera index/resolution, default model name, log level (`RESTART_CAMERA_KEYS`, `RESTART_DETECTOR_KEYS` in `config_schema.py`)
+## Testing
 
-**Environment variables:**
-- No `.env` file present in repo (`.env` / `.env.*` gitignored)
-- Application code does not read `os.environ` for config
-- Test-only: `QT_QPA_PLATFORM=offscreen` in `tests/test_gui_smoke.py` for headless Qt
+- **pytest**: `pyproject.toml` → optional `dev = ["pytest>=8.0", "httpx>=0.27"]`
+  - Evidence: tests live in `tests/` (e.g., `tests/test_tui_app.py`, `tests/test_bootstrap.py`)
 
-**Paths:**
-- `src/block_detected/config/paths.py` — `PROJECT_ROOT`, `MODELS_DIR` (`models/`)
+## Notable Standard-Library Usage
 
-**Build:**
-- `pyproject.toml` — single project manifest
-- `requirements.txt` — mirrors direct deps; comment says prefer `pip install -e .`
-
-## Platform Requirements
-
-**Development:**
-- Python 3.10+
-- Webcam (for live testing)
-- Editable install: `pip install -e ".[dev]"`
-- Model weights: copy `.pt` files into `models/` (gitignored except `models/.gitkeep`)
-
-**Production:**
-- Desktop deployment only — local GUI process, no cloud/hosting target
-- Windows, macOS, or Linux with OpenCV-compatible camera drivers
-- Optional NVIDIA GPU for faster Ultralytics inference (not required by code)
-
-**Entry points:**
-- `main.py` — adds `src/` to path, calls `block_detected.apps.gui.app:main`
-- `python -m block_detected` → `src/block_detected/__main__.py`
-- Console script `block-detected` (after pip install)
-
-**Run commands:**
-```bash
-pip install -e ".[dev]"
-python main.py
-python -m block_detected
-block-detected
-python -m pytest tests/ -q
-```
-
-## Architecture-adjacent stack notes
-
-- Layered Python package under `src/block_detected/` (see `AGENTS.md`): `apps/` → `runtime/` → `detection/`, `vision/`, `io/`, `core/`
-- `ui/input/handlers.py` retains OpenCV keyboard/mouse handlers for legacy CLI-style loop; primary UI is PySide6
-- `example_ui/` — design reference only; not part of installable package or runtime stack
-
----
-
-*Stack analysis: 2026-06-05*
+- **Sockets & threading**: stream server/client
+  - Evidence: `src/stream/server.py`, `src/stream/protocol.py`, `src/stream/viewer.py`
+- **Subprocess**: network introspection helpers
+  - Evidence: `src/stream/server.py` calls `ip ...`; `src/stream/viewer.py` calls `ipconfig` / `ip`
