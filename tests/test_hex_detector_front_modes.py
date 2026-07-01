@@ -89,7 +89,13 @@ def _rect_bbox() -> BBox:
 
 def _make_detector(cfg: HexDetectorConfig | None = None) -> HexDetector:
     """Create a fresh HexDetector instance."""
-    return HexDetector(config=cfg or DEFAULT_CONFIG)
+    base = cfg or DEFAULT_CONFIG
+    if cfg is None:
+        base = HexDetectorConfig(
+            block_crop_bottom_ratios=(0.0,),
+            max_crop_ratio_attempts=1,
+        )
+    return HexDetector(config=base)
 
 
 def _make_detection(track_id: int = 1, bbox: BBox | None = None) -> YoloDetection:
@@ -143,8 +149,13 @@ class TestHexMode:
     """Prove that front + right-face support upgrades to hex."""
 
     def test_hex_from_front_and_right_lines(self) -> None:
-        """Front + right-face fixture must return hex with all A-F finite floats."""
-        detector = _make_detector()
+        """Front + right-face fixture returns hex when hex score meets acceptance gates."""
+        cfg = HexDetectorConfig(
+            max_front_candidates=1,
+            block_crop_bottom_ratios=(0.0,),
+            max_crop_ratio_attempts=1,
+        )
+        detector = HexDetector(config=cfg)
         with ExitStack() as stack:
             _setup_mocks(stack, HEX_GROUPS)
             results = detector.detect_frame(
@@ -154,9 +165,7 @@ class TestHexMode:
 
         assert len(results) == 1
         result = results[0]
-        assert result.mode == "hex", (
-            f"Expected hex for front+right lines, got {result.mode}"
-        )
+        assert result.mode == "hex", f"Expected hex, got {result.mode}"
         for k in ("A", "B", "C", "D", "E", "F"):
             pt = result.points.get(k)
             assert pt is not None, f"Missing point {k}"
@@ -240,7 +249,11 @@ class TestCandidateCaps:
             right_diagonal=many_rd,
         )
 
-        cfg = HexDetectorConfig(max_candidates=12)
+        cfg = HexDetectorConfig(
+            max_front_candidates=12,
+            block_crop_bottom_ratios=(0.0,),
+            max_crop_ratio_attempts=1,
+        )
         detector = _make_detector(cfg)
         with ExitStack() as stack:
             _setup_mocks(stack, many_groups)

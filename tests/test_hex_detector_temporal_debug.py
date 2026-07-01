@@ -75,7 +75,12 @@ def _small_bbox() -> BBox:
 
 
 def _make_detector(cfg: HexDetectorConfig | None = None) -> HexDetector:
-    return HexDetector(config=cfg or DEFAULT_CONFIG)
+    if cfg is None:
+        cfg = HexDetectorConfig(
+            block_crop_bottom_ratios=(0.0,),
+            max_crop_ratio_attempts=1,
+        )
+    return HexDetector(config=cfg)
 
 
 def _make_detection(track_id: int = 1, bbox: BBox | None = None) -> YoloDetection:
@@ -528,6 +533,44 @@ class TestRenderBehavior:
         frame = np.zeros((480, 640, 3), dtype=np.uint8)
         out = render_debug(frame, [held_result])
         assert out.shape == frame.shape
+
+
+# ---------------------------------------------------------------------------
+# Tracker frame-space persistence
+# ---------------------------------------------------------------------------
+
+class TestTrackerFrameCoordinates:
+    """Tracker must persist smoothed points in frame space for temporal scoring."""
+
+    def test_tracker_stores_frame_coords_after_bbox_shift(self) -> None:
+        """After a shifted bbox, tracker prev points must match frame output, not ROI."""
+        detector = _make_detector()
+        frame = np.zeros((480, 640, 3), dtype=np.uint8)
+        bbox1 = BBox(0, 0, 400, 400)
+        bbox2 = BBox(50, 30, 450, 430)
+
+        with patch("hex_detector.detector.merge_line_groups", return_value=RECT_GROUPS), \
+             patch("hex_detector.detector.detect_raw_lines", side_effect=_mock_no_lines), \
+             patch("hex_detector.detector.preprocess_edges", side_effect=_mock_edges):
+            r1 = detector.detect_frame(frame, [_make_detection(1, bbox1)])
+        assert r1[0].status == "detected"
+        prev = detector.tracker.get_prev_points(1)
+        assert prev is not None
+        assert prev.A == pytest.approx(r1[0].points["A"])
+
+        with patch("hex_detector.detector.merge_line_groups", return_value=RECT_GROUPS), \
+             patch("hex_detector.detector.detect_raw_lines", side_effect=_mock_no_lines), \
+             patch("hex_detector.detector.preprocess_edges", side_effect=_mock_edges):
+            r2 = detector.detect_frame(frame, [_make_detection(1, bbox2)])
+
+        assert r2[0].status == "detected"
+        prev2 = detector.tracker.get_prev_points(1)
+        assert prev2 is not None
+        assert prev2.A == pytest.approx(r2[0].points["A"])
+        assert r2[0].score_breakdown is not None
+        assert r2[0].score_breakdown.temporal > 0.7, (
+            "Stable geometry across a shifted bbox should keep temporal score high"
+        )
 
 
 # ---------------------------------------------------------------------------
