@@ -26,3 +26,13 @@ v2.0 classical-CV milestone (phases 15–18, spikes) was removed from planning o
 | 15 | Robo-vision desktop GUI (Stitch HTML spec) | deferred |
 
 See `.planning/phases/<nn>-*/` for per-phase CONTEXT, PLAN, and SUMMARY artifacts.
+
+### Phase 2: Dataset Hex Debugger MVP
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 1
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 2 to break down)
