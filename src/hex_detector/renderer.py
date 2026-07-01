@@ -35,6 +35,30 @@ def _draw_line(
     cv2.line(img, (x1, y1), (x2, y2), color, thickness, cv2.LINE_AA)
 
 
+def _dicts_to_line_segments(lines: list[dict[str, float | str]]) -> list[LineSegment]:
+    out: list[LineSegment] = []
+    for d in lines:
+        out.append(LineSegment(
+            float(d["x1"]), float(d["y1"]), float(d["x2"]), float(d["y2"]),
+            group=str(d.get("group", "unknown")),
+        ))
+    return out
+
+
+def _verbose_lines_from_debug(dbg: dict[str, object]) -> list[LineSegment]:
+    if "merged_lines" in dbg and isinstance(dbg["merged_lines"], dict):
+        merged = dbg["merged_lines"]
+        lines: list[LineSegment] = []
+        for key in ("vertical", "front_horizontal", "right_diagonal"):
+            raw = merged.get(key, [])
+            if isinstance(raw, list):
+                lines.extend(_dicts_to_line_segments(raw))  # type: ignore[arg-type]
+        return lines
+    if "groups" in dbg and isinstance(dbg["groups"], LineGroups):
+        return dbg["groups"].all_lines()
+    return []
+
+
 def _offset_lines_to_frame(
     lines: list[LineSegment],
     roi_bbox: dict[str, float],
@@ -67,8 +91,12 @@ def render_debug(
                 color = _COLORS.get(ln.group, _COLORS["winning"])
                 _draw_line(out, ln, color, 2)
 
-        # --- Verbose: draw all grouped lines ---
-        if "groups" in dbg:
+        # --- Verbose: draw merged / grouped lines ---
+        if cfg.debug_mode == "verbose":
+            for ln in _offset_lines_to_frame(_verbose_lines_from_debug(dbg), bb):
+                color = _COLORS.get(ln.group, _COLORS["selected"])
+                _draw_line(out, ln, color, 1)
+        elif "groups" in dbg:
             groups: LineGroups = dbg["groups"]  # type: ignore[assignment]
             for ln in _offset_lines_to_frame(groups.all_lines(), bb):
                 color = _COLORS.get(ln.group, _COLORS["selected"])

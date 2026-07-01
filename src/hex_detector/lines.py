@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import logging
 import math
 
 import cv2
 import numpy as np
 
 from .config import HexDetectorConfig
-from .models import BBox, LineGroups, LineSegment
+from .models import LineGroups, LineSegment
+
+logger = logging.getLogger(__name__)
 
 
 def detect_raw_lines(edges: np.ndarray, roi_w: int, roi_h: int, cfg: HexDetectorConfig) -> list[LineSegment]:
@@ -70,20 +73,53 @@ def filter_lines(
   return kept
 
 
-def classify_line_group(angle: float, cfg: HexDetectorConfig) -> str | None:
-  if _angle_distance_deg(angle, cfg.vertical_angle_center) <= cfg.vertical_angle_tol_deg:
-    return "vertical"
-  if _angle_distance_deg(angle, cfg.front_horizontal_target_deg) <= cfg.front_horizontal_angle_tol_deg:
-    return "front_horizontal"
-  if _angle_distance_deg(angle, cfg.right_diagonal_target_deg) <= cfg.right_diagonal_angle_tol_deg:
-    return "right_diagonal"
-  return None
+def _group_targets(cfg: HexDetectorConfig) -> list[tuple[str, float, float]]:
+  return [
+    ("vertical", cfg.vertical_angle_center, cfg.vertical_angle_tol_deg),
+    ("front_horizontal", cfg.front_horizontal_target_deg, cfg.front_horizontal_angle_tol_deg),
+    ("right_diagonal", cfg.right_diagonal_target_deg, cfg.right_diagonal_angle_tol_deg),
+  ]
 
 
-def group_lines(lines: list[LineSegment], cfg: HexDetectorConfig) -> LineGroups:
+def classify_line_group(
+  angle: float,
+  cfg: HexDetectorConfig,
+) -> tuple[str | None, float]:
+  """Assign line to exactly one group — smallest angular error within tolerance."""
+  best_group: str | None = None
+  best_err = float("inf")
+  for name, target, tol in _group_targets(cfg):
+    err = _angle_distance_deg(angle, target)
+    if err <= tol and err < best_err:
+      best_err = err
+      best_group = name
+  return best_group, best_err if best_group is not None else 0.0
+
+
+def group_lines(
+  lines: list[LineSegment],
+  cfg: HexDetectorConfig,
+) -> tuple[LineGroups, list[dict[str, float | str | None]]]:
+  """Group each line into at most one bucket; log angle / group / angular error."""
   groups = LineGroups()
+  classifications: list[dict[str, float | str | None]] = []
+
   for ln in lines:
-    g = classify_line_group(ln.angle_deg(), cfg)
+    ang = ln.angle_deg()
+    g, err = classify_line_group(ang, cfg)
+    rec: dict[str, float | str | None] = {
+      "angle_deg": round(ang, 3),
+      "selected_group": g,
+      "angular_error_deg": round(err, 3) if g else None,
+    }
+    classifications.append(rec)
+    if cfg.line_group_log_enabled and g is not None:
+      logger.debug(
+        "line group angle=%.2f group=%s err=%.2f",
+        ang,
+        g,
+        err,
+      )
     if g is None:
       continue
     tagged = LineSegment(ln.x1, ln.y1, ln.x2, ln.y2, group=g)
@@ -93,7 +129,7 @@ def group_lines(lines: list[LineSegment], cfg: HexDetectorConfig) -> LineGroups:
       groups.front_horizontal.append(tagged)
     else:
       groups.right_diagonal.append(tagged)
-  return groups
+  return groups, classifications
 
 
 def _line_offset_metric(ln: LineSegment) -> float:
@@ -160,31 +196,25 @@ def pick_front_line_combinations(
     groups: LineGroups,
     cfg: HexDetectorConfig,
 ) -> list[tuple[LineSegment, LineSegment, LineSegment, LineSegment]]:
-  """Generate front-face candidate tuples: (AF, BE, AB, FE) line proxies.
+  """Generate front-face tuples (AF, BE, AB, FE) with AF left of BE.
 
-  Requires at least 2 vertical and 2 front-horizontal lines.
-  When 3+ verticals exist, the rightmost vertical is reserved for the
-  right-face CD upgrade (not consumed as the front right edge).
-  Bounded by cfg.max_front_candidates.
+  All valid vertical pairs are emitted (bounded by max_front_candidates).
   """
   vertical = sorted(groups.vertical, key=_vertical_sort_key)
   fh = groups.front_horizontal
   if len(vertical) < 2 or len(fh) < 2:
     return []
 
-  # Reserve the rightmost vertical for hex right-face CD when available
-  max_x_ln = vertical[-1] if len(vertical) >= 3 else None
-
   candidates: list[tuple[LineSegment, LineSegment, LineSegment, LineSegment]] = []
   n = len(vertical)
-  for i in range(n - 1):
-    for j in range(i + 1, n):
-      be = vertical[j]
-      # Don't use the rightmost vertical as the front right edge when
-      # there are 3+ verticals — reserve it for right-face CD.
-      if max_x_ln is not None and be is max_x_ln:
+  for i in range(n):
+    for j in range(n):
+      if i == j:
         continue
       af = vertical[i]
+      be = vertical[j]
+      if _vertical_sort_key(af) >= _vertical_sort_key(be):
+        continue
       for ab in fh:
         for fe in fh:
           if ab is fe:
@@ -199,11 +229,7 @@ def pick_right_line_combinations(
     groups: LineGroups,
     cfg: HexDetectorConfig,
 ) -> list[tuple[LineSegment, LineSegment, LineSegment]]:
-  """Generate right-face upgrade tuples: (CD, BC, ED) line proxies.
-
-  Requires at least 1 vertical (for CD) and 2 right-diagonal lines.
-  Bounded by cfg.max_right_candidates.
-  """
+  """Generate right-face upgrade tuples: (CD, BC, ED) line proxies."""
   vertical = sorted(groups.vertical, key=_vertical_sort_key)
   rd = groups.right_diagonal
   if len(vertical) < 1 or len(rd) < 2:
@@ -218,32 +244,4 @@ def pick_right_line_combinations(
         candidates.append((cd, bc, ed))
         if len(candidates) >= cfg.max_right_candidates:
           return candidates
-  return candidates
-
-
-def pick_line_combinations(groups: LineGroups, cfg: HexDetectorConfig) -> list[tuple[LineSegment, ...]]:
-  """Legacy wrapper: generate full 7-line candidate tuples (backward compat)."""
-  vertical = sorted(groups.vertical, key=_vertical_sort_key)
-  fh = groups.front_horizontal
-  rd = groups.right_diagonal
-  if len(vertical) < 3 or len(fh) < 2 or len(rd) < 2:
-    return []
-
-  candidates: list[tuple[LineSegment, ...]] = []
-  n = len(vertical)
-  for i in range(n - 2):
-    for j in range(i + 1, n - 1):
-      for k in range(j + 1, n):
-        af, be, cd = vertical[i], vertical[j], vertical[k]
-        for ab in fh:
-          for fe in fh:
-            if ab is fe:
-              continue
-            for bc in rd:
-              for ed in rd:
-                if bc is ed:
-                  continue
-                candidates.append((af, be, cd, ab, fe, bc, ed))
-                if len(candidates) >= cfg.max_candidates:
-                  return candidates
   return candidates

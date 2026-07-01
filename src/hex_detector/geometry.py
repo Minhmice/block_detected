@@ -22,11 +22,6 @@ def line_intersection(l1: LineSegment, l2: LineSegment) -> tuple[float, float] |
     return float(px), float(py)
 
 
-def _angle_between_lines(l1: LineSegment, l2: LineSegment) -> float:
-    d = abs(l1.angle_deg() - l2.angle_deg()) % 180.0
-    return min(d, 180.0 - d)
-
-
 def _segment_angle(p1: tuple[float, float], p2: tuple[float, float]) -> float:
     ang = math.degrees(math.atan2(p2[1] - p1[1], p2[0] - p1[0]))
     if ang < 0:
@@ -193,8 +188,26 @@ def roi_to_frame_point(pt: tuple[float, float], roi_bbox: BBox) -> tuple[float, 
     return pt[0] + roi_bbox.x1, pt[1] + roi_bbox.y1
 
 
-def frame_to_roi_point(pt: tuple[float, float], roi_bbox: BBox) -> tuple[float, float]:
-    return pt[0] - roi_bbox.x1, pt[1] - roi_bbox.y1
+def frame_points_conflict(
+    last_points: dict[str, tuple[float, float] | None],
+    candidate: HexPoints,
+    norm_w: float,
+    norm_h: float,
+    threshold: float,
+) -> bool:
+    """True when mean normalized point distance exceeds conflict threshold."""
+    dists: list[float] = []
+    scale = max(math.hypot(norm_w, norm_h), 1.0)
+    cand = candidate.as_dict()
+    for key in ("A", "B", "C", "D", "E", "F"):
+        p = last_points.get(key)
+        q = cand.get(key)
+        if p is None or q is None:
+            continue
+        dists.append(math.hypot(p[0] - q[0], p[1] - q[1]) / scale)
+    if not dists:
+        return False
+    return float(np.mean(dists)) > threshold
 
 
 def validate_hex_points(
@@ -501,13 +514,24 @@ def score_hex_candidate(
     cfg: HexDetectorConfig,
     hex_pts: HexPoints,
     prev_pts: HexPoints | None = None,
+    effective_bbox: BBox | None = None,
 ) -> ScoreBreakdown:
     """Score a 6-point hex candidate, returning a full breakdown."""
     edge = edge_support_score(hex_pts, edges)
     parallel = parallelism_score(hex_pts, cfg)
     topo = topology_score(hex_pts, roi_w, roi_h, cfg)
     area = area_position_score(hex_pts, roi_w, roi_h, cfg)
-    temporal = temporal_similarity_score(hex_pts, prev_pts, roi_w, roi_h)
+    frame_hex = hex_pts
+    if effective_bbox is not None:
+        frame_hex = HexPoints(
+            A=roi_to_frame_point(hex_pts.A, effective_bbox) if hex_pts.A else None,
+            B=roi_to_frame_point(hex_pts.B, effective_bbox) if hex_pts.B else None,
+            C=roi_to_frame_point(hex_pts.C, effective_bbox) if hex_pts.C else None,
+            D=roi_to_frame_point(hex_pts.D, effective_bbox) if hex_pts.D else None,
+            E=roi_to_frame_point(hex_pts.E, effective_bbox) if hex_pts.E else None,
+            F=roi_to_frame_point(hex_pts.F, effective_bbox) if hex_pts.F else None,
+        )
+    temporal = temporal_similarity_score(frame_hex, prev_pts, roi_w, roi_h)
 
     total = (
         cfg.weight_edge_support * edge
@@ -524,27 +548,6 @@ def score_hex_candidate(
         temporal=temporal,
         total=total,
     )
-
-
-def score_candidate(
-    pts: HexPoints,
-    edges: np.ndarray,
-    roi_w: int,
-    roi_h: int,
-    cfg: HexDetectorConfig,
-    prev_pts: HexPoints | None = None,
-) -> float:
-    """Legacy: return weighted total only (backward compat)."""
-    breakdown = score_hex_candidate(
-        frame_pts={},
-        edges=edges,
-        roi_w=roi_w,
-        roi_h=roi_h,
-        cfg=cfg,
-        hex_pts=pts,
-        prev_pts=prev_pts,
-    )
-    return breakdown.total
 
 
 def temporal_similarity_score_from_dict(

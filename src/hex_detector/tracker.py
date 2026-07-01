@@ -6,6 +6,7 @@ import math
 from dataclasses import dataclass, field
 
 from .config import HexDetectorConfig
+from .geometry import frame_points_conflict, roi_to_frame_point
 from .models import BBox, DetectionResult, HexPoints
 
 
@@ -91,20 +92,39 @@ class HexTracker:
         return st.bbox
 
     def get_prev_points(self, track_id: int) -> HexPoints | None:
+        """Return previous smoothed points in frame coordinates."""
         st = self._tracks.get(track_id)
         return st.points if st else None
 
-    def smooth_points(self, track_id: int, pts: HexPoints) -> HexPoints:
+    def smooth_points(
+        self,
+        track_id: int,
+        pts: HexPoints,
+        effective_bbox: BBox,
+    ) -> HexPoints:
+        """EMA-smooth ROI-local points and persist the result in frame space."""
         st = self._tracks.setdefault(track_id, _TrackState())
         prev = st.points
         alpha = self.cfg.point_ema_alpha
+
+        def _to_frame(pt: tuple[float, float] | None) -> tuple[float, float] | None:
+            return roi_to_frame_point(pt, effective_bbox) if pt else None
+
+        cur_frame = HexPoints(
+            A=_to_frame(pts.A),
+            B=_to_frame(pts.B),
+            C=_to_frame(pts.C),
+            D=_to_frame(pts.D),
+            E=_to_frame(pts.E),
+            F=_to_frame(pts.F),
+        )
         smoothed = HexPoints(
-            A=_ema_point(prev.A if prev else None, pts.A, alpha),
-            B=_ema_point(prev.B if prev else None, pts.B, alpha),
-            C=_ema_point(prev.C if prev else None, pts.C, alpha),
-            D=_ema_point(prev.D if prev else None, pts.D, alpha),
-            E=_ema_point(prev.E if prev else None, pts.E, alpha),
-            F=_ema_point(prev.F if prev else None, pts.F, alpha),
+            A=_ema_point(prev.A if prev else None, cur_frame.A, alpha),
+            B=_ema_point(prev.B if prev else None, cur_frame.B, alpha),
+            C=_ema_point(prev.C if prev else None, cur_frame.C, alpha),
+            D=_ema_point(prev.D if prev else None, cur_frame.D, alpha),
+            E=_ema_point(prev.E if prev else None, cur_frame.E, alpha),
+            F=_ema_point(prev.F if prev else None, cur_frame.F, alpha),
         )
         st.points = smoothed
         return smoothed
@@ -116,23 +136,22 @@ class HexTracker:
         st.hold_age = 0
         return result
 
+    def stale_track_ids(self, active_ids: set[int]) -> list[int]:
+        """Return track IDs in state that are not in the active detection set."""
+        return [tid for tid in self._tracks if tid not in active_ids]
+
     def try_hold(
         self,
         track_id: int,
         current_bbox: BBox | None = None,
+        candidate_frame_points: HexPoints | None = None,
+        frame_w: int = 0,
+        frame_h: int = 0,
     ) -> DetectionResult | None:
         """Evaluate a guarded hold for a track.
 
-        Guards: must have last-good result, IoU >= threshold, no bbox jump,
-        and hold_age within limit.  Increments hold_age exactly once per
-        successful hold.
-
-        Args:
-            track_id: Track to hold for.
-            current_bbox: Current bbox (present-track) or None (missing track).
-
-        Returns:
-            Held DetectionResult, or None if guards fail.
+        Hold only when CV truly failed. If a valid geometry candidate exists
+        but conflicts strongly with last-good points, hold is rejected.
         """
         st = self._tracks.get(track_id)
         if st is None:
@@ -142,17 +161,26 @@ class HexTracker:
         if st.last_good_bbox is None:
             return None
 
+        if candidate_frame_points is not None and st.last_good_result.points:
+            if frame_points_conflict(
+                st.last_good_result.points,
+                candidate_frame_points,
+                float(frame_w),
+                float(frame_h),
+                self.cfg.hold_point_conflict_threshold,
+            ):
+                return None
+
         # Age gate
         st.hold_age += 1
         if st.hold_age > self.cfg.max_hold_frames:
             return None
 
-        # IoU and bbox-jump gates (only when we have a current bbox)
         compare_bbox = current_bbox if current_bbox is not None else st.last_seen_bbox
         if compare_bbox is not None:
             iou = _bbox_iou(st.last_good_bbox, compare_bbox)
             if iou < self.cfg.hold_iou_threshold:
-                st.hold_age -= 1  # roll back — hold was rejected
+                st.hold_age -= 1
                 return None
             if not _bbox_jump_ok(st.last_good_bbox, compare_bbox, self.cfg):
                 st.hold_age -= 1
