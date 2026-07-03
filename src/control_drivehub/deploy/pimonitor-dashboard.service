@@ -1,0 +1,19 @@
+[Unit]
+Description=Control DriveHub Next.js dashboard
+After=pimonitor-api.service
+Requires=pimonitor-api.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/block_detected/src/control_drivehub/dashboard
+Environment=NODE_ENV=production
+Environment=NEXT_PUBLIC_API_URL=http://127.0.0.1:8080
+Environment=PORT=3000
+Environment=HOSTNAME=0.0.0.0
+ExecStart=/usr/bin/node /home/pi/block_detected/src/control_drivehub/dashboard/.next/standalone/server.js
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

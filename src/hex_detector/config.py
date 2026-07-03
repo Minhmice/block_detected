@@ -60,15 +60,15 @@ class HexDetectorConfig:
     gaussian_sigma: float = 1.2
 
     # Canny: ngưỡng dưới / trên cho biên cạnh.
-    # Thấp hơn → nhiều cạnh (dễ nhiễu); cao hơn → ít cạnh (có thể mất line block).
-    # Thường chỉnh cặp low/high cùng lúc, tỷ lệ ~1:2 hoặc 1:3.
-    canny_low: int = 40
-    canny_high: int = 120
+    # Hạ từ 40/120 → 30/90 để bắt thêm cạnh mặt phải (low contrast / shadow).
+    # Duy trì tỉ lệ ~1:3 để giảm nhiễu.
+    canny_low: int = 30
+    canny_high: int = 90
 
     # Morphology close: nối các đoạn cạnh đứt đoạn thành line liền hơn.
-    # kernel 3×3, 1 lần lặp — đủ cho block có viền đỏ rõ.
-    morph_kernel_size: int = 3
-    morph_iterations: int = 1
+    # Tăng kernel 3→5, iterations 1→2 để nối cạnh yếu của mặt phải.
+    morph_kernel_size: int = 5
+    morph_iterations: int = 2
 
     # -------------------------------------------------------------------------
     # HOUGH LINES P — tìm đoạn thẳng từ ảnh biên
@@ -81,15 +81,16 @@ class HexDetectorConfig:
     hough_theta_deg: float = 1.0
 
     # Số vote tối thiểu để chấp nhận một line.
-    # Cao hơn → ít line hơn, chắc hơn; thấp hơn → nhiều line, dễ nhiễu.
-    hough_threshold: int = 30
+    # Hạ từ 30 → 20: cần nhiều line hơn cho mặt phải (ít pixel biên hơn mặt trước).
+    hough_threshold: int = 20
 
-    # Độ dài line tối thiểu = tỷ lệ cạnh ngắn ROI (0.12 = 12%).
-    # Line ngắn hơn bị bỏ (nhiễu, vết xước).
-    hough_min_line_length_ratio: float = 0.12
+    # Độ dài line tối thiểu = tỷ lệ cạnh ngắn ROI (0.08 = 8%).
+    # Hạ từ 0.12 → 0.08: cạnh mặt phải thường ngắn hơn cạnh mặt trước.
+    hough_min_line_length_ratio: float = 0.08
 
     # Khoảng trống tối đa giữa hai đoạn cùng line để Hough gộp thành một.
-    hough_max_line_gap: int = 8
+    # Tăng từ 8 → 12: cạnh mặt phải nhiều đoạn đứt do shadow/occlusion.
+    hough_max_line_gap: int = 12
 
     # -------------------------------------------------------------------------
     # LỌC LINE — bỏ line ngắn, sát biên ROI, line pallet
@@ -121,19 +122,26 @@ class HexDetectorConfig:
     vertical_angle_center: float = 90.0
 
     # Line lệch tối đa bao nhiêu độ so với 90° vẫn được xếp vào vertical.
-    vertical_angle_tol_deg: float = 22.0
+    # Siết từ 22° → 15° để tránh line chéo mặt phải (gần ngang) bị nhầm vào đây.
+    vertical_angle_tol_deg: float = 15.0
 
     # Dung sai góc cho cạnh ngang mặt trước (AB, FE) — quanh 0°.
-    front_horizontal_angle_tol_deg: float = 28.0
+    # Siết từ 28° → 15° để tránh hút line mặt phải (gần ngang ~10-20°).
+    front_horizontal_angle_tol_deg: float = 15.0
 
-    # Dung sai góc cho cạnh chéo mặt phải (BC, ED) — quanh 55°.
-    right_diagonal_angle_tol_deg: float = 35.0
+    # Dung sai góc cho cạnh chéo/phải (BC, ED) — quanh target.
+    # Trên ảnh thật, mặt phải gần camera → cạnh BC/ED gần ngang (~10-20°),
+    # không phải 55° như ảnh chụp từ xa. Target = 15° ± 25° → bắt được -10°..40°.
+    # Nới từ 18° → 25°: cần đủ rộng để bắt cả cạnh bên phải (gần 0°) và cạnh
+    # ở góc nhìn khác (~162° ≈ -18° trong không gian góc 0-180).
+    right_diagonal_angle_tol_deg: float = 25.0
 
     # Góc mục tiêu mặt trước (thường 0° = ngang).
     front_horizontal_target_deg: float = 0.0
 
-    # Góc mục tiêu mặt phải (chéo ~55° tùy góc camera).
-    right_diagonal_target_deg: float = 55.0
+    # Góc mục tiêu mặt phải: gần ngang (~15°) thay vì 55° cho dataset này.
+    # Ảnh chụp gần, camera cao nhìn xuống → cạnh mặt phải chỉ hơi chéo.
+    right_diagonal_target_deg: float = 15.0
 
     # -------------------------------------------------------------------------
     # GỘP LINE — merge các line gần song song, gần vị trí
@@ -174,11 +182,48 @@ class HexDetectorConfig:
     # Không tạo C,D giả khi mặt phải quá hẹp.
     rectangle_mode_right_width_ratio: float = 0.10
 
-    # Hai cạnh được coi “song song” nếu lệch góc ≤ ngưỡng này (độ).
+    # ---------------------------------------------------------------
+    # DEPRECATED absolute-position constraints (no longer enforced).
+    # Bbox YOLO co padding, lech tam, nhieu goc nhin -> gia dinh "BE o
+    # nua phai ROI" sai. Thay bang relational outer-boundary scoring.
+    # Giu field de khong vo API; validate() KHONG dung chung nua.
+    # ---------------------------------------------------------------
+    min_front_width_ratio: float = 0.0        # deprecated (unused)
+    shared_edge_min_x_ratio: float = 0.0      # deprecated (unused)
+    shared_edge_max_x_ratio: float = 1.0      # deprecated (unused)
+
+    # RELATIONAL: right_width / front_width phai trong [min, max] cho hex.
+    # Day la ti le tuong doi (khong phu thuoc vi tri tuyet doi trong ROI).
+    min_right_front_ratio: float = 0.06
+    max_right_front_ratio: float = 1.60
+
+    # ---------------------------------------------------------------
+    # OUTER-BOUNDARY (relational) — uu tien candidate bam vien ngoai cum
+    # ---------------------------------------------------------------
+    # AF/CD (hoac BE cho rectangle) lech khoi silhouette extent bao nhieu
+    # (ti le extent) thi bi coi la "khong bam vien" / seam.
+    outer_boundary_tol_ratio: float = 0.12
+    # Muc phat khi AF/BE/CD trung seam noi bo (co line dung nam ngoai no).
+    # 0.0 = khong phat, 1.0 = phat toi da (area_position ve 0).
+    seam_penalty_weight: float = 0.6
+
     parallel_tol_deg: float = 12.0
 
-    # Cho phép điểm lệch ra ngoài ROI thêm vài pixel (do làm tròn / nhiễu).
     point_inside_margin_px: int = 2
+
+    enable_mirrored_pass: bool = True
+
+    # ---------------------------------------------------------------
+    # FRAME-LEVEL PREFILTER (dataset-debugger concerns; default OFF).
+    # Deployment thuc te: 1 bbox cho ca cum 4 block -> khong loc.
+    # ---------------------------------------------------------------
+    # Loai bbox nho hon ti le nay so voi frame (0.0 = tat).
+    prefilter_min_area_ratio: float = 0.0
+    # Loai bbox cham bien frame (thuong la object ngoai le / man hinh).
+    prefilter_reject_edge_touching: bool = False
+    # Gop bbox trung nhau (IoU > nguong) — giu box confidence cao hon.
+    # Dat > 1.0 de tat.
+    iou_dedup_threshold: float = 0.90
 
     # -------------------------------------------------------------------------
     # CHẤM ĐIỂM — trọng số phải cộng = 1.0
@@ -187,27 +232,31 @@ class HexDetectorConfig:
     # → reject (not_detected).
     # -------------------------------------------------------------------------
 
-    # 40% — điểm A–F có nằm trên biên Canny không (edge support).
+    # 40% — diem A-F co nam tren bien Canny khong (edge support).
     weight_edge_support: float = 0.40
 
-    # 20% — các cạnh AF∥BE∥CD, AB∥FE, BC∥ED có song song không.
-    weight_parallelism: float = 0.20
+    # 12% — cac canh AF||BE||CD, AB||FE, BC||ED co song song khong.
+    weight_parallelism: float = 0.12
 
-    # 20% — thứ tự x, lồi, trên/dưới đúng topology không.
-    weight_topology: float = 0.20
+    # 10% — thu tu x, loi, tren/duoi dung topology khong.
+    weight_topology: float = 0.10
 
-    # 10% — diện tích / vị trí mặt trước hợp lý trong ROI.
-    weight_area_position: float = 0.10
+    # 28% — COMPOSITE: dien tich mat truoc + outer-boundary quality
+    #        + seam penalty (candidate bam vien ngoai cum, khong phai seam).
+    #        Day la tin hieu relational quan trong nhat sau edge support.
+    weight_area_position: float = 0.28
 
-    # 10% — gần với kết quả frame trước (ổn định theo track).
+    # 10% — gan voi ket qua frame truoc (on dinh theo track).
     weight_temporal: float = 0.10
 
-    # Tổng điểm tối thiểu để accept (0–1). Cao hơn = khó detect hơn, ít false positive.
-    accept_score_threshold: float = 0.52
+    # Tổng điểm tối thiểu để accept (0–1).
+    # Tăng từ 0.52 → 0.55: do edge support tăng trọng số, tổng điểm
+    # dễ cao hơn với candidate tốt → cần ngưỡng cao hơn để chặn false positive.
+    accept_score_threshold: float = 0.55
 
-    # Riêng edge support phải đạt tối thiểu này, dù tổng điểm cao.
-    # Chặn candidate “đẹp trên giấy” nhưng không bám biên thật.
-    min_edge_support_score: float = 0.15
+    # Edge support tối thiểu, chặn candidate "đẹp trên giấy".
+    # Tăng từ 0.15 → 0.25: phải có ít nhất 25% pixel trên biên Canny.
+    min_edge_support_score: float = 0.25
 
     # -------------------------------------------------------------------------
     # THEO DÕI THEO THỜI GIAN — EMA điểm + giữ kết quả cũ khi mất detection

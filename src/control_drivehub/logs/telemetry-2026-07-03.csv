@@ -1,0 +1,2 @@
+seq,ts_hub_ms,robot_state,driver_hub_connected,loop_time_ms,battery_v,latency_ms,imu_yaw,imu_pitch,imu_roll,gp1_lx,gp1_ly,gp2_lx,gp2_ly
+42,1783056011739,RUNNING,True,10.0,12.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0

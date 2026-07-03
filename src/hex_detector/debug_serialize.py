@@ -16,6 +16,8 @@ def line_to_dict(ln: LineSegment) -> dict[str, float | str]:
         "group": ln.group,
         "angle_deg": ln.angle_deg(),
         "length": ln.length(),
+        "edge_support": round(ln.edge_support, 3),
+        "dist_to_border": round(ln.dist_to_border, 3),
     }
 
 

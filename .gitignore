@@ -33,8 +33,6 @@ htmlcov/
 .env.*
 !.env.example
 
-# --- Project: block_detection_v2 benchmark output ---
-src/block_detection_v2/benchmark_output/
 block_detected.toml
 block_detected.json
 .raspi_cam_viewer.json

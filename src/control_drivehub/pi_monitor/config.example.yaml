@@ -1,0 +1,28 @@
+hub:
+  listen_host: "0.0.0.0"
+  ws_port: 8765
+api:
+  host: "0.0.0.0"
+  port: 8080
+telemetry:
+  rate_hz: 20
+  stale_timeout_sec: 1.0
+logging:
+  dir: "./logs"
+  rotate: daily
+commands:
+  enabled: false
+  token: "change-me"
+  whitelist:
+    - emergency_stop
+simulator:
+  enabled: false
+hardware_names:
+  motors:
+    - leftFront
+    - rightFront
+    - leftRear
+    - rightRear
+  servos:
+    - claw
+  imu: imu

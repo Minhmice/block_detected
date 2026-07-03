@@ -70,6 +70,118 @@ def polygon_area(points: Sequence[tuple[float, float]]) -> float:
 
 
 # ---------------------------------------------------------------------------
+# Relational outer-boundary / seam analysis
+# ---------------------------------------------------------------------------
+
+
+def _vertical_mid_x(ln: LineSegment) -> float:
+    return (ln.x1 + ln.x2) / 2.0
+
+
+def vertical_silhouette(vertical_lines: Sequence[LineSegment]) -> tuple[float, float] | None:
+    """Return (x_left, x_right) — the horizontal extent spanned by verticals."""
+    if not vertical_lines:
+        return None
+    xs = [_vertical_mid_x(ln) for ln in vertical_lines]
+    return min(xs), max(xs)
+
+
+def interior_vertical_xs(
+    vertical_lines: Sequence[LineSegment],
+    tol: float,
+) -> list[float]:
+    """Midpoint-x of verticals that are neither leftmost nor rightmost.
+
+    Such lines are candidate INTERNAL SEAMS between blocks (they sit inside the
+    cluster silhouette rather than on its outer boundary).
+    """
+    sil = vertical_silhouette(vertical_lines)
+    if sil is None:
+        return []
+    x_left, x_right = sil
+    span = max(x_right - x_left, 1.0)
+    out: list[float] = []
+    for ln in vertical_lines:
+        mx = _vertical_mid_x(ln)
+        if (mx - x_left) > tol * span and (x_right - mx) > tol * span:
+            out.append(mx)
+    return out
+
+
+def outer_boundary_quality(
+    pts: dict[str, tuple[float, float] | None],
+    mode: str,
+    vertical_lines: Sequence[LineSegment],
+    cfg: HexDetectorConfig,
+) -> tuple[float, bool, dict[str, float]]:
+    """Relational score: does this candidate hug the cluster's outer silhouette?
+
+    Returns (quality[0..1], is_seam, detail). No absolute ROI positions used —
+    only the candidate's edges relative to the full set of vertical lines.
+
+    - AF (left vertical of front) should sit at the LEFT silhouette extent.
+    - The outer-right vertical (CD for hex, BE for rectangle) should sit at the
+      RIGHT silhouette extent.
+    - If a vertical exists beyond either boundary, that edge is an internal
+      seam (or the candidate misses part of the cluster) -> is_seam=True.
+    """
+    a, b, e, f = pts.get("A"), pts.get("B"), pts.get("E"), pts.get("F")
+    c, d = pts.get("C"), pts.get("D")
+    if None in (a, b, e, f):
+        return 0.0, False, {}
+    assert a and b and e and f
+    sil = vertical_silhouette(vertical_lines)
+    if sil is None:
+        return 0.5, False, {"reason": 0.0}
+    x_left, x_right = sil
+    width = max(x_right - x_left, 1.0)
+
+    af_x = (a[0] + f[0]) / 2.0
+    if mode == "hex" and c is not None and d is not None:
+        right_x = (c[0] + d[0]) / 2.0
+    else:
+        right_x = (b[0] + e[0]) / 2.0
+
+    left_gap = max(0.0, af_x - x_left) / width      # verticals to the left of AF
+    right_gap = max(0.0, x_right - right_x) / width  # verticals to the right of outer edge
+
+    left_score = max(0.0, 1.0 - min(left_gap, 1.0))
+    right_score = max(0.0, 1.0 - min(right_gap, 1.0))
+    quality = 0.5 * left_score + 0.5 * right_score
+
+    tol = cfg.outer_boundary_tol_ratio
+    is_seam = left_gap > tol or right_gap > tol
+    detail = {
+        "left_gap": round(left_gap, 3),
+        "right_gap": round(right_gap, 3),
+        "quality": round(quality, 3),
+    }
+    return quality, is_seam, detail
+
+
+def _area_boundary_composite(
+    pts: dict[str, tuple[float, float] | None],
+    mode: str,
+    roi_w: int,
+    roi_h: int,
+    vertical_lines: Sequence[LineSegment] | None,
+    cfg: HexDetectorConfig,
+    area_score: float,
+) -> tuple[float, bool, dict[str, float]]:
+    """Blend front area with relational outer-boundary quality + seam penalty.
+
+    Returns (composite[0..1], is_seam, detail).
+    """
+    if not vertical_lines:
+        return area_score, False, {}
+    quality, is_seam, detail = outer_boundary_quality(pts, mode, vertical_lines, cfg)
+    composite = 0.4 * area_score + 0.6 * quality
+    if is_seam:
+        composite *= max(0.0, 1.0 - cfg.seam_penalty_weight)
+    return float(np.clip(composite, 0.0, 1.0)), is_seam, detail
+
+
+# ---------------------------------------------------------------------------
 # Front-face (4-point) detection
 # ---------------------------------------------------------------------------
 
@@ -111,6 +223,7 @@ def validate_front_points(
     Checks that all four points are present, within ROI bounds,
     form a convex quadrilateral with reasonable area, and
     have parallel vertical and horizontal edges.
+    Also checks BE position and front width constraints.
     """
     a, b, e, f = pts.get("A"), pts.get("B"), pts.get("E"), pts.get("F")
     if None in (a, b, e, f):
@@ -156,6 +269,10 @@ def validate_front_points(
     if roi_area <= 0 or front_area / roi_area < cfg.min_front_area_ratio:
         return False, "front_area_small"
 
+    # NOTE: absolute-position constraints (front_too_narrow / be_too_left /
+    # be_too_right) intentionally removed. Whether BE is a real shared edge vs
+    # an internal seam is decided relationally by outer-boundary scoring, not
+    # by absolute x-position inside the (padded, off-center) ROI.
     return True, ""
 
 
@@ -272,6 +389,13 @@ def validate_hex_points(
     if right_width / max(roi_w, 1) < cfg.min_right_width_ratio:
         return False, "right_too_narrow"
 
+    # --- right/front width ratio constraint ---
+    front_width = b[0] - a[0]
+    if front_width > 0:
+        rf_ratio = right_width / front_width
+        if rf_ratio < cfg.min_right_front_ratio or rf_ratio > cfg.max_right_front_ratio:
+            return False, "right_front_ratio_out_of_range"
+
     return True, ""
 
 
@@ -287,76 +411,55 @@ def should_use_rectangle_mode(pts: HexPoints, roi_w: int, cfg: HexDetectorConfig
 # ---------------------------------------------------------------------------
 
 
+def _edge_fraction(
+    segments: Sequence[tuple[tuple[float, float] | None, tuple[float, float] | None]],
+    edges: np.ndarray,
+) -> float:
+    """Vectorized fraction of in-bounds samples (over all segments) on an edge pixel."""
+    if edges.size == 0:
+        return 0.0
+    h, w = edges.shape[:2]
+    xs_all: list[np.ndarray] = []
+    ys_all: list[np.ndarray] = []
+    for p1, p2 in segments:
+        if p1 is None or p2 is None:
+            continue
+        steps = max(int(np.hypot(p2[0] - p1[0], p2[1] - p1[1])), 1)
+        t = np.linspace(0.0, 1.0, steps)
+        xs_all.append((p1[0] + t * (p2[0] - p1[0])).astype(np.int32))
+        ys_all.append((p1[1] + t * (p2[1] - p1[1])).astype(np.int32))
+    if not xs_all:
+        return 0.0
+    xs = np.concatenate(xs_all)
+    ys = np.concatenate(ys_all)
+    valid = (xs >= 0) & (xs < w) & (ys >= 0) & (ys < h)
+    if not valid.any():
+        return 0.0
+    return float((edges[ys[valid], xs[valid]] > 0).mean())
+
+
 def _edge_support_for_points(
     pts: dict[str, tuple[float, float] | None],
     edges: np.ndarray,
 ) -> float:
     """Edge support along the active segments of a point set."""
-    if edges.size == 0:
-        return 0.0
-    h, w = edges.shape[:2]
-
-    segments: list[tuple[tuple[float, float] | None, tuple[float, float] | None]] = []
-
     a, b, c, d, e, f = (
         pts.get("A"), pts.get("B"), pts.get("C"),
         pts.get("D"), pts.get("E"), pts.get("F"),
     )
-
-    # Front face always evaluated
-    segments.extend([(a, b), (b, e), (e, f), (f, a), (b, e)])
-    # Right face only if C and D present
+    segments = [(a, b), (b, e), (e, f), (f, a), (b, e)]
     if c is not None and d is not None:
         segments.extend([(b, c), (c, d), (d, e)])
-
-    samples = 0
-    hits = 0
-    for p1, p2 in segments:
-        if p1 is None or p2 is None:
-            continue
-        steps = max(int(np.hypot(p2[0] - p1[0], p2[1] - p1[1])), 1)
-        for t in np.linspace(0, 1, steps):
-            x = int(p1[0] + t * (p2[0] - p1[0]))
-            y = int(p1[1] + t * (p2[1] - p1[1]))
-            if 0 <= x < w and 0 <= y < h:
-                samples += 1
-                if edges[y, x] > 0:
-                    hits += 1
-    if samples == 0:
-        return 0.0
-    return hits / samples
+    return _edge_fraction(segments, edges)
 
 
 def edge_support_score(pts: HexPoints, edges: np.ndarray) -> float:
-    """Legacy wrapper for HexPoints-based edge support."""
-    if edges.size == 0:
-        return 0.0
-    h, w = edges.shape[:2]
-    samples = 0
-    hits = 0
+    """Edge support along the full hex perimeter + shared edge."""
     segments = [
-        (pts.A, pts.B),
-        (pts.B, pts.C),
-        (pts.C, pts.D),
-        (pts.D, pts.E),
-        (pts.E, pts.F),
-        (pts.F, pts.A),
-        (pts.B, pts.E),
+        (pts.A, pts.B), (pts.B, pts.C), (pts.C, pts.D),
+        (pts.D, pts.E), (pts.E, pts.F), (pts.F, pts.A), (pts.B, pts.E),
     ]
-    for p1, p2 in segments:
-        if p1 is None or p2 is None:
-            continue
-        steps = max(int(np.hypot(p2[0] - p1[0], p2[1] - p1[1])), 1)
-        for t in np.linspace(0, 1, steps):
-            x = int(p1[0] + t * (p2[0] - p1[0]))
-            y = int(p1[1] + t * (p2[1] - p1[1]))
-            if 0 <= x < w and 0 <= y < h:
-                samples += 1
-                if edges[y, x] > 0:
-                    hits += 1
-    if samples == 0:
-        return 0.0
-    return hits / samples
+    return _edge_fraction(segments, edges)
 
 
 def parallelism_score(pts: HexPoints, cfg: HexDetectorConfig) -> float:
@@ -468,6 +571,7 @@ def score_front_candidate(
     roi_h: int,
     cfg: HexDetectorConfig,
     prev_pts: HexPoints | None = None,
+    vertical_lines: Sequence[LineSegment] | None = None,
 ) -> ScoreBreakdown:
     """Score a front-face (4-point) candidate, returning a full breakdown.
 
@@ -478,11 +582,15 @@ def score_front_candidate(
         roi_w, roi_h: ROI dimensions
         cfg: active config
         prev_pts: previous result for temporal smoothing
+        vertical_lines: merged vertical lines (for relational outer-boundary)
     """
     edge = _edge_support_for_points(roi_pts, edges)
     parallel = _front_parallelism_score(roi_pts, cfg)
     topo = _front_topology_score(roi_pts, roi_w, roi_h, cfg)
-    area = _front_area_position_score(roi_pts, roi_w, roi_h, cfg)
+    area_raw = _front_area_position_score(roi_pts, roi_w, roi_h, cfg)
+    area, _seam, _detail = _area_boundary_composite(
+        roi_pts, "rectangle", roi_w, roi_h, vertical_lines, cfg, area_raw,
+    )
 
     # Temporal: need prev in frame coordinates
     temporal = 0.5
@@ -515,12 +623,16 @@ def score_hex_candidate(
     hex_pts: HexPoints,
     prev_pts: HexPoints | None = None,
     effective_bbox: BBox | None = None,
+    vertical_lines: Sequence[LineSegment] | None = None,
 ) -> ScoreBreakdown:
     """Score a 6-point hex candidate, returning a full breakdown."""
     edge = edge_support_score(hex_pts, edges)
     parallel = parallelism_score(hex_pts, cfg)
     topo = topology_score(hex_pts, roi_w, roi_h, cfg)
-    area = area_position_score(hex_pts, roi_w, roi_h, cfg)
+    area_raw = area_position_score(hex_pts, roi_w, roi_h, cfg)
+    area, _seam, _detail = _area_boundary_composite(
+        hex_pts.as_dict(), "hex", roi_w, roi_h, vertical_lines, cfg, area_raw,
+    )
     frame_hex = hex_pts
     if effective_bbox is not None:
         frame_hex = HexPoints(

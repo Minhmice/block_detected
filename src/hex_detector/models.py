@@ -11,6 +11,7 @@ from numpy.typing import NDArray
 PointName = Literal["A", "B", "C", "D", "E", "F"]
 DetectionMode = Literal["hex", "rectangle", "not_detected"]
 DetectionStatus = Literal["detected", "held", "rejected"]
+DetectionSide = Literal["left", "right"]
 RejectReason = Literal[
     "NO_LINES",
     "NO_FRONT_FACE",
@@ -92,6 +93,8 @@ class LineSegment:
     x2: float
     y2: float
     group: str = "unknown"
+    edge_support: float = 0.0
+    dist_to_border: float = 0.0
 
     def length(self) -> float:
         return float(np.hypot(self.x2 - self.x1, self.y2 - self.y1))
@@ -148,6 +151,7 @@ class DetectionResult:
     debug: dict[str, object] = field(default_factory=dict)
     status: DetectionStatus = "detected"
     score_breakdown: ScoreBreakdown | None = None
+    side: DetectionSide = "right"
 
     def to_dict(self) -> dict[str, object]:
         d: dict[str, object] = {
@@ -158,6 +162,7 @@ class DetectionResult:
             "roi_bbox": self.roi_bbox,
             "reject_reason": self.reject_reason,
             "status": self.status,
+            "side": self.side,
         }
         if self.score_breakdown is not None:
             d["score_breakdown"] = self.score_breakdown.to_dict()

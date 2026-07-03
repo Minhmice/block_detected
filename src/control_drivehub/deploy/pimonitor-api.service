@@ -1,0 +1,16 @@
+[Unit]
+Description=PiMonitor API and WebSocket server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/block_detected/src/control_drivehub
+Environment=PYTHONPATH=/home/pi/block_detected/src/control_drivehub
+ExecStart=/home/pi/block_detected/src/control_drivehub/.venv/bin/python -m pi_monitor serve --config /home/pi/block_detected/src/control_drivehub/pi_monitor/config.yaml
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
