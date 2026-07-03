@@ -1,5 +1,19 @@
 # Milestones
 
+## v2.0 — Detect Only v4 (Planning: 2026-07-03)
+
+**Status:** Planning complete — 7 phases (3–9), 42 requirements
+
+**Goal:** Modular YOLO inference platform on Raspberry Pi 5 with model/camera discovery, task adapters, threaded pipeline, and FastAPI WebSocket UI.
+
+**Module:** `src/detect_only_v4/` (greenfield)
+
+**Artifacts:** `.planning/research/`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`
+
+**Next:** `/gsd:plan-phase 3`
+
+---
+
 ## v1.0 — Hex Detector MVP (Shipped: 2026-07-03)
 
 **Phases completed:** 2 phases, 3 plans
