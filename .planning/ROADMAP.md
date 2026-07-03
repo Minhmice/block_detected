@@ -29,7 +29,19 @@
 
 **Requirements:** CORE-01, CORE-02, CORE-03, CORE-04, CORE-05, CORE-06
 
+**Plans:** 2 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Core types, protocols, errors, logging, greenfield gate
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — inspect_model chain, public API stubs/exports, full test suite
+
 **Deliverables:**
+
 - `src/detect_only_v4/core/types.py` — DetectionResult, ModelInfo, CameraInfo, InferConfig
 - `src/detect_only_v4/core/protocols.py` — CameraBackend, ModelBackend, TaskAdapter ABCs
 - `src/detect_only_v4/core/errors.py` — typed exceptions
@@ -38,6 +50,7 @@
 - Package skeleton with logging setup
 
 **Success criteria:**
+
 1. `DetectionResult` serializes to JSON with all fields; `track_id` defaults None
 2. `inspect_model("models/*.pt")` returns family, task, format from `model.task` + metadata
 3. Unknown task/family returns `"unknown"` — never guesses from filename alone without dry infer fallback chain
@@ -56,12 +69,14 @@
 **Requirements:** MODEL-01, MODEL-02, MODEL-03, MODEL-04, MODEL-05
 
 **Deliverables:**
+
 - `src/detect_only_v4/models/loader.py` — load_model(), discover_models()
 - `src/detect_only_v4/models/backends/` — pytorch, onnx, ncnn, tflite, tensorrt stub
 - `src/detect_only_v4/models/priority.py` — NCNN > OpenVINO > ONNX > TFLite > PT
 - Discovery cache with mtime invalidation
 
 **Success criteria:**
+
 1. `discover_models()` lists `.pt`, `.onnx`, `.tflite`, `.engine`, NCNN directories in `models/`
 2. `load_model()` loads `.pt` on dev machine; returns LoadedModel handle
 3. On Pi (or simulated), NCNN dir selected over `.pt` when both exist for same stem
@@ -80,6 +95,7 @@
 **Requirements:** ADPT-01, ADPT-02, ADPT-03, ADPT-04, ADPT-05, ADPT-06, ADPT-07, ADPT-08
 
 **Deliverables:**
+
 - `src/detect_only_v4/detectors/{detect,segment,pose,obb}/adapter.py`
 - `src/detect_only_v4/detectors/registry.py` — task → adapter
 - `src/detect_only_v4/detectors/base.py` — shared helpers
@@ -87,6 +103,7 @@
 - `detect_frame()` in pipeline module (sync, still-image capable)
 
 **Success criteria:**
+
 1. `normalize_results(raw, "detect")` returns list[DetectionResult] from mock Ultralytics Results
 2. Segment adapter includes JSON-safe mask data
 3. Pose adapter includes keypoints array; OBB adapter includes angle/corners
@@ -106,12 +123,14 @@
 **Requirements:** CAM-01, CAM-02, CAM-03, CAM-04, CAM-05, CAM-06
 
 **Deliverables:**
+
 - `src/detect_only_v4/cameras/discovery.py` — discover_cameras(), probe_camera()
 - `src/detect_only_v4/cameras/opencv.py`, `v4l2.py`, `picamera2.py`
 - `src/detect_only_v4/cameras/factory.py` — backend selection
 - Platform detect helper (Pi vs desktop)
 
 **Success criteria:**
+
 1. `discover_cameras()` returns list with id, backend, label on desktop (V4L2/USB)
 2. `probe_camera()` reports actual width/height/fps after open — not requested defaults
 3. Resolution change with safe fallback when rejected
@@ -132,6 +151,7 @@
 **Requirements:** PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-05, PIPE-06
 
 **Deliverables:**
+
 - `src/detect_only_v4/pipeline/session.py` — InferenceSession orchestrator
 - `src/detect_only_v4/pipeline/queue.py` — BoundedFrameQueue
 - `src/detect_only_v4/pipeline/capture.py` — CaptureThread
@@ -140,6 +160,7 @@
 - Sync CLI loop via `__main__.py` (optional dev path)
 
 **Success criteria:**
+
 1. Capture thread runs independently; inference never blocks camera read
 2. Queue maxsize=1 with drop-old verified in unit test
 3. Inference error logs and skips frame — camera continues
@@ -158,6 +179,7 @@
 **Requirements:** WEB-01, WEB-02, WEB-03, WEB-04, WEB-05, WEB-06, WEB-07, WEB-08
 
 **Deliverables:**
+
 - `src/detect_only_v4/api/app.py` — FastAPI factory + lifespan
 - `src/detect_only_v4/api/routes/` — cameras, models, config, health
 - `src/detect_only_v4/api/websocket.py` — /ws/stream
@@ -165,6 +187,7 @@
 - `src/detect_only_v4/static/index.html` — minimal control panel
 
 **Success criteria:**
+
 1. REST lists cameras and models with family/task/format metadata
 2. WebSocket streams JPEG + JSON detections at capped rate
 3. UI shows resolution, FPS, latency, model info
@@ -184,6 +207,7 @@
 **Requirements:** QA-01, QA-02, QA-03, QA-04, QA-05
 
 **Deliverables:**
+
 - NCNN/OpenVINO priority validation on Pi (or documented manual gate)
 - `tests/detect_only_v4/` complete suite
 - README with Pi install, NCNN export, Web UI usage
@@ -191,6 +215,7 @@
 - Optional `main.py --detect-only-v4` launcher flag
 
 **Success criteria:**
+
 1. All public API functions have type hints
 2. CI runs adapter/discovery/queue tests without hardware
 3. README documents apt packages + venv --system-site-packages
@@ -220,6 +245,7 @@ Phases 4, 5, 6 can start after Phase 3; Phase 7 requires 4+5+6; Phase 8 requires
 ## Milestone v2.0 Success Definition
 
 Milestone v2.0 ships when:
+
 - All 42 requirements marked Complete in traceability
 - Phases 3–9 verified
 - Pi 5 manual validation documented (NCNN inference + Picamera2 or USB camera)
