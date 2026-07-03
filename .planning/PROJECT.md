@@ -1,31 +1,36 @@
-# Hex Detector — Block Face Geometry on Raspberry Pi 5
+# Detect Only v4 — Modular YOLO Inference on Raspberry Pi 5
 
 ## What This Is
 
-MVP thư viện CPU-only (OpenCV + NumPy) chạy trên Raspberry Pi 5, nhận bbox YOLO tracking cho cụm 4 block trên pallet và trích xuất 6 điểm A–F mô tả hai mặt front/right của block. Kèm script debug dataset tương tác. Không train model, không sửa YOLO tracker hiện tại.
+Ứng dụng Python modular chạy trên Raspberry Pi 5, đọc camera và inference model Ultralytics YOLO với Web UI FastAPI/WebSocket. Greenfield module `src/detect_only_v4/` — không phụ thuộc hex_detector, block_detected, hay code legacy khác.
 
 ## Core Value
 
-Từ mỗi bbox YOLO đã track, ổn định và chính xác trả về topology hex A–F (hoặc rectangle A,B,E,F khi mặt right quá hẹp) để điều khiển robot/lấy tọa độ mặt block.
+Từ camera Pi 5, tự động phát hiện model/camera phù hợp, chạy inference realtime với overlay và JSON chuẩn hóa — sẵn sàng tích hợp robot/telemetry mà không cần viết lại pipeline YOLO.
+
+## Current Milestone: v2.0 Detect Only v4
+
+**Goal:** Xây dựng platform inference YOLO modular trên Pi 5 với discovery model/camera, task adapters, và Web UI điều khiển realtime.
+
+**Target features:**
+- Model discovery: `.pt`, `.onnx`, `.engine`, `.tflite`, thư mục NCNN
+- Auto-identify model family (YOLOv8/11/26) và task (detect/segment/pose/OBB)
+- Task adapters chuẩn hóa `DetectionResult` (detect/segment/pose/obb)
+- Core API: `load_model`, `inspect_model`, `discover_cameras`, `probe_camera`, `detect_frame`, `normalize_results`, `draw_overlay`
+- Camera auto-detect: OpenCV/V4L2, USB webcam, Picamera2 — native resolution/FPS
+- FastAPI + WebSocket UI: list camera/model, live overlay + JSON, runtime config
+- Pi 5 optimization: bounded queue, drop-old-frame, inference thread, NCNN priority
+- Type hints, dataclass, logging, unit tests, README
 
 ## Current State (v1.0 shipped 2026-07-03)
 
-- **Module:** `src/hex_detector/` — front-first rectangle/hex detection, temporal hold, debug rendering
-- **Debugger:** `scripts/debug_hex_dataset.py` — tiered diagnostics 0–3, keyboard navigation, config reload
-- **Tests:** 32+ automated tests passing; 20/20 Phase 2 must-haves verified
-- **Git range:** `28cdd11` → `90e8a85` (2026-06-30 → 2026-07-01)
-- **Known gaps:** Pi 5 CPU profiling and OpenCV GUI keyboard behavior require human verification (`human_needed` on phase VERIFICATION.md)
-
-## Next Milestone Goals
-
-- Pi 5 on-device performance validation and memory profiling
-- Production integration with live YOLO tracker (beyond dataset debugger)
-- Extended temporal tracking across video frames
-- Ground-truth evaluation harness for dataset accuracy metrics
+- **Module:** `src/hex_detector/` — CPU-only block face geometry (separate milestone, unchanged)
+- **Debugger:** `scripts/debug_hex_dataset.py`
+- **Tests:** 32+ automated tests passing
 
 ## Requirements
 
-### Validated
+### Validated (v1.0 — hex_detector)
 
 - [x] Front-first rectangle/hex detection with typed contracts (Phase 1 — 01-01) — v1.0
 - [x] Guarded temporal hold with score decay + basic/verbose debug rendering (Phase 1 — 01-02) — v1.0
@@ -34,36 +39,50 @@ Từ mỗi bbox YOLO đã track, ổn định và chính xác trả về topolog
 
 ### Active
 
-(None — v1.0 milestone complete; define via `/gsd:new-milestone`)
+(Define via milestone v2.0 — see `.planning/REQUIREMENTS.md`)
 
 ### Out of Scope
 
 - Train / fine-tune YOLO — model đã có
-- YOLO Pose — chỉ dùng bbox + track_id
-- Sửa YOLO tracker hiện tại — hex_detector là layer độc lập
-- GPU / CUDA — CPU-only cho Pi 5
-- FastAPI / web telemetry — MVP local
-- Complex GUI, video tracking, ground-truth annotation, HTML reports
+- Object tracking — không dùng tracker, luôn trả tất cả detections
+- Đọc/sửa code ngoài `src/detect_only_v4/` — greenfield module
+- hex_detector integration — milestone riêng, không merge logic
+- GPU / CUDA trên Pi — ưu tiên NCNN/CPU
+- Complex desktop GUI — Web UI FastAPI là surface chính
 
 ## Context
 
-- Ultralytics YOLO tracking trả `track_id`, `bbox`, `confidence` cho cụm 4 block.
-- Topology: front = A-B-E-F, right = B-C-D-E, polygon ngoài A→B→C→D→E→F, cạnh chung B-E.
-- Module độc lập `src/hex_detector/` — không phụ thuộc block_detected.
-- Greenfield pivot from Block Detected v1.x on 2026-06-30.
+- Folder code: `src/detect_only_v4/` (greenfield)
+- Models: quét `models/` tại repo root
+- Pi 5 target: bounded queue, inference thread riêng, không block camera
+- Ultralytics YOLO: hỗ trợ detect, segment, pose, OBB qua task adapters
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Front-first architecture | Detect rectangle before hex; never synthesize C/D | ✓ Good |
-| Bounded candidates in config | Prevents combinatorial CPU explosion | ✓ Good |
-| Stable RejectReason codes | Machine-readable rejection telemetry | ✓ Good |
-| Single hold age counter | No double-aging between hold_or_clear and prune_missing | ✓ Good |
-| Float geometry, int render | Precision preserved throughout pipeline | ✓ Good |
-| Fresh HexDetector per image | Prevents EMA/hold leakage across dataset images | ✓ Good |
-| Observational instrumentation only | Debugger must not alter detector decisions | ✓ Good |
-| Split line-stage timings | hough/filter/group/merge for diagnostic clarity | ✓ Good |
+| Greenfield `detect_only_v4/` | Tách biệt hoàn toàn khỏi hex_detector và legacy | Pending |
+| Task adapter pattern | Chuẩn hóa mọi output thành `DetectionResult` | Pending |
+| NCNN priority on Pi | Tối ưu inference CPU trên Pi 5 | Pending |
+| No tracking | Yêu cầu rõ ràng — trả tất cả detections | Pending |
+| Web UI via FastAPI/WebSocket | Remote config + preview trên LAN | Pending |
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd-transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
 
 ---
-*Last updated: 2026-07-03 after v1.0 milestone*
+*Last updated: 2026-07-03 — Milestone v2.0 started*
