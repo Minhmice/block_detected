@@ -7,6 +7,7 @@ Pi Camera Module uses ``rpicam-vid`` subprocess (YUV420 → BGR).
 from __future__ import annotations
 
 import logging
+import platform
 import subprocess
 import threading
 import time
@@ -144,8 +145,12 @@ class PiCameraCapture:
 
 
 def _open_v4l2(index: int, *, width: int, height: int) -> cv2.VideoCapture | None:
-    """Open a V4L2 camera by numeric index."""
-    cap = cv2.VideoCapture(index, cv2.CAP_V4L2)
+    """Open a camera by numeric index.
+
+    Uses DirectShow on Windows, V4L2 on Linux.
+    """
+    backend = cv2.CAP_DSHOW if platform.system() == "Windows" else cv2.CAP_V4L2
+    cap = cv2.VideoCapture(index, backend)
     if not cap.isOpened():
         return None
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)

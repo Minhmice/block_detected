@@ -17,6 +17,7 @@ gui = ["PySide6>=6.7"]
 tui = ["textual>=8.0", "rich>=13.7"]
 viewer = ["opencv-python>=4.8.0"]
 dev = ["pytest>=8.0", "httpx>=0.27"]
+pi = ["onnxruntime"]  # ARM64 ONNX runtime cho Raspberry Pi
 all = ["opencv-python>=4.8.0", "PySide6>=6.7"]
 
 [project.scripts]

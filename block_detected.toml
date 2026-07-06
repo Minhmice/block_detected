@@ -1,12 +1,12 @@
 [camera]
-source = "usb"
-index = 8
+index = 0
 max_index = 10
 width = 640
 height = 480
+source = "usb"
 
 [inference]
-last_model_name = "rbs-final.pt"
+last_model_name = "obb-18.pt"
 conf_min = 0.001
 conf_max = 0.95
 conf_step = 0.001
@@ -28,7 +28,7 @@ blur_kernel = 0
 canny_low = 50
 canny_high = 150
 show_contours = false
-show_corners = true
+show_corners = false
 show_warped_face = false
 
 [stability]
