@@ -71,8 +71,6 @@ class UartSender:
             return
 
         count = min(len(detections), MAX_DETS)
-        if count == 0:
-            return
 
         payload = bytearray()
         payload.append(FRAME_START)
