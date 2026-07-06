@@ -30,6 +30,7 @@ from block_detected.runtime.logging_setup import log_event
 from block_detected.runtime.postprocess import DetectionPostProcessor
 from block_detected.runtime.preprocess import apply_preprocess
 from block_detected.runtime.state import RuntimeState
+from block_detected.runtime.uart_sender import init_sender, push_detections
 from block_detected.vision.drawing.detections import (
     draw_detection_boxes,
     draw_detection_centers,
@@ -110,6 +111,8 @@ class WebcamEngine:
 
         engine = cls(config, model_paths, detector)
         engine.state.model_index = model_index
+        # UART sender — silent fail if no serial device
+        init_sender()
         logger.info(
             "Loaded model (%s/%s): %s",
             model_index + 1,
@@ -288,6 +291,9 @@ class WebcamEngine:
             frame_height=frame_h,
         )
         frame_result = FrameResult(detections=filtered, raw=frame_result.raw)
+
+        # UART: gửi detection sang ESP32 mỗi frame
+        push_detections(frame_result.detections)
 
         infer_end = perf_counter()
         annotated = self._render(frame, frame_result)

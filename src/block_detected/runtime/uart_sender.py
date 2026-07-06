@@ -10,6 +10,7 @@ import struct
 import threading
 import time
 from dataclasses import dataclass, field
+from typing import Any
 
 from block_detected.core.domain import Detection
 
