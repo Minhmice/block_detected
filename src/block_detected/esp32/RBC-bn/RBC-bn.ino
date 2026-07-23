@@ -1,6 +1,6 @@
 /**
  * RBC-bn — Robot Block Chaser (4-wheel mecanum)
- * ESP32 firmware: nhận lệnh UART từ Raspberry Pi 5 → điều khiển 4 bánh mecanum
+ * ESP32 DevKit V1 firmware: nhận lệnh UART từ Raspberry Pi 5
  *
  * Protocol (từ Pi → ESP32):
  *   [0xBB] [CMD 1B] [SPEED_L 1B] [SPEED_R 1B] [CKSUM 1B] [0xCC]
@@ -11,51 +11,82 @@
  *     0x05 = STOP           0x06 = ROTATE_LEFT
  *     0x07 = ROTATE_RIGHT
  *
- * Mecanum wheel mapping (front view, robot top):
- *    FL —— FR        FL: motor 1 (front-left)
- *    |      |        FR: motor 2 (front-right)
- *    |      |        RL: motor 3 (rear-left)
- *    RL —— RR        RR: motor 4 (rear-right)
- *
  * Mecanum kinematics:
  *   V_fl = V_y + V_x + ω    V_fr = V_y - V_x - ω
  *   V_rl = V_y - V_x + ω    V_rr = V_y + V_x - ω
  *
- * Pin mapping (điều chỉnh theo phần cứng thực tế):
- *   Motor FL: ENA=gpio, IN1=gpio, IN2=gpio
- *   Motor FR: ENB=gpio, IN3=gpio, IN4=gpio
- *   Motor RL: ENC=gpio, IN5=gpio, IN6=gpio
- *   Motor RR: END=gpio, IN7=gpio, IN8=gpio
+ * ============================================================
+ * HARDWARE PINNING
+ * ============================================================
+ *
+ * BOARD: ESP32 DevKit V1
+ *
+ * UART (Pi 5 ↔ ESP32):
+ *   ESP32 RX : GPIO16  ← Pi 5 TX
+ *   ESP32 TX : GPIO17  → Pi 5 RX
+ *
+ * I2C (PCA9685 Servo Driver):
+ *   SDA : GPIO21
+ *   SCL : GPIO22
+ *
+ * L298N #1 — Mecanum Front:
+ *   Motor A (FL): IN1=GPIO13  IN2=GPIO12
+ *   Motor B (FR): IN3=GPIO14  IN4=GPIO27
+ *
+ * L298N #2 — Mecanum Rear:
+ *   Motor A (RL): IN1=GPIO26  IN2=GPIO25
+ *   Motor B (RR): IN3=GPIO33  IN4=GPIO32
+ *
+ * L298N #3 — spare (future expansion):
+ *   Motor A: IN1=GPIO18  IN2=GPIO19
+ *   Motor B: IN3=GPIO23  IN4=GPIO5
+ *
+ * PCA9685 — 16 servo channels (0-15)
+ *
+ * LƯU Ý: EN pins của L298N phải được jumper lên 5V (always enabled).
+ *        PWM speed control dùng trực tiếp trên IN pins.
  */
 
 #include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
 
 // ============================================================
-// Pin definitions — PWM-capable GPIOs cho ESP32
+// PCA9685 Servo Driver
+// ============================================================
+#define PCA9685_ADDR  0x40
+#define PCA9685_FREQ  50      // 50 Hz cho servo
+#define SERVO_MIN    150      // ~0°  (pulse = 150/4096 * 20ms ≈ 0.73ms)
+#define SERVO_MAX    600      // ~180° (pulse = 600/4096 * 20ms ≈ 2.93ms)
+
+Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver(PCA9685_ADDR);
+
+// ============================================================
+// L298N Motor Driver pin definitions
 // ============================================================
 
-// Front-Left (FL)
-#define FL_EN   12   // PWM
+// --- L298N #1: Front wheels ---
+// Motor A → Front-Left (FL)
 #define FL_IN1  13
-#define FL_IN2  14
-
-// Front-Right (FR)
-#define FR_EN   25   // PWM
-#define FR_IN1  26
+#define FL_IN2  12
+// Motor B → Front-Right (FR)
+#define FR_IN1  14
 #define FR_IN2  27
 
-// Rear-Left (RL)
-#define RL_EN   32   // PWM
-#define RL_IN1  33
-#define RL_IN2  15   // OK on ESP32 (not strapping)
+// --- L298N #2: Rear wheels ---
+// Motor A → Rear-Left (RL)
+#define RL_IN1  26
+#define RL_IN2  25
+// Motor B → Rear-Right (RR)
+#define RR_IN1  33
+#define RR_IN2  32
 
-// Rear-Right (RR)
-#define RR_EN   4    // PWM (tránh GPIO 0,2,5 nếu dùng strapping)
-#define RR_IN1  16
-#define RR_IN2  17
+// --- L298N #3: Spare (unused) ---
+// Motor A: IN1=18 IN2=19
+// Motor B: IN3=23 IN4=5
 
 // ============================================================
-// PWM settings
+// PWM settings (ESP32 LEDC — dùng trực tiếp trên IN pins)
 // ============================================================
 #define PWM_FREQ       5000    // 5 kHz
 #define PWM_RESOLUTION 8       // 0-255
@@ -79,7 +110,7 @@
 #define CMD_ROTATE_LEFT  0x06
 #define CMD_ROTATE_RIGHT 0x07
 
-#define CMD_TIMEOUT_MS   500   // Auto-stop nếu không nhận lệnh sau timeout
+#define CMD_TIMEOUT_MS   500   // Auto-stop sau 500ms không nhận lệnh
 
 // ============================================================
 // State
@@ -90,21 +121,16 @@ static uint8_t  g_speed_r  = 0;
 static uint32_t g_last_cmd = 0;
 
 // ============================================================
-// Motor helpers
+// Motor helpers — L298N: PWM on IN1 (forward) or IN2 (backward)
+// EN pins jumpered to 5V (always on)
 // ============================================================
 
 void motor_init() {
-    // Setup PWM channels
+    // Setup 4 PWM channels (1 per motor)
     ledcSetup(PWM_CH_FL, PWM_FREQ, PWM_RESOLUTION);
     ledcSetup(PWM_CH_FR, PWM_FREQ, PWM_RESOLUTION);
     ledcSetup(PWM_CH_RL, PWM_FREQ, PWM_RESOLUTION);
     ledcSetup(PWM_CH_RR, PWM_FREQ, PWM_RESOLUTION);
-
-    // Attach pins to PWM channels
-    ledcAttachPin(FL_EN, PWM_CH_FL);
-    ledcAttachPin(FR_EN, PWM_CH_FR);
-    ledcAttachPin(RL_EN, PWM_CH_RL);
-    ledcAttachPin(RR_EN, PWM_CH_RR);
 
     // Direction pins as outputs
     pinMode(FL_IN1, OUTPUT); pinMode(FL_IN2, OUTPUT);
@@ -115,31 +141,56 @@ void motor_init() {
     motor_stop_all();
 }
 
-void motor_set(uint8_t en_pin, int pwm_ch, int in1, int in2, int speed) {
-    // speed: dương = forward/left, âm = backward/right
+/**
+ * L298N motor_set for IN-pin PWM (no separate EN).
+ *
+ * Forward:  detach PWM from IN2, attach to IN1, IN2=LOW, write speed
+ * Backward: detach PWM from IN1, attach to IN2, IN1=LOW, write speed
+ * Stop:     detach both, set both LOW
+ */
+void motor_set(int pwm_ch, int in1, int in2, int speed) {
+    int abs_speed = constrain(abs(speed), 0, 255);
+
     if (speed > 0) {
-        digitalWrite(in1, HIGH);
+        // Forward: PWM → IN1, IN2 = LOW
+        ledcDetachPin(in2);
         digitalWrite(in2, LOW);
+        ledcAttachPin(in1, pwm_ch);
+        ledcWrite(pwm_ch, abs_speed);
     } else if (speed < 0) {
+        // Backward: PWM → IN2, IN1 = LOW
+        ledcDetachPin(in1);
         digitalWrite(in1, LOW);
-        digitalWrite(in2, HIGH);
-        speed = -speed;
+        ledcAttachPin(in2, pwm_ch);
+        ledcWrite(pwm_ch, abs_speed);
     } else {
+        // Stop: detach PWM, both LOW
+        ledcDetachPin(in1);
+        ledcDetachPin(in2);
         digitalWrite(in1, LOW);
         digitalWrite(in2, LOW);
+        ledcWrite(pwm_ch, 0);
     }
-    ledcWrite(pwm_ch, constrain(speed, 0, 255));
 }
 
 void motor_stop_all() {
-    ledcWrite(PWM_CH_FL, 0);
-    ledcWrite(PWM_CH_FR, 0);
-    ledcWrite(PWM_CH_RL, 0);
-    ledcWrite(PWM_CH_RR, 0);
+    // Detach all PWM channels from pins
+    ledcDetachPin(FL_IN1); ledcDetachPin(FL_IN2);
+    ledcDetachPin(FR_IN1); ledcDetachPin(FR_IN2);
+    ledcDetachPin(RL_IN1); ledcDetachPin(RL_IN2);
+    ledcDetachPin(RR_IN1); ledcDetachPin(RR_IN2);
+
+    // Set all IN pins LOW
     digitalWrite(FL_IN1, LOW); digitalWrite(FL_IN2, LOW);
     digitalWrite(FR_IN1, LOW); digitalWrite(FR_IN2, LOW);
     digitalWrite(RL_IN1, LOW); digitalWrite(RL_IN2, LOW);
     digitalWrite(RR_IN1, LOW); digitalWrite(RR_IN2, LOW);
+
+    // Stop PWM
+    ledcWrite(PWM_CH_FL, 0);
+    ledcWrite(PWM_CH_FR, 0);
+    ledcWrite(PWM_CH_RL, 0);
+    ledcWrite(PWM_CH_RR, 0);
 }
 
 // ============================================================
@@ -148,20 +199,22 @@ void motor_stop_all() {
 
 /**
  * Mecanum drive:
- *   Vx = strafe (dương = right), Vy = forward (dương = forward), ω = rotation (dương = CCW)
+ *   Vx = strafe (dương = right), Vy = forward (dương = forward),
+ *   ω = rotation (dương = CCW)
  *
- *   Mỗi bánh = Vy + Vx_sign * Vx + ω_sign * ω
+ *   FL = Vy + Vx + ω     FR = Vy - Vx - ω
+ *   RL = Vy - Vx + ω     RR = Vy + Vx - ω
  */
 void mecanum_drive(int vx, int vy, int omega) {
-    int fl = vy + vx + omega;   // front-left
-    int fr = vy - vx - omega;   // front-right
-    int rl = vy - vx + omega;   // rear-left
-    int rr = vy + vx - omega;   // rear-right
+    int fl = vy + vx + omega;
+    int fr = vy - vx - omega;
+    int rl = vy - vx + omega;
+    int rr = vy + vx - omega;
 
-    motor_set(FL_EN, PWM_CH_FL, FL_IN1, FL_IN2, fl);
-    motor_set(FR_EN, PWM_CH_FR, FR_IN1, FR_IN2, fr);
-    motor_set(RL_EN, PWM_CH_RL, RL_IN1, RL_IN2, rl);
-    motor_set(RR_EN, PWM_CH_RR, RR_IN1, RR_IN2, rr);
+    motor_set(PWM_CH_FL, FL_IN1, FL_IN2, fl);
+    motor_set(PWM_CH_FR, FR_IN1, FR_IN2, fr);
+    motor_set(PWM_CH_RL, RL_IN1, RL_IN2, rl);
+    motor_set(PWM_CH_RR, RR_IN1, RR_IN2, rr);
 }
 
 // ============================================================
@@ -173,25 +226,25 @@ void execute_cmd(uint8_t cmd, uint8_t speed_l, uint8_t speed_r) {
 
     switch (cmd) {
         case CMD_FORWARD:
-            mecanum_drive(0, s, 0);          // Vy = +speed
+            mecanum_drive(0, s, 0);
             break;
         case CMD_BACKWARD:
-            mecanum_drive(0, -s, 0);         // Vy = -speed
+            mecanum_drive(0, -s, 0);
             break;
         case CMD_LEFT:
-            mecanum_drive(-s, 0, 0);         // Vx = -speed (strafe left)
+            mecanum_drive(-s, 0, 0);
             break;
         case CMD_RIGHT:
-            mecanum_drive(s, 0, 0);          // Vx = +speed (strafe right)
+            mecanum_drive(s, 0, 0);
             break;
         case CMD_STOP:
             mecanum_drive(0, 0, 0);
             break;
         case CMD_ROTATE_LEFT:
-            mecanum_drive(0, 0, s);          // ω = +speed (CCW)
+            mecanum_drive(0, 0, s);
             break;
         case CMD_ROTATE_RIGHT:
-            mecanum_drive(0, 0, -s);         // ω = -speed (CW)
+            mecanum_drive(0, 0, -s);
             break;
         default:
             mecanum_drive(0, 0, 0);
@@ -236,14 +289,12 @@ void uart_parse_byte(uint8_t b) {
             if (calc == parse_cksum) {
                 parse_state = WAIT_END;
             } else {
-                // Checksum mismatch → discard, wait for next frame
-                parse_state = WAIT_START;
+                parse_state = WAIT_START;  // checksum fail → discard
             }
             break;
         }
         case WAIT_END:
             if (b == FRAME_END) {
-                // Valid frame received
                 g_cmd      = parse_cmd;
                 g_speed_l  = parse_spl;
                 g_speed_r  = parse_spr;
@@ -255,30 +306,66 @@ void uart_parse_byte(uint8_t b) {
 }
 
 // ============================================================
+// PCA9685 Servo helpers
+// ============================================================
+
+void servo_init() {
+    pca.begin();
+    pca.setPWMFreq(PCA9685_FREQ);
+    delay(10);
+}
+
+void servo_write(uint8_t channel, uint16_t pulse) {
+    // pulse: SERVO_MIN (150) ~ SERVO_MAX (600) → 0° ~ 180°
+    uint16_t p = constrain(pulse, SERVO_MIN, SERVO_MAX);
+    pca.setPWM(channel, 0, p);
+}
+
+void servo_angle(uint8_t channel, uint8_t angle_deg) {
+    // angle_deg: 0-180
+    uint16_t pulse = map(constrain(angle_deg, 0, 180), 0, 180, SERVO_MIN, SERVO_MAX);
+    pca.setPWM(channel, 0, pulse);
+}
+
+void servo_stop_all() {
+    for (uint8_t ch = 0; ch < 16; ch++) {
+        pca.setPWM(ch, 0, 0);
+    }
+}
+
+// ============================================================
 // Setup / Loop
 // ============================================================
 
 void setup() {
-    Serial.begin(UART_BAUD);
-    // RX2/TX2 có thể dùng nếu cần UART riêng cho robot:
-    // Serial2.begin(UART_BAUD, SERIAL_8N1, 16, 17);
+    // UART: Serial2 = Pi 5 UART (RX=GPIO16, TX=GPIO17)
+    // Serial = USB monitor (debug only)
+    Serial.begin(115200);
+    Serial2.begin(UART_BAUD, SERIAL_8N1, 16, 17);
 
+    // I2C + PCA9685
+    Wire.begin(21, 22);   // SDA=21, SCL=22
+    servo_init();
+
+    // Motors
     motor_init();
     g_last_cmd = millis();
 
     // LED onboard báo hiệu sẵn sàng
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
+
+    Serial.println("RBC-bn ready. UART on Serial2 (RX=16, TX=17).");
 }
 
 void loop() {
-    // --- Đọc UART ---
-    while (Serial.available() > 0) {
-        uint8_t b = Serial.read();
+    // --- Đọc UART từ Pi 5 (Serial2) ---
+    while (Serial2.available() > 0) {
+        uint8_t b = Serial2.read();
         uart_parse_byte(b);
     }
 
-    // --- Safety timeout: auto-stop nếu không nhận lệnh ---
+    // --- Safety timeout: auto-STOP nếu không nhận lệnh ---
     if (millis() - g_last_cmd > CMD_TIMEOUT_MS) {
         g_cmd     = CMD_STOP;
         g_speed_l = 0;
