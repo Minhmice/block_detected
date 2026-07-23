@@ -86,14 +86,10 @@ Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver(PCA9685_ADDR);
 // Motor B: IN3=23 IN4=5
 
 // ============================================================
-// PWM settings (ESP32 LEDC — dùng trực tiếp trên IN pins)
+// PWM settings (ESP32 LEDC — pin-based API, core 3.x)
 // ============================================================
 #define PWM_FREQ       5000    // 5 kHz
 #define PWM_RESOLUTION 8       // 0-255
-#define PWM_CH_FL      0
-#define PWM_CH_FR      1
-#define PWM_CH_RL      2
-#define PWM_CH_RR      3
 
 // ============================================================
 // UART / Protocol
@@ -126,13 +122,7 @@ static uint32_t g_last_cmd = 0;
 // ============================================================
 
 void motor_init() {
-    // Setup 4 PWM channels (1 per motor)
-    ledcSetup(PWM_CH_FL, PWM_FREQ, PWM_RESOLUTION);
-    ledcSetup(PWM_CH_FR, PWM_FREQ, PWM_RESOLUTION);
-    ledcSetup(PWM_CH_RL, PWM_FREQ, PWM_RESOLUTION);
-    ledcSetup(PWM_CH_RR, PWM_FREQ, PWM_RESOLUTION);
-
-    // Direction pins as outputs
+    // Direction pins as outputs (PWM auto-attached in motor_set)
     pinMode(FL_IN1, OUTPUT); pinMode(FL_IN2, OUTPUT);
     pinMode(FR_IN1, OUTPUT); pinMode(FR_IN2, OUTPUT);
     pinMode(RL_IN1, OUTPUT); pinMode(RL_IN2, OUTPUT);
@@ -143,54 +133,48 @@ void motor_init() {
 
 /**
  * L298N motor_set for IN-pin PWM (no separate EN).
+ * ESP32 core 3.x API: ledcAttach(pin, freq, res), ledcWrite(pin, duty), ledcDetach(pin).
  *
- * Forward:  detach PWM from IN2, attach to IN1, IN2=LOW, write speed
- * Backward: detach PWM from IN1, attach to IN2, IN1=LOW, write speed
+ * Forward:  detach IN2, attach IN1, IN2=LOW, write speed to IN1
+ * Backward: detach IN1, attach IN2, IN1=LOW, write speed to IN2
  * Stop:     detach both, set both LOW
  */
-void motor_set(int pwm_ch, int in1, int in2, int speed) {
+void motor_set(int in1, int in2, int speed) {
     int abs_speed = constrain(abs(speed), 0, 255);
 
     if (speed > 0) {
         // Forward: PWM → IN1, IN2 = LOW
-        ledcDetachPin(in2);
+        ledcDetach(in2);
         digitalWrite(in2, LOW);
-        ledcAttachPin(in1, pwm_ch);
-        ledcWrite(pwm_ch, abs_speed);
+        ledcAttach(in1, PWM_FREQ, PWM_RESOLUTION);
+        ledcWrite(in1, abs_speed);
     } else if (speed < 0) {
         // Backward: PWM → IN2, IN1 = LOW
-        ledcDetachPin(in1);
+        ledcDetach(in1);
         digitalWrite(in1, LOW);
-        ledcAttachPin(in2, pwm_ch);
-        ledcWrite(pwm_ch, abs_speed);
+        ledcAttach(in2, PWM_FREQ, PWM_RESOLUTION);
+        ledcWrite(in2, abs_speed);
     } else {
-        // Stop: detach PWM, both LOW
-        ledcDetachPin(in1);
-        ledcDetachPin(in2);
+        // Stop: detach PWM from both, both LOW
+        ledcDetach(in1);
+        ledcDetach(in2);
         digitalWrite(in1, LOW);
         digitalWrite(in2, LOW);
-        ledcWrite(pwm_ch, 0);
     }
 }
 
 void motor_stop_all() {
-    // Detach all PWM channels from pins
-    ledcDetachPin(FL_IN1); ledcDetachPin(FL_IN2);
-    ledcDetachPin(FR_IN1); ledcDetachPin(FR_IN2);
-    ledcDetachPin(RL_IN1); ledcDetachPin(RL_IN2);
-    ledcDetachPin(RR_IN1); ledcDetachPin(RR_IN2);
+    // Detach all PWM from motor pins
+    ledcDetach(FL_IN1); ledcDetach(FL_IN2);
+    ledcDetach(FR_IN1); ledcDetach(FR_IN2);
+    ledcDetach(RL_IN1); ledcDetach(RL_IN2);
+    ledcDetach(RR_IN1); ledcDetach(RR_IN2);
 
     // Set all IN pins LOW
     digitalWrite(FL_IN1, LOW); digitalWrite(FL_IN2, LOW);
     digitalWrite(FR_IN1, LOW); digitalWrite(FR_IN2, LOW);
     digitalWrite(RL_IN1, LOW); digitalWrite(RL_IN2, LOW);
     digitalWrite(RR_IN1, LOW); digitalWrite(RR_IN2, LOW);
-
-    // Stop PWM
-    ledcWrite(PWM_CH_FL, 0);
-    ledcWrite(PWM_CH_FR, 0);
-    ledcWrite(PWM_CH_RL, 0);
-    ledcWrite(PWM_CH_RR, 0);
 }
 
 // ============================================================
@@ -211,10 +195,10 @@ void mecanum_drive(int vx, int vy, int omega) {
     int rl = vy - vx + omega;
     int rr = vy + vx - omega;
 
-    motor_set(PWM_CH_FL, FL_IN1, FL_IN2, fl);
-    motor_set(PWM_CH_FR, FR_IN1, FR_IN2, fr);
-    motor_set(PWM_CH_RL, RL_IN1, RL_IN2, rl);
-    motor_set(PWM_CH_RR, RR_IN1, RR_IN2, rr);
+    motor_set(FL_IN1, FL_IN2, fl);
+    motor_set(FR_IN1, FR_IN2, fr);
+    motor_set(RL_IN1, RL_IN2, rl);
+    motor_set(RR_IN1, RR_IN2, rr);
 }
 
 // ============================================================
