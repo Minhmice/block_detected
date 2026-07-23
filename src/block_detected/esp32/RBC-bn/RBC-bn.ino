@@ -335,10 +335,6 @@ void setup() {
     motor_init();
     g_last_cmd = millis();
 
-    // LED onboard báo hiệu sẵn sàng
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, HIGH);
-
     Serial.println("RBC-bn ready. UART on Serial2 (RX=16, TX=17).");
 }
 
@@ -358,13 +354,6 @@ void loop() {
 
     // --- Thực thi lệnh ---
     execute_cmd(g_cmd, g_speed_l, g_speed_r);
-
-    // --- Nhịp tim LED ---
-    static uint32_t last_blink = 0;
-    if (millis() - last_blink > 500) {
-        last_blink = millis();
-        digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-    }
 
     delay(10);  // ~100 Hz loop
 }
