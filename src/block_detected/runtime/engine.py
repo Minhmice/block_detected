@@ -30,7 +30,10 @@ from block_detected.runtime.logging_setup import log_event
 from block_detected.runtime.postprocess import DetectionPostProcessor
 from block_detected.runtime.preprocess import apply_preprocess
 from block_detected.runtime.state import RuntimeState
-from block_detected.runtime.uart_sender import init_sender, push_detections
+from block_detected.runtime.uart_sender import init_sender, push_detections, push_robot_command
+from block_detected.runtime.robo_nav import RobotNavigator, RobotNavConfig
+from block_detected.vision.depth import estimate_distance_from_detection, pixel_offset_to_angle
+from block_detected.vision.drawing.path import draw_path_to_target, draw_robot_status
 from block_detected.vision.drawing.detections import (
     draw_detection_boxes,
     draw_detection_centers,
@@ -85,6 +88,7 @@ class WebcamEngine:
         )
         self.metrics = RuntimeMetrics()
         self._postprocess = DetectionPostProcessor(config.stability)
+        self._navigator = RobotNavigator(config.robot)
         self._cap: cv2.VideoCapture | PiCameraCapture | RpicamCapture | None = None
         self._camera_source: int | str = 0
         self._last_primary_log: tuple[str, float] | None = None
@@ -295,8 +299,47 @@ class WebcamEngine:
         # UART: gửi detection sang ESP32 mỗi frame
         push_detections(frame_result.detections)
 
+        # --- Robot navigation ---
+        sorted_dets = sorted(
+            frame_result.detections,
+            key=lambda d: d.confidence,
+            reverse=True,
+        )
+        primary = sorted_dets[0] if sorted_dets else None
+
+        distance_cm: float | None = None
+        angle_deg: float = 0.0
+        if primary is not None:
+            distance_cm = estimate_distance_from_detection(
+                primary,
+                frame_width=frame_w,
+                focal_length_px=self.config.robot.focal_length_px,
+                block_width_cm=self.config.robot.block_width_cm,
+            )
+            cx, _cy = box_center(primary.box)
+            cam_cx = frame_w / 2.0
+            angle_deg = pixel_offset_to_angle(
+                cx - cam_cx,
+                frame_width=frame_w,
+                hfov_deg=self.config.robot.hfov_deg,
+            )
+
+        robot_cmds = self._navigator.update(
+            primary=primary,
+            distance_cm=distance_cm if distance_cm is not None else 999.0,
+            angle_deg=angle_deg,
+            frame_width=frame_w,
+        )
+        for cmd in robot_cmds:
+            push_robot_command(cmd)
+
         infer_end = perf_counter()
-        annotated = self._render(frame, frame_result)
+        annotated = self._render(
+            frame, frame_result,
+            primary=primary,
+            distance_cm=distance_cm,
+            angle_deg=angle_deg,
+        )
         render_end = perf_counter()
 
         stats = self.metrics.record(
@@ -316,14 +359,8 @@ class WebcamEngine:
             button_height=ui.button_height,
             button_pad_x=ui.button_pad_x,
         )
-        sorted_detections = sorted(
-            frame_result.detections,
-            key=lambda d: d.confidence,
-            reverse=True,
-        )
         ui_cap = min(8, self.config.inference.max_det)
-        top_detections = sorted_detections[:ui_cap]
-        primary = top_detections[0] if top_detections else None
+        top_detections = sorted_dets[:ui_cap]
         if primary is not None:
             key = (primary.class_name, round(primary.confidence, 3))
             if getattr(self, "_last_primary_log", None) != key:
@@ -356,7 +393,14 @@ class WebcamEngine:
             detections=list(frame_result.detections),
         )
 
-    def _render(self, frame, frame_result: FrameResult) -> Any:
+    def _render(
+        self,
+        frame,
+        frame_result: FrameResult,
+        primary: Detection | None = None,
+        distance_cm: float | None = None,
+        angle_deg: float = 0.0,
+    ) -> Any:
         inf = self.config.inference
         stability_on = self.config.stability.enabled
         if self.state.eval_mode:
@@ -380,6 +424,18 @@ class WebcamEngine:
 
         # Draw camera center (purple/magenta)
         draw_camera_center(annotated)
+
+        # Draw path to primary detection + robot status
+        if primary is not None:
+            cam_cx = annotated.shape[1] // 2
+            cam_cy = annotated.shape[0] // 2
+            draw_path_to_target(
+                annotated,
+                target_center=box_center(primary.box),
+                camera_center=(cam_cx, cam_cy),
+                distance_cm=distance_cm,
+            )
+        draw_robot_status(annotated, self._navigator.get_status_text())
 
         draw_status_bar(
             annotated,
@@ -406,8 +462,13 @@ class WebcamEngine:
         """Apply fields that do not require camera/detector restart."""
         self.config = config
         self._postprocess.update_config(config.stability)
+        self._navigator.config = config.robot
 
     def shutdown(self, *, destroy_cv_windows: bool = True) -> None:
+        # Gửi lệnh STOP cho robot trước khi shutdown
+        from block_detected.runtime.robo_nav import RobotCommand
+        push_robot_command(RobotCommand.stop())
+        self._navigator.reset()
         if self._cap is not None:
             self._cap.release()
             self._cap = None

@@ -83,6 +83,24 @@ class StabilityConfig:
 
 
 @dataclass
+class RobotConfig:
+    """Robot navigation config — điều khiển robot 4 bánh mecanum qua ESP32."""
+
+    enabled: bool = False
+    target_distance_cm: float = 2.0
+    backup_distance_cm: float = 10.0
+    shift_distance_cm: float = 15.0
+    approach_speed: int = 120
+    strafe_speed: int = 100
+    rotation_speed: int = 100
+    align_threshold_deg: float = 5.0
+    # Calibration for distance estimation
+    focal_length_px: float = 1680.0
+    block_width_cm: float = 5.0
+    hfov_deg: float = 62.0
+
+
+@dataclass
 class UiDebugConfig:
     window_name: str = WINDOW_NAME
     button_margin: int = BUTTON_MARGIN
@@ -100,6 +118,7 @@ class AppConfig:
     preprocess: PreprocessConfig = field(default_factory=PreprocessConfig)
     classical: ClassicalPipelineConfig = field(default_factory=ClassicalPipelineConfig)
     stability: StabilityConfig = field(default_factory=StabilityConfig)
+    robot: RobotConfig = field(default_factory=RobotConfig)
     ui: UiDebugConfig = field(default_factory=UiDebugConfig)
 
     @classmethod
@@ -130,6 +149,7 @@ class AppConfig:
             preprocess=section("preprocess", PreprocessConfig),
             classical=section("classical", ClassicalPipelineConfig),
             stability=section("stability", StabilityConfig),
+            robot=section("robot", RobotConfig),
             ui=section("ui", UiDebugConfig),
         )
 
@@ -140,6 +160,7 @@ class AppConfig:
             "preprocess": asdict(self.preprocess),
             "classical": asdict(self.classical),
             "stability": asdict(self.stability),
+            "robot": asdict(self.robot),
             "ui": asdict(self.ui),
         }
 
@@ -239,6 +260,19 @@ class AppConfig:
         require_int("ui.key_arrow_up", self.ui.key_arrow_up)
         require_int("ui.key_arrow_down", self.ui.key_arrow_down)
         log_level_valid = require_str("ui.log_level", self.ui.log_level)
+
+        rb = self.robot
+        require_bool("robot.enabled", rb.enabled)
+        require_number("robot.target_distance_cm", rb.target_distance_cm)
+        require_number("robot.backup_distance_cm", rb.backup_distance_cm)
+        require_number("robot.shift_distance_cm", rb.shift_distance_cm)
+        require_int("robot.approach_speed", rb.approach_speed)
+        require_int("robot.strafe_speed", rb.strafe_speed)
+        require_int("robot.rotation_speed", rb.rotation_speed)
+        require_number("robot.align_threshold_deg", rb.align_threshold_deg)
+        require_number("robot.focal_length_px", rb.focal_length_px)
+        require_number("robot.block_width_cm", rb.block_width_cm)
+        require_number("robot.hfov_deg", rb.hfov_deg)
 
         if conf_fields_valid and not inf.conf_min <= inf.default_conf <= inf.conf_max:
             errors.append("inference.default_conf must be within [conf_min, conf_max]")
