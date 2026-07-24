@@ -94,10 +94,9 @@ class RobotConfig:
     strafe_speed: int = 100
     rotation_speed: int = 100
     align_threshold_deg: float = 5.0
-    # Calibration for distance estimation
-    focal_length_px: float = 1680.0
-    block_width_cm: float = 5.0
-    hfov_deg: float = 62.0
+    # Distance estimation: auto F from HFOV, diagonal-based (rotation-invariant)
+    block_width_cm: float = 4.0   # square block side (4×4 cm)
+    hfov_deg: float = 66.0        # Pi Cam v3 wide HFOV
 
 
 @dataclass
@@ -270,7 +269,6 @@ class AppConfig:
         require_int("robot.strafe_speed", rb.strafe_speed)
         require_int("robot.rotation_speed", rb.rotation_speed)
         require_number("robot.align_threshold_deg", rb.align_threshold_deg)
-        require_number("robot.focal_length_px", rb.focal_length_px)
         require_number("robot.block_width_cm", rb.block_width_cm)
         require_number("robot.hfov_deg", rb.hfov_deg)
 

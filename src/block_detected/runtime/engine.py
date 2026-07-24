@@ -313,8 +313,8 @@ class WebcamEngine:
             distance_cm = estimate_distance_from_detection(
                 primary,
                 frame_width=frame_w,
-                focal_length_px=self.config.robot.focal_length_px,
                 block_width_cm=self.config.robot.block_width_cm,
+                hfov_deg=self.config.robot.hfov_deg,
             )
             cx, _cy = box_center(primary.box)
             cam_cx = frame_w / 2.0
