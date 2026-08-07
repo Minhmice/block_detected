@@ -67,6 +67,7 @@ def test_switch_model_swaps_and_closes_previous_detector(monkeypatch):
     engine = WebcamEngine(config, [Path("old.pt"), Path("new.pt")], previous)
 
     monkeypatch.setattr("block_detected.runtime.engine.load_detector", lambda _path: replacement)
+    monkeypatch.setattr("block_detected.runtime.engine.save_config", lambda _config: None)
 
     engine.switch_model()
 
