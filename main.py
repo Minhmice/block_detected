@@ -86,6 +86,7 @@ def _print_help() -> None:
     print("  --stream, -s       Pi JPEG stream server")
     print("  --view, -v         OpenCV detection preview (desktop)")
     print("  --tui, -t          Textual detection dashboard")
+    print("  --probe-cameras    List working camera indices (USB / built-in)")
     print("  --no-install       Skip auto pip install")
     print("  --install          Force reinstall profile deps")
     print()
@@ -101,6 +102,15 @@ def _missing_extra(extra: str, packages: str) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ["--probe-cameras"]:
+        from block_detected.io.camera.probe import format_probe_report, probe_cameras
+
+        max_index = 10
+        if len(argv) >= 2 and argv[1].isdigit():
+            max_index = int(argv[1])
+        print(format_probe_report(probe_cameras(max_index)))
+        return 0
+
     device, argv = ensure_environment(argv)
     mode, rest = resolve_mode(argv, device=device)
     if mode == "quit":

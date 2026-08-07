@@ -138,6 +138,7 @@ def test_render_header_contains_dashboard_summary():
         runtime="RUNNING",
         model="train-3.pt",
         camera=1,
+        camera_label="USB index 1",
         confidence=0.42,
         stability=True,
         fps=21.5,
@@ -149,8 +150,44 @@ def test_render_header_contains_dashboard_summary():
 
     assert "Block Detection" in app.render_header(state).plain
     assert "RUNNING" in app.render_header(state).plain
+    assert "train-3.pt" in app.render_header(state).plain
     assert "latency 6.0ms" in app.render_header(state).plain
 
+
+def test_app_state_uses_loaded_model_before_first_frame():
+    config = AppConfig.defaults()
+    config.inference.last_model_name = "rbs-final.pt"
+    runtime = app.TuiRuntime(config)
+    runtime.running = True
+
+    state = app.app_state_from_runtime(runtime)
+
+    assert state.model == "rbs-final.pt"
+
+
+def test_render_metrics_includes_model():
+    from io import StringIO
+
+    from rich.console import Console
+
+    state = app.AppState(
+        runtime="RUNNING",
+        model="rbs-final.pt",
+        camera=0,
+        camera_label="index 0",
+        confidence=0.45,
+        stability=True,
+        fps=18.0,
+        latency_read=1.0,
+        latency_infer=2.0,
+        latency_render=0.5,
+        action="",
+    )
+    metrics = app.render_metrics(state)
+    buffer = StringIO()
+    Console(file=buffer, width=120, force_terminal=True).print(metrics)
+    assert "rbs-final.pt" in buffer.getvalue()
+    assert "Model" in buffer.getvalue()
 
 def test_render_detection_table_sorts_limits_and_reports_more():
     detections = tuple(_detections(10))
@@ -228,7 +265,9 @@ class _FakeEngine:
 
     def process_frame(self):
         if not self.frames:
+            self.last_process_error = "Camera frame read failed."
             return None
+        self.last_process_error = None
         return SimpleNamespace(status=self.frames.pop(0), detections=list(self.detections))
 
     def switch_model(self):

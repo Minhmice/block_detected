@@ -37,7 +37,7 @@ def test_try_start_reports_camera_index(monkeypatch):
     engine.state.camera_index = 7
 
     monkeypatch.setattr(
-        "block_detected.runtime.session.try_open_camera",
+        "block_detected.runtime.engine.try_open_camera",
         lambda *_a, **_k: (None, 7, "Failed to open camera source 7 (640x480)."),
     )
 

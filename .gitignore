@@ -39,9 +39,9 @@ block_detected.json
 pyvenv.cfg
 
 # Accidental venv copy at repo root (never commit site-packages)
-Lib/
-Scripts/
-Include/
+/Lib/
+/Scripts/
+/Include/
 
 # --- Project: ML / detection output ---
 runs/
