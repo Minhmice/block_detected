@@ -34,7 +34,7 @@ htmlcov/
 !.env.example
 
 block_detected.toml
-block_detected.json
+/block_detected.json
 .raspi_cam_viewer.json
 pyvenv.cfg
 

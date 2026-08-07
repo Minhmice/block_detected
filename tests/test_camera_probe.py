@@ -1,20 +1,17 @@
 """Tests for camera probe helpers."""
 
-from block_detected.io.camera.probe import format_camera_display, format_probe_report
-from block_detected.io.camera.probe import CameraProbeResult
+from block_detected.io.camera import probe
+from block_detected.io.camera.probe import CameraProbeResult, format_camera_display, format_probe_report
 
 
-def test_format_camera_display_usb_mac():
-    label = format_camera_display(1, "usb")
-    assert label == "USB index 1"
+def test_format_camera_display_usb_mac(monkeypatch):
+    monkeypatch.setattr(probe.sys, "platform", "darwin")
+    assert format_camera_display(1, "usb") == "USB index 1"
 
 
-def test_format_camera_display_usb_linux():
-    label = format_camera_display(2, "usb")
-    if __import__("sys").platform.startswith("linux"):
-        assert label == "USB /dev/video2"
-    else:
-        assert "USB" in label
+def test_format_camera_display_usb_linux(monkeypatch):
+    monkeypatch.setattr(probe.sys, "platform", "linux")
+    assert format_camera_display(2, "usb") == "USB /dev/video2"
 
 
 def test_format_probe_report_lists_working():
