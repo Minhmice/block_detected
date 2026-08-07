@@ -7,11 +7,19 @@ from ultralytics import YOLO
 from block_detected.config.inference import DEFAULT_MODEL_NAME
 from block_detected.config.paths import MODELS_DIR
 
+SUFFIXES = {".pt", ".onnx", ".engine", ".torchscript"}
+
 
 def discover_model_paths(models_dir: Path = MODELS_DIR) -> list[Path]:
     if not models_dir.is_dir():
         return []
-    return sorted(p for p in models_dir.glob("*.pt") if p.is_file())
+    models = [
+        path
+        for suffix in SUFFIXES
+        for path in models_dir.glob(f"*{suffix}")
+        if path.is_file()
+    ]
+    return sorted(set(models))
 
 
 def resolve_model_index(model_paths: list[Path], preferred_name: str = DEFAULT_MODEL_NAME) -> int:

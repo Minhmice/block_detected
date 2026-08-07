@@ -12,6 +12,7 @@ class Detection:
     class_id: int
     class_name: str
     confidence: float
+    angle: float = 0.0
 
 
 @dataclass(slots=True)
