@@ -48,12 +48,6 @@ runs/
 wandb/
 *.cache
 
-# Model weights (large binaries — keep folder via .gitkeep)
-models/*.pt
-models/*.onnx
-models/*.engine
-!models/.gitkeep
-
 # --- Tooling / IDE ---
 .idea/
 .vscode/
