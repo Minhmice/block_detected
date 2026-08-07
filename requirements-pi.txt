@@ -9,3 +9,4 @@ opencv-python-headless>=4.8.0
 textual>=8.0
 rich>=13.7
 onnxruntime>=1.22.0
+onnx>=1.17.0

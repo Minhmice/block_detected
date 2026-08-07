@@ -38,8 +38,7 @@ def detect_edges(gray: np.ndarray) -> tuple[np.ndarray, List[LineSegment]]:
             maxLineGap=config.HOUGH_MAX_LINE_GAP,
         )
         if raw is not None:
-            for item in raw:
-                x1, y1, x2, y2 = item[0]
+            for x1, y1, x2, y2 in raw.reshape(-1, 4):
                 lines.append(((int(x1), int(y1)), (int(x2), int(y2))))
 
     return edges, lines

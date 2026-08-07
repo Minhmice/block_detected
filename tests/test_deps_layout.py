@@ -38,7 +38,8 @@ def test_requirements_pi_excludes_pyside6():
     assert not any("cuda" in line for line in dep_lines)
     assert any("ultralytics" in line for line in dep_lines)
     assert any("textual" in line for line in dep_lines)
-    assert any("onnxruntime" in line for line in dep_lines)
+    assert any(line.startswith("onnxruntime") for line in dep_lines)
+    assert any(line.startswith("onnx>") or line == "onnx" for line in dep_lines)
 
 
 def test_pi_extra_matches_requirements_pi():

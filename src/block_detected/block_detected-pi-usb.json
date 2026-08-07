@@ -7,15 +7,15 @@
     "source": "usb"
   },
   "inference": {
-    "last_model_name": "pose11.onnx",
+    "last_model_name": "pose11-fp16.onnx",
     "conf_min": 0.001,
     "conf_max": 0.95,
     "conf_step": 0.001,
     "default_conf": 0.25,
     "eval_conf": 0.01,
-    "imgsz": 640,
+    "imgsz": 320,
     "iou": 0.45,
-    "max_det": 100,
+    "max_det": 8,
     "agnostic_nms": false
   },
   "preprocess": {

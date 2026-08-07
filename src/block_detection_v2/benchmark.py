@@ -18,7 +18,7 @@ DEFAULT_OUT = _PKG_DIR / "benchmark_output"
 
 
 def dataset_dir() -> Path:
-    return _PKG_DIR / "block_dataset"
+    return _PKG_DIR.parent.parent / "block_dataset"
 
 
 def list_dataset() -> List[Path]:

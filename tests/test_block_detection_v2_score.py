@@ -11,7 +11,7 @@ from block_detection_v2.preprocessing import preprocess
 from block_detection_v2.roi import ROIBox, extract_cluster_roi
 from block_detection_v2.score import score_candidate
 
-_DATASET = Path(__file__).resolve().parents[1] / "src" / "block_detection_v2" / "block_dataset"
+_DATASET = Path(__file__).resolve().parents[1] / "block_dataset"
 
 
 def _load(name: str):

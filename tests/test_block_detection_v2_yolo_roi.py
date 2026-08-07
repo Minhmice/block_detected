@@ -10,7 +10,7 @@ from block_detection_v2 import config
 from block_detection_v2.roi import roi_from_bbox
 from block_detection_v2.yolo_detector import YoloBlockDetector
 
-_DATASET = Path(__file__).resolve().parents[1] / "src" / "block_detection_v2" / "block_dataset"
+_DATASET = Path(__file__).resolve().parents[1] / "block_dataset"
 _MODEL = Path(config.YOLO_MODEL_PATH)
 
 
