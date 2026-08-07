@@ -33,6 +33,18 @@ def test_resolve_stream_flag():
     assert rest == ["viewer"]
 
 
+def test_resolve_target_flag():
+    mode, rest = resolve_mode(["--target", "--model", "m.onnx"], device="pi")
+    assert mode == "target"
+    assert rest == ["--model", "m.onnx"]
+
+
+def test_resolve_target_positional_mode():
+    mode, rest = resolve_mode(["target", "--check-all"], device="pi")
+    assert mode == "target"
+    assert rest == ["--check-all"]
+
+
 def test_resolve_positional_mode():
     mode, _rest = resolve_mode(["tui"], device="mac")
     assert mode == "tui"

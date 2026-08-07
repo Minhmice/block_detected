@@ -16,6 +16,10 @@ class YoloDetector:
     def model_name(self) -> str:
         return self._path.name
 
+    @property
+    def task(self) -> str:
+        return str(getattr(self._model, "task", "detect") or "detect")
+
     def predict(
         self,
         frame,

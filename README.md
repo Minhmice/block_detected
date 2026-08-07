@@ -7,6 +7,7 @@ Nhận diện khối/vật thể realtime bằng **YOLO (Ultralytics)** trên we
 | **View** | `python main.py --view` — OpenCV preview + detection (desktop) |
 | **TUI** | `python main.py --tui` — Textual dashboard |
 | **Stream** | `python main.py --stream` — Pi JPEG server; `python main.py --stream viewer` — LAN viewer |
+| **Target** | `python main.py target --model pose11-fp16.onnx` — headless JSONL targeting |
 
 Config detection: [`src/block_detected/block_detected.json`](src/block_detected/block_detected.json) — sửa trực tiếp; trong view phím **`r`** reload.
 
@@ -55,6 +56,21 @@ python main.py                    # device-aware picker
 **Pi menu:** 1 Stream · 2 TUI (mặc định) — không offer View (headless)
 
 Không có TTY: desktop → View, Pi → TUI.
+
+### Pi targeting headless
+
+```bash
+# Chạy model được chọn; mỗi frame in một JSON object
+python main.py --no-install target --model pose11-fp16.onnx
+
+# Chạy hữu hạn 300 frame, lọc theo class name hoặc class ID
+python main.py --no-install target --model pose11-fp16.onnx --frames 300 --class person
+
+# Kiểm tra mọi model trong models/ trên cùng một camera frame
+python main.py --no-install target --check-all
+```
+
+Target dùng tâm bounding box cho detect, pose, segment và OBB. `error_norm` nằm trong khoảng gần `[-1, 1]`; X dương sang phải, Y dương xuống dưới. Classification được báo `unsupported`. Model lỗi được báo riêng và không làm `--check-all` dừng sớm.
 
 ## Cấu trúc
 

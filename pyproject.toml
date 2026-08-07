@@ -41,6 +41,7 @@ block-detected = "main:main"
 block-detected-stream = "stream.__main__:main"
 block-detected-view = "view.app:main"
 block-detected-tui = "block_detected.tui.app:main"
+block-detected-target = "block_detected.targeting:main"
 
 [build-system]
 requires = ["setuptools>=61"]

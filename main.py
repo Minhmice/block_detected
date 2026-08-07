@@ -34,6 +34,9 @@ def _strip_mode_flags(argv: list[str]) -> tuple[str | None, list[str]]:
         if token in ("--tui", "-t"):
             mode = "tui"
             continue
+        if token == "--target":
+            mode = "target"
+            continue
         if token in ("--help", "-h"):
             continue
         rest.append(token)
@@ -52,7 +55,7 @@ def resolve_mode(
     device = device or detect_device()
     mode, rest = _strip_mode_flags(argv)
 
-    if argv and argv[0] in ("stream", "view", "tui", "gui"):
+    if argv and argv[0] in ("stream", "view", "tui", "gui", "target"):
         token = "view" if argv[0] == "gui" else argv[0]
         extra = argv[1:]
         if device == "pi" and token == "view":
@@ -81,11 +84,12 @@ def resolve_mode(
 
 
 def _print_help() -> None:
-    print("usage: python main.py [--stream | --view | --tui] [app options...]")
+    print("usage: python main.py [--stream | --view | --tui | --target] [app options...]")
     print()
     print("  --stream, -s       Pi JPEG stream server")
     print("  --view, -v         OpenCV detection preview (desktop)")
     print("  --tui, -t          Textual detection dashboard")
+    print("  --target           Headless Pi targeting JSONL")
     print("  --probe-cameras    List working camera indices (USB / built-in)")
     print("  --no-install       Skip auto pip install")
     print("  --install          Force reinstall profile deps")
@@ -121,6 +125,11 @@ def main(argv: list[str] | None = None) -> int:
         from stream.__main__ import main as stream_main
 
         return stream_main(rest)
+
+    if mode == "target":
+        from block_detected.targeting import main as target_main
+
+        return target_main(rest)
 
     if mode == "view":
         try:
