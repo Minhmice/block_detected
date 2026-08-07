@@ -17,7 +17,7 @@ REPO_ROOT = Path(__file__).resolve().parent
 SRC_ROOT = REPO_ROOT / "src"
 
 CORE_MODULES = ("ultralytics", "cv2", "rich", "textual")
-LAUNCHER_FLAGS = frozenset({"--no-install", "--install", "--help", "-h"})
+LAUNCHER_FLAGS = frozenset({"--no-install", "--install", "--install-pi", "--help", "-h"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -115,19 +115,25 @@ def _run_pip(args: list[str]) -> bool:
     return True
 
 
+def install_pi_deps() -> bool:
+    """Pi 5 / Pi lite — requirements-pi.txt + editable package without core extras (no CUDA)."""
+    ok = _run_pip(["install", "-r", "requirements-pi.txt"])
+    if not ok:
+        return False
+    return _run_pip(["install", "-e", ".", "--no-deps"])
+
+
 def install_profile(device: DeviceKind) -> bool:
     if device == "pi":
-        ok = _run_pip(["install", "-r", "requirements-pi.txt"])
-        if not ok:
-            return False
-        return _run_pip(["install", "-e", ".", "--no-deps"])
+        return install_pi_deps()
     return _run_pip(["install", "-e", ".[view]"])
 
 
-def strip_launcher_flags(argv: list[str]) -> tuple[list[str], bool, bool]:
-    """Return (rest, no_install, force_install)."""
+def strip_launcher_flags(argv: list[str]) -> tuple[list[str], bool, bool, bool]:
+    """Return (rest, no_install, force_install, install_pi_only)."""
     no_install = False
     force_install = False
+    install_pi_only = False
     rest: list[str] = []
     for token in argv:
         if token == "--no-install":
@@ -136,13 +142,29 @@ def strip_launcher_flags(argv: list[str]) -> tuple[list[str], bool, bool]:
         if token == "--install":
             force_install = True
             continue
+        if token == "--install-pi":
+            install_pi_only = True
+            continue
         rest.append(token)
-    return rest, no_install, force_install
+    return rest, no_install, force_install, install_pi_only
 
 
 def ensure_environment(argv: list[str]) -> tuple[DeviceKind, list[str]]:
     device = detect_device()
-    argv, no_install, force_install = strip_launcher_flags(argv)
+    argv, no_install, force_install, install_pi_only = strip_launcher_flags(argv)
+
+    if install_pi_only:
+        print("[INFO] Installing Pi 5 profile only (no CUDA extras from pyproject core).")
+        if install_pi_deps():
+            importlib.invalidate_caches()
+            print("[INFO] Pi install complete.")
+        else:
+            print("[ERROR] Pi install failed. Try manually:")
+            print("  pip install -r requirements-pi.txt && pip install -e . --no-deps")
+            raise SystemExit(1)
+        if not argv:
+            raise SystemExit(0)
+        no_install = True
 
     print(f"[INFO] Device: {device_label(device)}")
     print(f"[INFO] Profile: {profile_label(device)}")
@@ -165,7 +187,8 @@ def ensure_environment(argv: list[str]) -> tuple[DeviceKind, list[str]]:
         if not install_profile(device):
             print("[ERROR] Auto-install failed. Try manually:")
             if device == "pi":
-                print("  pip install -r requirements-pi.txt && pip install -e . --no-deps")
+                print("  python main.py --install-pi")
+                print("  # or: pip install -r requirements-pi.txt && pip install -e . --no-deps")
             else:
                 print('  pip install -e ".[view]"')
         else:

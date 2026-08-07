@@ -89,6 +89,7 @@ def _print_help() -> None:
     print("  --probe-cameras    List working camera indices (USB / built-in)")
     print("  --no-install       Skip auto pip install")
     print("  --install          Force reinstall profile deps")
+    print("  --install-pi       Pi 5 deps only (no CUDA from core/all extras)")
     print()
     print("  stream viewer:     python main.py --stream viewer")
     print("  config file:       src/block_detected/block_detected.json")

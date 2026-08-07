@@ -37,6 +37,7 @@ Repo root: `main.py` (launcher), `bootstrap.py` (device + auto-install), `models
 ```bash
 python main.py                    # bootstrap + device-aware picker
 python main.py --no-install       # skip auto pip
+python main.py --install-pi       # Pi 5 deps only (no CUDA extras)
 python main.py --view
 python main.py --tui
 python main.py --stream

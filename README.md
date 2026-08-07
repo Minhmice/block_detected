@@ -19,7 +19,7 @@ Config detection: [`src/block_detected/block_detected.json`](src/block_detected/
 | Thiết bị | Auto-install |
 |----------|----------------|
 | **Desktop** (Mac / Windows / Linux) | `pip install -e ".[view]"` |
-| **Raspberry Pi** | `pip install -r requirements-pi.txt` → `pip install -e . --no-deps` |
+| **Raspberry Pi** | `python main.py --install-pi` (hoặc `bash install-pi.sh`) |
 
 Tắt auto-install: `--no-install`. Force reinstall: `--install`.
 
@@ -32,13 +32,17 @@ pip install -e ".[viewer]"          # stream LAN viewer (tkinter)
 pip install -e ".[dev]"             # pytest
 ```
 
-**Raspberry Pi** (hoặc để bootstrap tự cài):
+**Raspberry Pi 5** (không kéo CUDA như `pip install -e .` hay `.[all]`):
 
 ```bash
-pip install -r requirements-pi.txt
-pip install -e . --no-deps
-python main.py --stream
-python main.py --tui
+python main.py --install-pi          # khuyến nghị
+# hoặc
+bash install-pi.sh
+# hoặc thủ công
+pip install -r requirements-pi.txt && pip install -e . --no-deps
+
+python main.py --no-install --stream
+python main.py --no-install --tui
 ```
 
 ## Chạy

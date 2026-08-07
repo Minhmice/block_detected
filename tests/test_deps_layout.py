@@ -35,5 +35,21 @@ def test_requirements_pi_excludes_pyside6():
         if line.strip() and not line.strip().startswith("#")
     ]
     assert not any("pyside6" in line for line in dep_lines)
+    assert not any("cuda" in line for line in dep_lines)
     assert any("ultralytics" in line for line in dep_lines)
     assert any("textual" in line for line in dep_lines)
+    assert any("onnxruntime" in line for line in dep_lines)
+
+
+def test_pi_extra_matches_requirements_pi():
+    data = _load_pyproject()
+    pi_extra = [d.split(";")[0].strip().lower() for d in data["project"]["optional-dependencies"]["pi"]]
+    req_path = Path(__file__).resolve().parents[1] / "requirements-pi.txt"
+    req_lines = [
+        line.strip().lower()
+        for line in req_path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    ]
+    for req in req_lines:
+        pkg = req.split(">=")[0].split("==")[0].strip()
+        assert any(pkg in extra for extra in pi_extra), f"missing pi extra for {pkg}"

@@ -1,8 +1,11 @@
-# Raspberry Pi — TUI + stream (no OpenCV view window)
-# Install: pip install -r requirements-pi.txt && pip install -e . --no-deps
+# Raspberry Pi 5 — TUI + stream (no OpenCV view window, no CUDA)
+# Install: python main.py --install-pi
+#      or: bash install-pi.sh
+#      or: pip install -r requirements-pi.txt && pip install -e . --no-deps
 # Python 3.10+
 
 ultralytics>=8.4.0
 opencv-python-headless>=4.8.0
 textual>=8.0
 rich>=13.7
+onnxruntime>=1.22.0

@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 _ROOT = Path(__file__).resolve().parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
@@ -100,6 +102,23 @@ def test_install_pi_profile(monkeypatch):
     ))
     with patch.object(bootstrap.importlib, "invalidate_caches"):
         bootstrap.ensure_environment([])
+    assert len(calls) == 2
+    assert calls[0][-2:] == ["-r", "requirements-pi.txt"]
+    assert calls[1][-3:] == ["-e", ".", "--no-deps"]
+
+
+def test_install_pi_only_flag_exits(monkeypatch):
+    calls: list[list[str]] = []
+
+    def fake_run(cmd, cwd, check):  # noqa: ARG001
+        calls.append(cmd)
+        return MagicMock(returncode=0)
+
+    monkeypatch.setattr(bootstrap.subprocess, "run", fake_run)
+    with patch.object(bootstrap.importlib, "invalidate_caches"):
+        with pytest.raises(SystemExit) as exc:
+            bootstrap.ensure_environment(["--install-pi"])
+    assert exc.value.code == 0
     assert len(calls) == 2
     assert calls[0][-2:] == ["-r", "requirements-pi.txt"]
     assert calls[1][-3:] == ["-e", ".", "--no-deps"]
